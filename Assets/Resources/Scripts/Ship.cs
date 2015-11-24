@@ -57,7 +57,7 @@ public class Ship : NetworkBehaviour {
 
 		Destroy (sphere);
 
-		gameObject.AddComponent<NetworkIdentity> ();
+		//gameObject.AddComponent<NetworkIdentity> ();
 
 	}
 

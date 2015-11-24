@@ -1,90 +1,141 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
-
-struct PlayerInfo {
-	public GameObject ship;
-	public int playerNum;
-	public Camera followCam;
-}
+using System.Collections.Generic;
 
 public class Player : NetworkBehaviour {
 
+	//public GameObject test;
+
 	static int playerCount = 0;
 
-	//GameObject ship;
-	//int playerNum;
+	GameObject ship;
+	int playerNum;
+	Camera followCam;
 
-	[SyncVar] PlayerInfo playerInfo;
-
-
+	GameObject newThing;
+	NetworkHash128 regNum;
 
 	void Awake() {
+		print ("local = " + isLocalPlayer);
+		//if (isLocalPlayer) {
+
+			GameObject test = GameObject.CreatePrimitive (PrimitiveType.Cube);
+			test.name = "Cube " + playerNum;
+			
+			test.AddComponent<NetworkIdentity> ();
+			test.AddComponent<NetworkTransform> ();
+			
+			test.transform.position = new Vector2 (Random.Range (-4, 4), Random.Range (-4, 4));
+			test.transform.localScale = new Vector3 (Random.Range (1, 3), Random.Range (1, 3), Random.Range (1, 3));
+
+			newThing = (GameObject)Instantiate(test);
+			Destroy (test);
+
+			regNum = NetworkHash128.Parse (StringGenerator.randomString(32));
+			print ("RegNum == " + regNum);
+			ClientScene.RegisterSpawnHandler (regNum, onSpawn, onDespawn);
+
+		//}
+
 		InitState ();
+	}
+
+	GameObject onSpawn(Vector3 position, NetworkHash128 hashId) {
+
+
+
+		return GameObject.CreatePrimitive (PrimitiveType.Capsule);
+	}
+
+	void onDespawn(GameObject obj) {
+		Destroy (obj);
 	}
 
 	[Server]
 	void InitState() {
-		playerInfo.playerNum = ++playerCount;
+
+		playerNum = ++playerCount;
 		
-		this.name = "Player " + playerInfo.playerNum;
+		this.name = "Player " + playerNum;
+
+		//GameObject newThing = (GameObject)Instantiate (test);
+
+
+
+
+		/*Dictionary<NetworkHash128, GameObject> d = ClientScene.prefabs;
+		foreach(KeyValuePair<NetworkHash128, GameObject> entry in d) {
+			print (entry.Value + "\n" + entry.Key);
+		}*/
+		print ("Regnum: " + regNum);
+		NetworkServer.Spawn (newThing, regNum);
+
+		//Destroy (test);
+
+		return;
 		
 		GameObject[] shipList = ArenaInfo.getShipList ();
 		int whichShip = Random.Range (0, shipList.Length - 1);
-		playerInfo.ship = (GameObject)Instantiate (shipList [whichShip]);
+		ship = (GameObject)Instantiate (shipList [whichShip]);
+		ship.GetComponent<NetworkIdentity> ().GetInstanceID ();
 
-		print (whichShip);
-		print (shipList[whichShip]);
-		print (playerInfo.ship);
+		//NetworkIdentity NI = ship.AddComponent<NetworkIdentity>();
+		//NI.localPlayerAuthority = true;
+		//NetworkServer.Spawn (ship);
 
-		playerInfo.ship.name = "Player " + playerInfo.playerNum + " Ship";
-		playerInfo.ship.transform.parent = transform;
-		playerInfo.ship.GetComponent<Ship> ().setOwner (playerInfo.playerNum);
+		//print (whichShip);
+		//print (shipList[whichShip]);
+		//print (ship);
+	
+		ship.name = "Player " + playerNum + " Ship";
+		ship.transform.parent = transform;
+		ship.GetComponent<Ship> ().setOwner (playerNum);
 		
 		Vector2 position = new Vector2(
 			Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize()),
 			Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize())
 			);
 		
-		playerInfo.ship.transform.position = position;
+		ship.transform.position = position;
 		
-		if (playerInfo.playerNum <= ArenaInfo.getNumControllers()) {
-			Controls ctr = playerInfo.ship.AddComponent<Controls>();
+		if (playerNum <= ArenaInfo.getNumControllers()) {
+			Controls ctr = ship.AddComponent<Controls>();
 			//ctr.setJoystick(playerNum);
 			ctr.setJoystick(1);
 		}
 		
-		ShipCamera shipCam = playerInfo.ship.AddComponent<ShipCamera>();
-		playerInfo.followCam = shipCam.getCamera ();
+		ShipCamera shipCam = ship.AddComponent<ShipCamera>();
+		followCam = shipCam.getCamera ();
 		
-		playerInfo.followCam.backgroundColor = new Color(0, 0, 0, 1);
-		playerInfo.followCam.name = "Player " + playerInfo.playerNum + " Camera";
-		NetworkIdentity NI = playerInfo.followCam.gameObject.AddComponent<NetworkIdentity> ();
-		NI.localPlayerAuthority = true;
+		followCam.backgroundColor = new Color(0, 0, 0, 1);
+		followCam.name = "Player " + playerNum + " Camera";
+		//NetworkIdentity NI = followCam.gameObject.AddComponent<NetworkIdentity> ();
+		//NI.localPlayerAuthority = true;
 		//cam.transform.SetParent(playerShip.transform);
 		
 		shipCam.follow(true);
 		shipCam.setHeight(10);
-		shipCam.setTarget(playerInfo.ship);
-		shipCam.setCullLayer(1 << 0 | 1 << (8 + playerInfo.playerNum));
+		shipCam.setTarget(ship);
+		shipCam.setCullLayer(1 << 0 | 1 << (8 + playerNum));
 
-		if (playerInfo.playerNum == 2) {
+		if (playerNum == 2) {
 
 				//Top Player
-				playerInfo.followCam.rect = new Rect(new Vector2(0, 0.5f), new Vector2(1, 0.5f));
+				followCam.rect = new Rect(new Vector2(0, 0.5f), new Vector2(1, 0.5f));
 			} else {
 				//Bottom Player
-				playerInfo.followCam.rect = new Rect(new Vector2(0, 0), new Vector2(1, 0.5f));
+				followCam.rect = new Rect(new Vector2(0, 0), new Vector2(1, 0.5f));
 
 		}
 		
 		StarField sf = shipCam.gameObject.AddComponent<StarField>();
-		sf.setStarLayer(8 + playerInfo.playerNum);
+		sf.setStarLayer(8 + playerNum);
 	}
 
 	void OnDestroy() {
-		if (playerInfo.followCam != null) {
-			Destroy (playerInfo.followCam.gameObject);
+		if (followCam != null) {
+			Destroy (followCam.gameObject);
 		}
 	}
 
@@ -111,6 +162,6 @@ public class Player : NetworkBehaviour {
 	}*/
 
 	public int getPlayerNum() {
-		return playerInfo.playerNum;
+		return playerNum;
 	}
 }

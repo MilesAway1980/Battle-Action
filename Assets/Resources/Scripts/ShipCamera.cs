@@ -51,6 +51,8 @@ public class ShipCamera : NetworkBehaviour {
 	void createCamera() {
 		GameObject temp = new GameObject ();
 		cameraObject = (GameObject)Instantiate (temp, new Vector3 (0, 0, 0), Quaternion.identity);
+		//cameraObject.AddComponent<NetworkIdentity> ();
+		//NetworkServer.Spawn (cameraObject);
 		currentPos = cameraObject.transform.position;
 		oldPos = currentPos;
 		shipCam = cameraObject.AddComponent<Camera> ();
