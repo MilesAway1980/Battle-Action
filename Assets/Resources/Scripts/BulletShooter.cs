@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class BulletShooter : MonoBehaviour {
+public class BulletShooter : NetworkBehaviour {
 
 	Ship owner;
 
@@ -9,6 +10,7 @@ public class BulletShooter : MonoBehaviour {
 		owner = newOwner;
 	}
 
+	[Server]
 	public void fireBullet(int whichWeapon, Vector2 startPos, float angle) {
 
 
@@ -22,6 +24,9 @@ public class BulletShooter : MonoBehaviour {
 				
 				MachineGun mg = newBullet.AddComponent<MachineGun>();
 				mg.init(owner, startPos, angle, whichWeapon);
+				mg.setScale(0.1f);
+
+				NetworkServer.Spawn(newBullet);
 				break;				
 		}
 	}

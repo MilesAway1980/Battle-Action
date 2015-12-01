@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Collections;
 
-public class ShipCamera : NetworkBehaviour {
+public class ShipCamera : MonoBehaviour {
 
-	GameObject cameraObject;
-	Camera shipCam;
+	//GameObject cameraObject;
+	//Camera shipCam;
 	GameObject target;
 	bool followTarget;
 	float height;
@@ -15,16 +15,24 @@ public class ShipCamera : NetworkBehaviour {
 	float speed;
 	float angle;
 
-	Canvas canvas;
-	Text text;
+	//Canvas canvas;
+	//Text text;
 
-	Vector2 currentPos;
-	Vector2 oldPos;
+	Vector3 currentPos;
+	Vector3 oldPos;
+
+	StarField starField;
 
 	// Use this for initialization
 	void Awake () {
-		createCamera ();
-		createTextCanvas ();
+
+		followTarget = true;
+		//createCamera ();
+		//createTextCanvas ();
+
+		starField = gameObject.AddComponent<StarField>();
+		currentPos = Camera.main.transform.position;
+		oldPos = currentPos;
 	}
 	
 	// Update is called once per frame
@@ -32,15 +40,15 @@ public class ShipCamera : NetworkBehaviour {
 		if (followTarget) {
 			if (target != null)
 			{
-				if ((Vector2)target.transform.position != currentPos)
+				if (target.transform.position != currentPos)
 				{
 					oldPos = currentPos;
-					cameraObject.transform.position = new Vector3 (
+					Camera.main.transform.position = new Vector3 (
 							target.transform.position.x,
 							target.transform.position.y,
 							-height
 						);
-					currentPos = cameraObject.transform.position;
+					currentPos = Camera.main.transform.position;
 				}
 
 				moveStars();
@@ -48,7 +56,7 @@ public class ShipCamera : NetworkBehaviour {
 		}
 	}
 
-	void createCamera() {
+	/*void createCamera() {
 		GameObject temp = new GameObject ();
 		cameraObject = (GameObject)Instantiate (temp, new Vector3 (0, 0, 0), Quaternion.identity);
 		//cameraObject.AddComponent<NetworkIdentity> ();
@@ -57,9 +65,9 @@ public class ShipCamera : NetworkBehaviour {
 		oldPos = currentPos;
 		shipCam = cameraObject.AddComponent<Camera> ();
 		Destroy (temp);
-	}
+	}*/
 
-	void createTextCanvas() {
+	/*void createTextCanvas() {
 		GameObject newCanvas = new GameObject ();
 		
 		GameObject canvasObject = (GameObject)Instantiate (newCanvas, new Vector3 (0, 0, 0), Quaternion.identity);
@@ -78,7 +86,7 @@ public class ShipCamera : NetworkBehaviour {
 		text.text = "Battle Action!!";
 		
 		Destroy (newCanvas);
-	}
+	}*/
 
 	public void setTarget(GameObject newTarget) {
 		target = newTarget;
@@ -105,13 +113,13 @@ public class ShipCamera : NetworkBehaviour {
 		followTarget = !followTarget;
 	}
 
-	public Camera getCamera() {
+	/*public Camera getCamera() {
 		return shipCam;
 	}
 
 	public void setScreenText(string overlayText) {
 		text.text = overlayText;
-	}
+	}*/
 
 	public void setSpeed(float newSpeed) {
 		speed = newSpeed;
@@ -121,14 +129,21 @@ public class ShipCamera : NetworkBehaviour {
 		angle = newAngle;
 	}
 
-	public void setCullLayer(int newCullMask) {
+	/*public void setCullLayer(int newCullMask) {
 		shipCam.cullingMask = newCullMask;
+	}*/
+
+	void FixedUpdate() {
+		angle = Angle.getAngle(oldPos, currentPos);
+		speed = Vector3.Distance (oldPos, currentPos);
+		moveStars ();
 	}
 
 	void moveStars() {
-		StarField sf = GetComponent<StarField> ();
-		if (sf != null) {
-			sf.moveStars(transform.position, angle, speed);
+
+		if (starField != null) {
+			//print (angle + "  " + speed);
+			starField.moveStars(transform.position, angle, speed);
 		}
 	}
 }

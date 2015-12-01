@@ -3,8 +3,8 @@ using System.Collections;
 
 public static class ArenaInfo  {
 
-	static int arenaSize = 1000;
-	static int numBeacons = 100;
+	static int arenaSize = 10;//1000;
+	static int numBeacons = 5;//100;
 	static int numPowerups = 100;
 	static float powerupRespawnRate = 2.0f;
 	static float beaconRange = 8;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class MachineGun : Bullet {
@@ -6,6 +7,8 @@ public class MachineGun : Bullet {
 	//AudioSource audioSource;
 	AudioClip hitSound;
 	AudioClip shootSound;
+
+	[SyncVar] public float scale;
 
 	// Use this for initialization
 	void Start () {
@@ -39,6 +42,8 @@ public class MachineGun : Bullet {
 		pos = transform.position;
 		float dist = Vector2.Distance (pos, originPos);
 		distance = dist;
+
+		this.transform.localScale = new Vector3 (scale, scale, scale);
 
 		if (dist > travelDist) {
 			Destroy (gameObject);
@@ -75,5 +80,9 @@ public class MachineGun : Bullet {
 			-Mathf.Sin (angleRad) * speed,
 			Mathf.Cos (angleRad) * speed
 			);
+	}
+
+	public void setScale(float newScale) {
+		scale = newScale;
 	}
 }

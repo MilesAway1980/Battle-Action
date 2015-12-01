@@ -5,80 +5,117 @@ using System.Collections.Generic;
 
 public class Player : NetworkBehaviour {
 
-	//public GameObject test;
-
 	static int playerCount = 0;
 
-	GameObject ship;
-	int playerNum;
-	Camera followCam;
 
-	GameObject newThing;
-	NetworkHash128 regNum;
+
+	[SyncVar] int playerNum;
+
+	Camera followCam;
+	GameObject ship;
 
 	void Awake() {
-		print ("local = " + isLocalPlayer);
-		//if (isLocalPlayer) {
-
-			GameObject test = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			test.name = "Cube " + playerNum;
-			
-			test.AddComponent<NetworkIdentity> ();
-			test.AddComponent<NetworkTransform> ();
-			
-			test.transform.position = new Vector2 (Random.Range (-4, 4), Random.Range (-4, 4));
-			test.transform.localScale = new Vector3 (Random.Range (1, 3), Random.Range (1, 3), Random.Range (1, 3));
-
-			newThing = (GameObject)Instantiate(test);
-			Destroy (test);
-
-			regNum = NetworkHash128.Parse (StringGenerator.randomString(32));
-			print ("RegNum == " + regNum);
-			ClientScene.RegisterSpawnHandler (regNum, onSpawn, onDespawn);
-
-		//}
-
 		InitState ();
 	}
 
-	GameObject onSpawn(Vector3 position, NetworkHash128 hashId) {
+	void Start() {
+		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+		if (isLocalPlayer) {
 
+			if (players != null) {
+				for (int i = 0; i < players.Length; i++) {
+					if (players[i].GetComponent<Ship>().getOwner() == playerNum) {
+						ship = players[i];
+						break;
+					}
+				}			
+			}
 
-
-		return GameObject.CreatePrimitive (PrimitiveType.Capsule);
+			if (ship != null) {
+				Ship myShip = ship.GetComponent<Ship>();
+				myShip.makePointers();
+				ShipCamera sc = ship.AddComponent<ShipCamera>();
+				//sc.gameObject.AddComponent<StarField>();
+				sc.setHeight(10);
+				sc.setTarget(myShip.gameObject);
+			}
+		}
 	}
 
-	void onDespawn(GameObject obj) {
-		Destroy (obj);
+	void Update() {
+		/*if (followCam == null) {
+			followCam = (Camera)GameObject.FindGameObjectWithTag ("MainCamera");
+		}*/
+		if (isLocalPlayer) {
+
+			ship.GetComponent<Ship>().updateForLocal();
+
+			/*
+
+			Camera.main.transform.position = new Vector3 (
+				ship.transform.position.x,
+				ship.transform.position.y,
+				-10
+			);
+			Ship myShip = ship.GetComponent<Ship>();*/
+
+		}
+	}
+
+	void OnGUI() {
+
+		if (isLocalPlayer) {
+			string overlay = "";
+			Ship thisShip = ship.GetComponent<Ship>();
+			overlay += "Armor: " + thisShip.getArmor();
+			overlay += "\nThrust: " + (int)thisShip.thrust + " \\ " + thisShip.maxThrust;
+			overlay += "\nSpeed: " + (int)thisShip.currentSpeed + " \\ " + thisShip.maxSpeed;
+			GUI.backgroundColor = new Color(0, 0, 0, 0);
+			GUI.Box (new Rect (300, 10, 300, 100), "" + overlay);
+		}
+
+
+	}
+
+	[Server]
+	GameObject[] getPlayers() {
+		return GameObject.FindGameObjectsWithTag ("Player Ship");
 	}
 
 	[Server]
 	void InitState() {
 
 		playerNum = ++playerCount;
-		
-		this.name = "Player " + playerNum;
 
-		//GameObject newThing = (GameObject)Instantiate (test);
+		GameObject[] shipList = ArenaInfo.getShipList ();
+		int whichShip = Random.Range (0, shipList.Length - 1);
+		ship = (GameObject)Instantiate (
+				shipList [whichShip],
+				new Vector2(
+					Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize()),
+		             Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize())
+		        ),
+				Quaternion.identity
+			);
+		ship.transform.parent = this.transform;
+		Ship thisShip = ship.GetComponent<Ship> ();
+		thisShip.setOwner (playerNum);
+		ship.tag = "Player Ship";
+		ship.name = "playership" + playerNum;
+
+		print (playerNum);
+
+		NetworkServer.Spawn (ship);
 
 
-
-
-		/*Dictionary<NetworkHash128, GameObject> d = ClientScene.prefabs;
-		foreach(KeyValuePair<NetworkHash128, GameObject> entry in d) {
-			print (entry.Value + "\n" + entry.Key);
-		}*/
-		print ("Regnum: " + regNum);
-		NetworkServer.Spawn (newThing, regNum);
-
-		//Destroy (test);
 
 		return;
 		
-		GameObject[] shipList = ArenaInfo.getShipList ();
-		int whichShip = Random.Range (0, shipList.Length - 1);
-		ship = (GameObject)Instantiate (shipList [whichShip]);
-		ship.GetComponent<NetworkIdentity> ().GetInstanceID ();
+
+
+
+
+		//ship.GetComponent<NetworkIdentity> ().GetInstanceID ();
 
 		//NetworkIdentity NI = ship.AddComponent<NetworkIdentity>();
 		//NI.localPlayerAuthority = true;
@@ -88,7 +125,7 @@ public class Player : NetworkBehaviour {
 		//print (shipList[whichShip]);
 		//print (ship);
 	
-		ship.name = "Player " + playerNum + " Ship";
+		/*ship.name = "Player " + playerNum + " Ship";
 		ship.transform.parent = transform;
 		ship.GetComponent<Ship> ().setOwner (playerNum);
 		
@@ -136,7 +173,7 @@ public class Player : NetworkBehaviour {
 	void OnDestroy() {
 		if (followCam != null) {
 			Destroy (followCam.gameObject);
-		}
+		}*/
 	}
 
 	/*public void assignShip(GameObject newShip) {
@@ -161,7 +198,7 @@ public class Player : NetworkBehaviour {
 		return position;
 	}*/
 
-	public int getPlayerNum() {
+	/*public int getPlayerNum() {
 		return playerNum;
-	}
+	}*/
 }

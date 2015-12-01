@@ -32,8 +32,9 @@ class Star {
 	public void move(Vector2 camPos, float angle, float moveSpeed) {
 
 		float radAngle = angle / Mathf.Rad2Deg;
+
 		pos = new Vector2 (
-			pos.x + Mathf.Sin(radAngle) * (moveSpeed * speed),
+			pos.x - Mathf.Sin(radAngle) * (moveSpeed * speed),
 			pos.y - Mathf.Cos(radAngle) * (moveSpeed * speed)
 		);
 
