@@ -20,8 +20,10 @@ public class BulletShooter : NetworkBehaviour {
 			//Machine gun
 			case 1:
 			//Instantiate(sphereBullet, startPos, Quaternion.identity);
-				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet(), Vector2.zero, Quaternion.identity);				
-				
+				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
+
+				//GameObject newBullet = MachineGun.getBullet();				
+				newBullet.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
 				MachineGun mg = newBullet.AddComponent<MachineGun>();
 				mg.init(owner, startPos, angle, whichWeapon);
 				mg.setScale(0.1f);

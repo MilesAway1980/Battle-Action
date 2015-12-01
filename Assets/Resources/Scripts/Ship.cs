@@ -19,6 +19,7 @@ public class Ship : NetworkBehaviour {
 	[SyncVar]	float targetAngle;
 
 	[SyncVar] 	int ownerNum;
+	[SyncVar] 	public int turnDir;
 
 
 	Rigidbody2D rb;
@@ -74,15 +75,19 @@ public class Ship : NetworkBehaviour {
 	}
 
 	void FixedUpdate() {
-		checkJoystick ();
+
 		if (currentPos != oldPos) {
 			moveDist = Vector2.Distance(currentPos, oldPos);
 			oldPos = currentPos;
 		}
 
+		accelerate ();
+		turn ();
+
+
+
 		//StarField sf = GetComponent<ShipCamera> ();
 
-		CmdAccelerate ();
 		currentPos = transform.position;
 	}
 
@@ -113,6 +118,8 @@ public class Ship : NetworkBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+
+
 		//string overlay;
 
 		//overlay = "Owner: " + ownerNum + "  " + transform.position;
@@ -120,11 +127,7 @@ public class Ship : NetworkBehaviour {
 		//overlay += "\nSpeed: " + (int)(currentSpeed *100);
 		//overlay += "\nThrust: " + (int)(thrust * 100);
 
-
-
-
-
-		//overlay += "\nAxis: " + axisPress.x + ", " + axisPress.y;
+ 		//overlay += "\nAxis: " + axisPress.x + ", " + axisPress.y;
 		//overlay += "\nController Angle: " + angle + " / " + targetAngle;
 
 		//shipCam.setScreenText (overlay);
@@ -132,8 +135,19 @@ public class Ship : NetworkBehaviour {
 		//shipCam.setAngle (getAngle ());
 	}
 
+
 	public void updateForLocal() {
 		//Updates for local network player only 
+
+		//thrust = 10;
+		//checkControls ();
+
+
+		//CmdAccelerate ();
+		//CmdTurn ();
+
+		
+
 
 		ObjectInfo closestBeacon = Beacon.getNearestBeacon (this.gameObject);
 		float beaconAngle = (int)Angle.getAngle (transform.position, closestBeacon.pos);
@@ -166,8 +180,8 @@ public class Ship : NetworkBehaviour {
 
 	}
 
-	[Command]
-	void CmdAccelerate() {
+	public void accelerate() {
+
 		rb.AddRelativeForce (new Vector2 (0, thrust));
 			
 		if (rb.velocity.magnitude > maxSpeed) {
@@ -177,16 +191,11 @@ public class Ship : NetworkBehaviour {
 		currentSpeed = rb.velocity.magnitude;
 	}
 
-	void turn(int direction) {
-		int dir = 0;
-		if (direction < 0) {
-			dir = -1;
-		} else if (direction > 0) {
-			dir = 1;
-		}
+	public void turn() {
 		rb.angularVelocity = 0;
-		transform.Rotate (new Vector3 (0, 0, turnRate * dir));
+		transform.Rotate (new Vector3 (0, 0, turnRate * turnDir));
 		angle = getAngle ();
+		turnDir = 0;
 	}
 
 	public float getAngle() {
@@ -198,107 +207,30 @@ public class Ship : NetworkBehaviour {
 		return currentSpeed;
 	}
 
-	void checkJoystick() {
+	[Server]
+	public void setTurnDir(int direction) {
+		if (direction < 0) {
+			turnDir = -1;
+		} else if (direction > 0) {
+			turnDir = 1;
+		} 
+	}
 
-		Controls ctr = GetComponent<Controls> ();
-		if (ctr == null) {
-			ctr = gameObject.AddComponent<Controls> ();
-			ctr.setJoystick (1);
+	[Server]
+	public void decAccel() {
+		thrust -= acceleration;
+		if (thrust < 0) {
+			thrust = 0;
 		}
 
-		JoystickButtons[] buttons = ctr.getButtons ();
-		float [,] axis = ctr.getAxis();
+	}
 
-		int controlStyle = 0;
-
-		if (controlStyle == 0) {
-			if (buttons [1].getHeld()) {
-				shooter.fireBullet(currentWeapon, transform.position, getAngle ());
-			}
-
-			if (buttons [4].getHeld ()) {
-				thrust -= acceleration;
-				if (thrust < 0) {
-					thrust = 0;
-				}
-			}
-
-			if (buttons [5].getHeld ()) {
-				//accelerate();
-				thrust += acceleration;
-				if (thrust > maxThrust) {
-					thrust = maxThrust;
-				}
-			}
-
-			if (buttons [6].getHeld ()) {
-				turn (1);
-			}
-
-			if (buttons [7].getHeld ()) {
-				turn (-1);
-			}
-
-		} else if (controlStyle == 1) {
-
-			if (axis [0, 0] != 0 || axis [0, 1] != 0) {
-
-				//Get Throttle
-			
-				float curThrottle = 0;
-				if (Mathf.Abs (axis [0, 0]) > Mathf.Abs (axis [0, 1])) {
-					curThrottle = Mathf.Abs (axis [0, 0]);
-				} else {
-					curThrottle = Mathf.Abs (axis [0, 1]);
-				}
-
-				float curMaxThrust = curThrottle * maxThrust;
-				if (thrust < curMaxThrust) {
-					thrust += acceleration;
-					if (thrust > curMaxThrust) {
-						thrust = curMaxThrust;
-					}
-				} else if (thrust > curMaxThrust) {			
-					thrust -= acceleration;
-					if (thrust < 0) {
-						thrust = 0;
-					}
-				}
-
-				//Get Angle
-				targetAngle = Angle.getAngle (
-					new Vector2 (axis [0, 0], axis [0, 1]),
-					Vector2.zero
-				);
-
-			} else {
-				if (thrust > 0) {
-					thrust -= acceleration;
-					if (thrust < 0) {
-						thrust = 0;
-					}
-				}
-			}
-
-			axisPress = new Vector2 (axis [0, 0], axis [0, 1]);
-			if (getAngle () != targetAngle) {
-				float angleDist = Mathf.Abs (getAngle () - targetAngle);
-				if (angleDist < turnRate) {
-					//angle = targetAngle;
-				} else {
-					int dirToTurn = Angle.getDirection (getAngle (), targetAngle, angleDist);
-					turn (dirToTurn);
-				}
-			}
-
+	[Server]
+	public void incAccel() {
+		thrust += acceleration;
+		if (thrust > maxThrust) {
+			thrust = maxThrust;
 		}
-		//Vector2 axisPress = new Vector2(axis[0,0], axis[0, 1]);
-		//float curThrottle = new Vector2 (axis[0,0], axis[0, 1]).normalized.magnitude;
-		//print (axisPress);
-		//print (curThrottle);
-		//throttle = curThrottle * maxSpeed;
-
-
 	}
 
 	public void damage(float amount) {

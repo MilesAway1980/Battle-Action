@@ -6,10 +6,9 @@ using System.Collections.Generic;
 public class Player : NetworkBehaviour {
 
 	static int playerCount = 0;
-
-
-
 	[SyncVar] int playerNum;
+
+	bool buttonsReady = false;
 
 	Camera followCam;
 	GameObject ship;
@@ -19,7 +18,9 @@ public class Player : NetworkBehaviour {
 	}
 
 	void Start() {
+
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+
 		if (isLocalPlayer) {
 
 			if (players != null) {
@@ -35,7 +36,6 @@ public class Player : NetworkBehaviour {
 				Ship myShip = ship.GetComponent<Ship>();
 				myShip.makePointers();
 				ShipCamera sc = ship.AddComponent<ShipCamera>();
-				//sc.gameObject.AddComponent<StarField>();
 				sc.setHeight(10);
 				sc.setTarget(myShip.gameObject);
 			}
@@ -43,24 +43,176 @@ public class Player : NetworkBehaviour {
 	}
 
 	void Update() {
-		/*if (followCam == null) {
-			followCam = (Camera)GameObject.FindGameObjectWithTag ("MainCamera");
-		}*/
 		if (isLocalPlayer) {
-
 			ship.GetComponent<Ship>().updateForLocal();
-
-			/*
-
-			Camera.main.transform.position = new Vector3 (
-				ship.transform.position.x,
-				ship.transform.position.y,
-				-10
-			);
-			Ship myShip = ship.GetComponent<Ship>();*/
-
+			checkControls ();
 		}
 	}
+
+
+	void checkControls() {
+		
+		Controls ctr = GetComponent<Controls> ();
+		if (ctr == null) {
+			ctr = gameObject.AddComponent<Controls> ();
+			ctr.setJoystick (1);
+		}
+		
+		JoystickButtons[] buttons = ctr.getButtons ();
+		float [,] axis = ctr.getAxis();
+		
+		if (!buttonsReady) {
+			if (buttons.Length != 0) {
+				buttonsReady = true;
+				for (int i = 0; i < buttons.Length; i++) {
+					if (buttons[i] == null) {
+						buttonsReady = false;
+						return;
+					}
+				}
+			}
+		}
+		
+		int controlStyle = 0;
+
+		float keyboardHorizontal = Input.GetAxis ("Horizontal");
+		float keyboardVertical = Input.GetAxis ("Vertical");
+		bool shootButton = Input.GetButton ("Shoot");
+		
+		if (controlStyle == 0) {
+			
+			if (	
+			    buttons [1].getHeld() || 
+			    shootButton
+			    ) 
+			{
+				//Shoot
+				//shooter.fireBullet(currentWeapon, transform.position, getAngle ());
+			}
+			
+			if (
+				buttons [4].getHeld () || 
+				keyboardVertical < 0
+				) 
+			{
+				//Slow down
+				//myShip.decAccel();
+				CmdSlowShip();
+				
+			}
+			
+			if (
+				buttons [5].getHeld () || 
+				keyboardVertical > 0
+				) 
+			{
+				//Speed up
+				//myShip.incAccel();
+				CmdSpeedUpShip();
+				
+			}
+			
+			//turnDir = 0;
+			
+			if (
+				buttons [6].getHeld () || 
+				keyboardHorizontal < 0
+				) 
+			{
+				//Turn Left
+				CmdTurnShip (1);
+				//myShip.turn (1);
+				//turnDir = 1;
+			}
+			
+			if (
+				buttons [7].getHeld () || 
+				keyboardHorizontal > 0
+				) 
+			{
+				//Turn Right
+				CmdTurnShip (-1);
+				//turnDir = -1;
+				//myShip.turn (-1);
+			}
+			
+		} /*else if (controlStyle == 1) {
+			
+			if (axis [0, 0] != 0 || axis [0, 1] != 0) {
+				
+				//Get Throttle
+				
+				float curThrottle = 0;
+				if (Mathf.Abs (axis [0, 0]) > Mathf.Abs (axis [0, 1])) {
+					curThrottle = Mathf.Abs (axis [0, 0]);
+				} else {
+					curThrottle = Mathf.Abs (axis [0, 1]);
+				}
+				
+				float curMaxThrust = curThrottle * maxThrust;
+				if (thrust < curMaxThrust) {
+					thrust += acceleration;
+					if (thrust > curMaxThrust) {
+						thrust = curMaxThrust;
+					}
+				} else if (thrust > curMaxThrust) {			
+					thrust -= acceleration;
+					if (thrust < 0) {
+						thrust = 0;
+					}
+				}
+				
+				//Get Angle
+				targetAngle = Angle.getAngle (
+					new Vector2 (axis [0, 0], axis [0, 1]),
+					Vector2.zero
+					);
+				
+			} else {
+				if (thrust > 0) {
+					thrust -= acceleration;
+					if (thrust < 0) {
+						thrust = 0;
+					}
+				}
+			}
+			
+			axisPress = new Vector2 (axis [0, 0], axis [0, 1]);
+			if (getAngle () != targetAngle) {
+				float angleDist = Mathf.Abs (getAngle () - targetAngle);
+				if (angleDist < turnRate) {
+					//angle = targetAngle;
+				} else {
+					int dirToTurn = Angle.getDirection (getAngle (), targetAngle, angleDist);
+					//CmdTurn (dirToTurn);
+				}
+			}
+			
+		}*/
+		//Vector2 axisPress = new Vector2(axis[0,0], axis[0, 1]);
+		//float curThrottle = new Vector2 (axis[0,0], axis[0, 1]).normalized.magnitude;
+		//print (axisPress);
+		//print (curThrottle);
+		//throttle = curThrottle * maxSpeed;
+		
+		
+	}
+
+	[Command]
+	void CmdSpeedUpShip() {
+		ship.GetComponent<Ship>().incAccel ();
+	}
+
+	[Command]
+	void CmdSlowShip() {
+		ship.GetComponent<Ship>().decAccel ();
+	}
+
+	[Command]
+	void CmdTurnShip(int dir) {
+		ship.GetComponent<Ship>().setTurnDir (dir);
+	}
+
 
 	void OnGUI() {
 
@@ -70,16 +222,12 @@ public class Player : NetworkBehaviour {
 			overlay += "Armor: " + thisShip.getArmor();
 			overlay += "\nThrust: " + (int)thisShip.thrust + " \\ " + thisShip.maxThrust;
 			overlay += "\nSpeed: " + (int)thisShip.currentSpeed + " \\ " + thisShip.maxSpeed;
+			overlay += "\nTurn: " + thisShip.turnDir;
 			GUI.backgroundColor = new Color(0, 0, 0, 0);
 			GUI.Box (new Rect (300, 10, 300, 100), "" + overlay);
 		}
 
 
-	}
-
-	[Server]
-	GameObject[] getPlayers() {
-		return GameObject.FindGameObjectsWithTag ("Player Ship");
 	}
 
 	[Server]
@@ -103,7 +251,12 @@ public class Player : NetworkBehaviour {
 		ship.tag = "Player Ship";
 		ship.name = "playership" + playerNum;
 
-		print (playerNum);
+		//NetworkIdentity playerNI = GetComponent<NetworkIdentity> ();
+
+		//NetworkIdentity ni = ship.GetComponent<NetworkIdentity>();
+		//ni.AssignClientAuthority(playerNI.connectionToClient);
+		
+		//print (playerNum);
 
 		NetworkServer.Spawn (ship);
 
