@@ -27,7 +27,7 @@ public class SoundPlayer : MonoBehaviour {
 		if (mainAudioSource != null) {
 			for (int i = 0; i < mainAudioSource.Length; i++) {
 				if (!mainAudioSource[i].isPlaying) {
-					print (i);
+					//print (i);
 					mainAudioSource[i].PlayOneShot (clip);
 					//mainAudioSource[i].clip = clip;
 					//mainAudioSource[i].Play ();

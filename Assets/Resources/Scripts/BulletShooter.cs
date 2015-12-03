@@ -5,30 +5,49 @@ using System.Collections;
 public class BulletShooter : NetworkBehaviour {
 
 	Ship owner;
+	bool active;
+
+	[SyncVar] 	float lastShot;
 
 	public void setOwner(Ship newOwner) {
 		owner = newOwner;
+		if (owner != null) {
+			active = true;
+		}
+	}
+
+	void Start() {
+		lastShot = Time.fixedTime;
+	}
+
+	void Update() {
+		if (owner == null) {
+			active = false;
+		}
+	}
+
+	public bool getActive() {
+		return active;
 	}
 
 	[Server]
 	public void fireBullet(int whichWeapon, Vector2 startPos, float angle) {
 
-
-
-
 		switch (whichWeapon) {
 			//Machine gun
-			case 1:
-			//Instantiate(sphereBullet, startPos, Quaternion.identity);
+			case 1:				
+				if (MachineGun.getRefireRate() > (Time.fixedTime - lastShot)) {
+					return;
+				}
+
+				lastShot = Time.fixedTime;
+				
 				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
+				MachineGun mg = newBullet.GetComponent<MachineGun>();				
+				mg.init(owner, startPos, angle, whichWeapon);				
 
-				//GameObject newBullet = MachineGun.getBullet();				
-				newBullet.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-				MachineGun mg = newBullet.AddComponent<MachineGun>();
-				mg.init(owner, startPos, angle, whichWeapon);
-				mg.setScale(0.1f);
+				NetworkServer.Spawn(newBullet);			
 
-				NetworkServer.Spawn(newBullet);
 				break;				
 		}
 	}

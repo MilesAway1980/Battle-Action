@@ -8,6 +8,8 @@ public class SpawnBeacons : NetworkBehaviour {
 
 	GameObject allBeacons;
 
+	static bool done;
+
 	// Use this for initialization
 
 	void Start () {
@@ -16,9 +18,19 @@ public class SpawnBeacons : NetworkBehaviour {
 	}
 
 	void Update() {
-		if (allBeacons == null) {
-			populateBeacons ();
+		if (done == false) {
+			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+			if (players.Length > 0) {
+				done = true;
+				populateBeacons();
+			}
 		}
+
+
+		/*if (allBeacons == null && done == false) {
+			populateBeacons ();
+			done = true;
+		}*/
 	}
 
 	[Server]
@@ -26,7 +38,7 @@ public class SpawnBeacons : NetworkBehaviour {
 
 		allBeacons = new GameObject ();
 		allBeacons.name = "Beacons";
-		
+
 		for (int i = 0; i < ArenaInfo.getNumBeacons(); i++) {
 			GameObject newBeacon = (GameObject)Instantiate (
 				beacons, 

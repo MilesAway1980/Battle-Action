@@ -26,6 +26,10 @@ public class Beacon : NetworkBehaviour {
 	}
 
 	public static ObjectInfo getNearestBeacon(GameObject which) {
-		return beacons.getClosest (which);
+		if (beacons != null) {
+			return beacons.getClosest (which);
+		} else {
+			return new ObjectInfo();
+		}
 	}
 }

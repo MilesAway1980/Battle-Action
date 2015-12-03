@@ -9,6 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11429310}
   m_Layer: 0
   m_Name: Detonator-Base
   m_TagString: Untagged
@@ -73,6 +74,38 @@ MonoBehaviour:
 --- !u!1002 &11400001
 EditorExtensionImpl:
   serializedVersion: 6
+--- !u!114 &11429310
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SceneId:
+    m_Value: 0
+  m_AssetId:
+    i0: 142
+    i1: 2
+    i2: 224
+    i3: 101
+    i4: 132
+    i5: 245
+    i6: 26
+    i7: 180
+    i8: 41
+    i9: 134
+    i10: 253
+    i11: 68
+    i12: 199
+    i13: 61
+    i14: 151
+    i15: 110
+  m_ServerOnly: 0
+  m_LocalPlayerAuthority: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -84,7 +117,6 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 100000}
   m_IsPrefabParent: 1
-  m_IsExploded: 1
 --- !u!1002 &100100001
 EditorExtensionImpl:
   serializedVersion: 6

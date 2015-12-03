@@ -48,7 +48,7 @@ public class ShipCamera : MonoBehaviour {
 							target.transform.position.y,
 							-height
 						);
-					currentPos = Camera.main.transform.position;
+					currentPos = Camera.main.transform.position;				
 				}
 
 				moveStars();
@@ -141,9 +141,9 @@ public class ShipCamera : MonoBehaviour {
 
 	void moveStars() {
 
-		if (starField != null) {
+		if (starField != null && target != null) {
 			//print (angle + "  " + speed);
-			starField.moveStars(transform.position, angle, speed);
+			starField.moveStars(target.transform.position, angle, speed);
 		}
 	}
 }

@@ -64,7 +64,10 @@ public class ObjectList {
 		if (closest != null) {
 			info.pos = closest.transform.position;
 			info.distance = distance;
-		} 
+		} else {
+			info.pos = Vector3.zero;
+			info.distance = -1;
+		}
 		
 		return info;
 	}

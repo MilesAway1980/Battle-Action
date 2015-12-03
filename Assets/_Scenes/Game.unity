@@ -277,7 +277,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1965244946}
-  - 114: {fileID: 1965244947}
   - 114: {fileID: 1965244949}
   - 114: {fileID: 1965244948}
   - 50: {fileID: 1965244950}
@@ -300,30 +299,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1268981896}
   m_RootOrder: 0
---- !u!114 &1965244947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1965244945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c09feda140019e649b68a785ac6caecd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numPlayers: 4
-  numControllers: 1
-  ships:
-  - {fileID: 111334, guid: 32b8e200a3030894d8f1aaeacb34dd4e, type: 2}
-  - {fileID: 192810, guid: b230bb034ddc9bb468fe77e81a6e6275, type: 2}
-  - {fileID: 162458, guid: af25e509dbfadaa40b5d515e801eb44a, type: 2}
-  - {fileID: 135348, guid: 952cfd067d335fa49b6ea9b588544483, type: 2}
-  - {fileID: 105852, guid: 76f98fc64f308c14489d491b3f9a8bd0, type: 2}
-  - {fileID: 108970, guid: 45c6134aac9f2524e8242d748049c759, type: 2}
-  - {fileID: 191050, guid: e14395cd3415769479282863f9f7b24c, type: 2}
-  - {fileID: 142782, guid: 99169e7a06cd26e49b58f500ba1904a5, type: 2}
-  - {fileID: 149286, guid: fc6354d9c77c81b49bc3b72dbcdada0a, type: 2}
-  - {fileID: 138410, guid: d50f1cfde2abd6448b6bb37c328fbaf9, type: 2}
 --- !u!114 &1965244948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,7 +421,8 @@ MonoBehaviour:
   - {fileID: 142782, guid: 99169e7a06cd26e49b58f500ba1904a5, type: 2}
   - {fileID: 149286, guid: fc6354d9c77c81b49bc3b72dbcdada0a, type: 2}
   - {fileID: 138410, guid: d50f1cfde2abd6448b6bb37c328fbaf9, type: 2}
-  - {fileID: 155710, guid: 09d8e26feb190c14d809d6239efe9a37, type: 2}
+  - {fileID: 138890, guid: 1d60febbb9ebe884383b047d132ca4af, type: 2}
+  - {fileID: 100000, guid: 8e02e06584f51ab42986fd44c73d976e, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

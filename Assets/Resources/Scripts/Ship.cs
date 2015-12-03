@@ -10,7 +10,7 @@ public class Ship : NetworkBehaviour {
 				public float maxArmor;
 	[SyncVar]	public float turnRate;
 				public int slots;
-				private float armor;
+	[SyncVar]	private float armor;
 	[SyncVar]	public float currentSpeed;
 				public float angle;
 	[SyncVar]	public float thrust;
@@ -21,22 +21,25 @@ public class Ship : NetworkBehaviour {
 	[SyncVar] 	int ownerNum;
 	[SyncVar] 	public int turnDir;
 
+	[SyncVar] 	int currentWeapon;
+
+	[SyncVar]	bool freshKill;
+
+	//Ship lastHitBy;
+	int lastHitBy;
+	GameObject explosion;
 
 	Rigidbody2D rb;
-	ShipCamera shipCam;
 
 	Vector2 currentPos;
 	Vector2 oldPos;
-
-	BulletShooter shooter;
-	int currentWeapon;
-
-	Vector2 axisPress; //temp
 
 	static ObjectList shipList;
 
 	GameObject beaconPointer;
 	GameObject shipPointer;
+
+	float opponentDistance;
 
 	void Awake() {
 
@@ -45,20 +48,18 @@ public class Ship : NetworkBehaviour {
 		}
 		shipList.addObject (this.gameObject);
 
-		//gameObject.AddComponent<NetworkIdentity> ();
+		opponentDistance = -1;
 	}
 
 	// Use this for initialization
 	void Start () {
-		//type
-
 		armor = maxArmor;
 		transform.Rotate (new Vector3 (0, 0, Random.Range (0, 360)));
 		angle = getAngle ();
 		targetAngle = angle;
 
 		rb = GetComponent<Rigidbody2D> ();
-		shipCam = GetComponent<ShipCamera> ();
+
 		gameObject.tag = "Player Ship";
 
 		currentPos = transform.position;
@@ -66,45 +67,69 @@ public class Ship : NetworkBehaviour {
 
 		moveDist = Vector2.Distance (currentPos, oldPos);
 
-		shooter = gameObject.AddComponent<BulletShooter> ();
-		shooter.setOwner (this);
-
 		currentWeapon = 1;
 
-		axisPress = new Vector2 (0, 0);
+		explosion = (GameObject)Resources.Load ("Detonator Explosion FrameWork/Prefab Examples/Detonator-Base");
+	}
+
+	void Update() {
+		checkDamage ();
 	}
 
 	void FixedUpdate() {
+
+		accelerate ();
+		turn ();
 
 		if (currentPos != oldPos) {
 			moveDist = Vector2.Distance(currentPos, oldPos);
 			oldPos = currentPos;
 		}
 
-		accelerate ();
-		turn ();
-
-
-
-		//StarField sf = GetComponent<ShipCamera> ();
-
 		currentPos = transform.position;
 	}
 
 	public void makePointers() {
-		GameObject sphere = GameObject.CreatePrimitive (PrimitiveType.Sphere);
-		
-		beaconPointer = (GameObject)Instantiate (sphere);
+		//beaconPointer = (GameObject)Instantiate (sphere);
+
+		GameObject graphic;
+
+		beaconPointer = (GameObject)Instantiate(Resources.Load ("Prefabs/BeaconPointer"));
 		beaconPointer.name = "Beacon Pointer";
 		beaconPointer.transform.parent = transform;
-		beaconPointer.transform.localScale = new Vector3 (0.5f, 0.5f, 0.5f);
 		
-		shipPointer = (GameObject)Instantiate (sphere);
+		shipPointer = (GameObject)Instantiate(Resources.Load ("Prefabs/PlayerPointer"));
 		shipPointer.name = "Player Pointer";
 		shipPointer.transform.parent = transform;
-		shipPointer.transform.localScale = new Vector3 (0.3f, 0.3f, 0.3f);
-		
-		Destroy (sphere);
+
+		SpriteRenderer sr;
+
+		sr = beaconPointer.GetComponent<SpriteRenderer> ();
+		sr.transform.localScale = new Vector2 (0.2f, 0.2f);
+
+		sr = shipPointer.GetComponent<SpriteRenderer> ();
+		sr.transform.localScale = new Vector2 (0.15f, 0.15f);
+	}
+
+	void checkDamage() {
+		if (armor <= 0) {
+			explode();
+			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
+			for (int i = 0; i < players.Length; i++) {
+				Player p = players[i].GetComponent<Player>();
+				if (p.getPlayerNum() == lastHitBy) {
+					p.addKill();
+					break;
+				}
+			}
+			Destroy (gameObject);
+		}
+	}
+
+	[Server]
+	void explode() {
+		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+		NetworkServer.Spawn (boom);
 	}
 
 	public void setOwner(int newOwner) {
@@ -114,70 +139,45 @@ public class Ship : NetworkBehaviour {
 	public int getOwner() {
 		return ownerNum;
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-
-
-		//string overlay;
-
-		//overlay = "Owner: " + ownerNum + "  " + transform.position;
-		//overlay += "\nArmor: " + (int)armor;
-		//overlay += "\nSpeed: " + (int)(currentSpeed *100);
-		//overlay += "\nThrust: " + (int)(thrust * 100);
-
- 		//overlay += "\nAxis: " + axisPress.x + ", " + axisPress.y;
-		//overlay += "\nController Angle: " + angle + " / " + targetAngle;
-
-		//shipCam.setScreenText (overlay);
-		//shipCam.setSpeed (moveDist);
-		//shipCam.setAngle (getAngle ());
+	public int getCurrentWeapon() {
+		return currentWeapon ;
 	}
-
-
+	
 	public void updateForLocal() {
 		//Updates for local network player only 
-
-		//thrust = 10;
-		//checkControls ();
-
-
-		//CmdAccelerate ();
-		//CmdTurn ();
-
-		
-
 
 		ObjectInfo closestBeacon = Beacon.getNearestBeacon (this.gameObject);
 		float beaconAngle = (int)Angle.getAngle (transform.position, closestBeacon.pos);
 		
-		beaconPointer.transform.position = new Vector3 (
+		beaconPointer.transform.position = new Vector2 (
 			transform.position.x + Mathf.Sin (beaconAngle / Mathf.Rad2Deg) * 2.5f,
 			transform.position.y + Mathf.Cos (beaconAngle / Mathf.Rad2Deg) * 2.5f
 			);
+
+		beaconPointer.transform.rotation = Quaternion.Euler (new Vector3 (0, 0, -beaconAngle));
 		
 		ObjectInfo closestShip = shipList.getClosest (this.gameObject);
-		
+
 		if ( 
-		    (closestBeacon.distance < ArenaInfo.getBeaconRange()) 	||
-		    (closestShip.distance < ArenaInfo.getShipRadarRange()) 
+		    ((closestBeacon.distance < ArenaInfo.getBeaconRange()) 	||
+		    (closestShip.distance < ArenaInfo.getShipRadarRange())) &&
+		    (closestShip.distance >= 0)
 		    )	
 		{
-			
-			
 			float shipAngle = (int)Angle.getAngle (transform.position, closestShip.pos);
-			shipPointer.GetComponent<Renderer> ().enabled = true;
+			opponentDistance = closestShip.distance;
+			shipPointer.GetComponent<SpriteRenderer> ().enabled = true;
 			shipPointer.transform.position = new Vector3 (
 				transform.position.x + Mathf.Sin (shipAngle / Mathf.Rad2Deg) * 3.5f,
 				transform.position.y + Mathf.Cos (shipAngle / Mathf.Rad2Deg) * 3.5f
 				);
-			//overlay += "\nClosest: " + (int)closestShip.distance;
-			//overlay += "\nAngle: " + (int)Angle.getAngle (transform.position, closestShip.pos);
-		} else {
-			shipPointer.GetComponent<Renderer>().enabled = false;
-		}
 
+			shipPointer.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -shipAngle));
+		} else {
+			shipPointer.GetComponent<SpriteRenderer>().enabled = false;
+			opponentDistance = -1;
+		}
 	}
 
 	public void accelerate() {
@@ -198,9 +198,12 @@ public class Ship : NetworkBehaviour {
 		turnDir = 0;
 	}
 
+	public float getOpponentDistance() {
+		return opponentDistance;
+	}
+
 	public float getAngle() {
-		Vector3 rot = transform.eulerAngles;
-		return rot.z;
+		return transform.eulerAngles.z;
 	}
 
 	public float getSpeed() {
@@ -222,7 +225,6 @@ public class Ship : NetworkBehaviour {
 		if (thrust < 0) {
 			thrust = 0;
 		}
-
 	}
 
 	[Server]
@@ -233,12 +235,10 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
+	[Server]
 	public void damage(float amount) {
 		if (amount > 0) {
 			armor -= amount;
-			if (armor < 0) {
-
-			}
 		}
 	}
 
@@ -247,11 +247,15 @@ public class Ship : NetworkBehaviour {
 
 		if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
-			float damage = (currentSpeed * rb.mass) / 10;
+			float damage = (currentSpeed * rb.mass);
 			shipHit.damage(damage);
 			this.damage (damage);
 		}
 
+	}
+
+	public void setLastHitBy(int who) {
+		lastHitBy = who;
 	}
 
 	public float getArmor() {

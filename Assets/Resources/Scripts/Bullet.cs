@@ -11,12 +11,14 @@ public class Bullet : NetworkBehaviour {
 	protected float angleDeg;
 	protected int type;
 	protected float travelDist;
-	protected float speed;
 
-	public float distance;
+	protected float speed;
+	protected float distance;
 
 	protected Rigidbody2D rigidBody;
 	protected CircleCollider2D circleCollider;
+
+	protected float damage;
 
 	void Awake() {		
 		rigidBody = gameObject.GetComponent<Rigidbody2D> ();
@@ -34,6 +36,7 @@ public class Bullet : NetworkBehaviour {
 
 	}
 
+	[Server]
 	public void init(Ship newOwner, Vector2 startPos, float newAngle, int newType) {
 
 		angleRad = newAngle / Mathf.Rad2Deg;

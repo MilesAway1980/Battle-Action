@@ -8,44 +8,54 @@ public class Player : NetworkBehaviour {
 	static int playerCount = 0;
 	[SyncVar] int playerNum;
 
+	[SyncVar] int kills;
+
 	bool buttonsReady = false;
 
-	Camera followCam;
 	GameObject ship;
 
+	float deadTimer;
+
 	void Awake() {
-		InitState ();
+		assignPlayerNum ();
+		createShip ();
 	}
 
 	void Start() {
-
-		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
-
+		kills = 0;
 		if (isLocalPlayer) {
+			ShipCamera sc = gameObject.AddComponent<ShipCamera>();
+			sc.setHeight(10);
 
-			if (players != null) {
-				for (int i = 0; i < players.Length; i++) {
-					if (players[i].GetComponent<Ship>().getOwner() == playerNum) {
-						ship = players[i];
-						break;
-					}
-				}			
-			}
-
-			if (ship != null) {
-				Ship myShip = ship.GetComponent<Ship>();
-				myShip.makePointers();
-				ShipCamera sc = ship.AddComponent<ShipCamera>();
-				sc.setHeight(10);
-				sc.setTarget(myShip.gameObject);
-			}
+			assignShip();
+			setCameraToFollow();
 		}
+		deadTimer = -1;
 	}
 
 	void Update() {
 		if (isLocalPlayer) {
-			ship.GetComponent<Ship>().updateForLocal();
-			checkControls ();
+			if (ship != null) {
+				Ship myShip = ship.GetComponent<Ship>();
+				myShip.updateForLocal();
+				checkControls ();
+			} 
+		}
+
+		if (ship == null) {
+		
+				//Dead!
+				if (deadTimer == -1) {
+					deadTimer = Time.fixedTime;
+				}
+				
+				if ((Time.fixedTime - deadTimer) > 3) {
+					deadTimer = -1;
+					createShip ();
+					assignShip ();
+					setCameraToFollow();
+				}
+
 		}
 	}
 
@@ -72,7 +82,12 @@ public class Player : NetworkBehaviour {
 				}
 			}
 		}
-		
+
+		int whichJoy = ctr.getJoystick ();
+		for (int i = 0; i < buttons.Length; i++) {		
+			buttons[i].setHeld (Input.GetButton("Joy" + whichJoy + "_Button" + (i + 1)));
+		}
+
 		int controlStyle = 0;
 
 		float keyboardHorizontal = Input.GetAxis ("Horizontal");
@@ -80,6 +95,8 @@ public class Player : NetworkBehaviour {
 		bool shootButton = Input.GetButton ("Shoot");
 		
 		if (controlStyle == 0) {
+
+
 			
 			if (	
 			    buttons [1].getHeld() || 
@@ -87,7 +104,7 @@ public class Player : NetworkBehaviour {
 			    ) 
 			{
 				//Shoot
-				//shooter.fireBullet(currentWeapon, transform.position, getAngle ());
+				CmdShootBullet();
 			}
 			
 			if (
@@ -96,7 +113,6 @@ public class Player : NetworkBehaviour {
 				) 
 			{
 				//Slow down
-				//myShip.decAccel();
 				CmdSlowShip();
 				
 			}
@@ -107,12 +123,9 @@ public class Player : NetworkBehaviour {
 				) 
 			{
 				//Speed up
-				//myShip.incAccel();
 				CmdSpeedUpShip();
 				
 			}
-			
-			//turnDir = 0;
 			
 			if (
 				buttons [6].getHeld () || 
@@ -121,8 +134,6 @@ public class Player : NetworkBehaviour {
 			{
 				//Turn Left
 				CmdTurnShip (1);
-				//myShip.turn (1);
-				//turnDir = 1;
 			}
 			
 			if (
@@ -132,8 +143,6 @@ public class Player : NetworkBehaviour {
 			{
 				//Turn Right
 				CmdTurnShip (-1);
-				//turnDir = -1;
-				//myShip.turn (-1);
 			}
 			
 		} /*else if (controlStyle == 1) {
@@ -213,145 +222,113 @@ public class Player : NetworkBehaviour {
 		ship.GetComponent<Ship>().setTurnDir (dir);
 	}
 
+	[Command]
+	void CmdShootBullet() {
+
+		Ship myShip = ship.GetComponent<Ship>();
+		//shooter.test ();
+		BulletShooter shooter = GetComponent<BulletShooter> ();
+		shooter.setOwner (myShip);
+
+		shooter.fireBullet(
+			myShip.getCurrentWeapon(), 
+			myShip.transform.position, 
+			myShip.getAngle ()
+		);
+
+	}
 
 	void OnGUI() {
 
 		if (isLocalPlayer) {
 			string overlay = "";
-			Ship thisShip = ship.GetComponent<Ship>();
-			overlay += "Armor: " + thisShip.getArmor();
-			overlay += "\nThrust: " + (int)thisShip.thrust + " \\ " + thisShip.maxThrust;
-			overlay += "\nSpeed: " + (int)thisShip.currentSpeed + " \\ " + thisShip.maxSpeed;
-			overlay += "\nTurn: " + thisShip.turnDir;
+			if (ship != null) {
+				Ship thisShip = ship.GetComponent<Ship>();
+				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
+				overlay += "\nThrust: " + (int)thisShip.thrust + " \\ " + thisShip.maxThrust;
+				overlay += "\nSpeed: " + (int)thisShip.currentSpeed + " \\ " + thisShip.maxSpeed;
+				float opponentDistance = thisShip.getOpponentDistance();
+				if (opponentDistance >= 0) {
+					overlay += "\nOpponent: " + (int)(opponentDistance * 1000);
+				}
+			}
+
+			string killCount = "Kills: " + kills;
 			GUI.backgroundColor = new Color(0, 0, 0, 0);
 			GUI.Box (new Rect (300, 10, 300, 100), "" + overlay);
+			GUI.Box (new Rect (200, 10, 300, 100), "" + killCount);
 		}
 
 
 	}
 
 	[Server]
-	void InitState() {
-
+	void assignPlayerNum() {
 		playerNum = ++playerCount;
+	}
 
+	[Server]
+	void createShip() {
 		GameObject[] shipList = ArenaInfo.getShipList ();
 		int whichShip = Random.Range (0, shipList.Length - 1);
+
 		ship = (GameObject)Instantiate (
 				shipList [whichShip],
-				new Vector2(
-					Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize()),
-		             Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize())
-		        ),
+				new Vector2 (
+					Random.Range (-ArenaInfo.getArenaSize (), ArenaInfo.getArenaSize ()),
+		             Random.Range (-ArenaInfo.getArenaSize (), ArenaInfo.getArenaSize ())
+				),
 				Quaternion.identity
-			);
+		);
+
 		ship.transform.parent = this.transform;
 		Ship thisShip = ship.GetComponent<Ship> ();
+
 		thisShip.setOwner (playerNum);
 		ship.tag = "Player Ship";
 		ship.name = "playership" + playerNum;
 
-		//NetworkIdentity playerNI = GetComponent<NetworkIdentity> ();
-
-		//NetworkIdentity ni = ship.GetComponent<NetworkIdentity>();
-		//ni.AssignClientAuthority(playerNI.connectionToClient);
-		
-		//print (playerNum);
-
 		NetworkServer.Spawn (ship);
-
-
-
-		return;
-		
-
-
-
-
-		//ship.GetComponent<NetworkIdentity> ().GetInstanceID ();
-
-		//NetworkIdentity NI = ship.AddComponent<NetworkIdentity>();
-		//NI.localPlayerAuthority = true;
-		//NetworkServer.Spawn (ship);
-
-		//print (whichShip);
-		//print (shipList[whichShip]);
-		//print (ship);
-	
-		/*ship.name = "Player " + playerNum + " Ship";
-		ship.transform.parent = transform;
-		ship.GetComponent<Ship> ().setOwner (playerNum);
-		
-		Vector2 position = new Vector2(
-			Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize()),
-			Random.Range (-ArenaInfo.getArenaSize(), ArenaInfo.getArenaSize())
-			);
-		
-		ship.transform.position = position;
-		
-		if (playerNum <= ArenaInfo.getNumControllers()) {
-			Controls ctr = ship.AddComponent<Controls>();
-			//ctr.setJoystick(playerNum);
-			ctr.setJoystick(1);
-		}
-		
-		ShipCamera shipCam = ship.AddComponent<ShipCamera>();
-		followCam = shipCam.getCamera ();
-		
-		followCam.backgroundColor = new Color(0, 0, 0, 1);
-		followCam.name = "Player " + playerNum + " Camera";
-		//NetworkIdentity NI = followCam.gameObject.AddComponent<NetworkIdentity> ();
-		//NI.localPlayerAuthority = true;
-		//cam.transform.SetParent(playerShip.transform);
-		
-		shipCam.follow(true);
-		shipCam.setHeight(10);
-		shipCam.setTarget(ship);
-		shipCam.setCullLayer(1 << 0 | 1 << (8 + playerNum));
-
-		if (playerNum == 2) {
-
-				//Top Player
-				followCam.rect = new Rect(new Vector2(0, 0.5f), new Vector2(1, 0.5f));
-			} else {
-				//Bottom Player
-				followCam.rect = new Rect(new Vector2(0, 0), new Vector2(1, 0.5f));
-
-		}
-		
-		StarField sf = shipCam.gameObject.AddComponent<StarField>();
-		sf.setStarLayer(8 + playerNum);
 	}
 
-	void OnDestroy() {
-		if (followCam != null) {
-			Destroy (followCam.gameObject);
-		}*/
-	}
+	void assignShip() {
+		if (!isLocalPlayer) {
+			return;
+		}
 
-	/*public void assignShip(GameObject newShip) {
+		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+
+		if (players != null) {
+			for (int i = 0; i < players.Length; i++) {
+				if (players[i].GetComponent<Ship>().getOwner() == playerNum) {
+					ship = players[i];
+					break;
+				}
+			}			
+		}
 		if (ship != null) {
-			GameObject.Destroy(ship);
+			Ship myShip = ship.GetComponent<Ship> ();
+			myShip.makePointers ();
 		}
-
-		ship = (GameObject)GameObject.Instantiate (newShip, position, Quaternion.identity);
-		ship.name = "Player " + playerNum;
-	}*/
-
-	/*public GameObject getShip() {
-		return ship;
-	}*/
-
-	/*public void setPosition(Vector2 newPos) {
-		position = newPos;
-		ship.transform.position = newPos;
 	}
 
-	public Vector2 getPosition() {
-		return position;
-	}*/
+	void setCameraToFollow() {
+		if (!isLocalPlayer) {
+			return;
+		}
 
-	/*public int getPlayerNum() {
+		ShipCamera sc = gameObject.GetComponent<ShipCamera> ();
+		Ship myShip = ship.GetComponent<Ship>();
+
+		sc.setTarget (myShip.gameObject);
+
+	}
+
+	public int getPlayerNum() {
 		return playerNum;
-	}*/
+	}
+
+	public void addKill() {
+		kills++;
+	}
 }

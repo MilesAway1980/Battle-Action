@@ -154,10 +154,7 @@ GameObject:
   - 4: {fileID: 439518}
   - 114: {fileID: 11411930}
   - 50: {fileID: 5073910}
-  - 61: {fileID: 6105284}
-  - 61: {fileID: 6181272}
-  - 61: {fileID: 6142320}
-  - 61: {fileID: 6161336}
+  - 58: {fileID: 5808340}
   - 114: {fileID: 11414364}
   - 114: {fileID: 11444712}
   m_Layer: 0
@@ -591,8 +588,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &6105284
-BoxCollider2D:
+--- !u!58 &5808340
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -601,48 +598,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: .661394298}
+  m_Offset: {x: 0, y: -.100000001}
   serializedVersion: 2
-  m_Size: {x: .233661354, y: .32152164}
---- !u!61 &6142320
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149286}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: -.671156645}
-  serializedVersion: 2
-  m_Size: {x: .585103333, y: .292234421}
---- !u!61 &6161336
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149286}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: -.334357977}
-  serializedVersion: 2
-  m_Size: {x: 1.97134638, y: .41914463}
---- !u!61 &6181272
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149286}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: 0, y: -.0146434307}
-  serializedVersion: 2
-  m_Size: {x: .4581936, y: 1.02928686}
+  m_Radius: .75
 --- !u!95 &9518904
 Animator:
   serializedVersion: 3
@@ -958,6 +916,14 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalPlayerAuthority
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Radius
+      value: .75
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Offset.y
+      value: -.100000001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

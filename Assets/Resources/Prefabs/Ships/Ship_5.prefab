@@ -10,8 +10,7 @@ GameObject:
   - 4: {fileID: 446100}
   - 114: {fileID: 11471234}
   - 50: {fileID: 5090370}
-  - 61: {fileID: 6132662}
-  - 61: {fileID: 6102672}
+  - 58: {fileID: 5806170}
   - 114: {fileID: 11464386}
   - 114: {fileID: 11402980}
   m_Layer: 0
@@ -113,8 +112,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &6102672
-BoxCollider2D:
+--- !u!58 &5806170
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -123,22 +122,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: -.239175797}
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Size: {x: 1, y: .834041119}
---- !u!61 &6132662
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 105852}
-  m_Enabled: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_Offset: {x: .00488117337, y: -.00976234674}
-  serializedVersion: 2
-  m_Size: {x: .463074863, y: 1.91765392}
+  m_Radius: .75
 --- !u!111 &11144880
 Animation:
   m_ObjectHideFlags: 1
@@ -328,6 +314,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalPlayerAuthority
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Radius
+      value: .75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

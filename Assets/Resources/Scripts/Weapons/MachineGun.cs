@@ -8,81 +8,92 @@ public class MachineGun : Bullet {
 	AudioClip hitSound;
 	AudioClip shootSound;
 
-	[SyncVar] public float scale;
+	static float refireRate = .1f;
 
-	// Use this for initialization
 	void Start () {
-		this.transform.localScale = new Vector3 (0.1f, 0.1f, 0.1f);
 
-		speed = 50;
+		damage = 20;
+		speed = 1;
+
 		travelDist = ArenaInfo.getArenaSize() * 2.5f;
+		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
+			travelDist = ArenaInfo.getMinBulletTravelDist();
+		}
+
+		//travelDist = 100;
 
 		angleDeg += Random.Range (-2.0f, 2.0f);
 		angleRad = angleDeg / Mathf.Rad2Deg;
 
-		setVelocity ();
+		//setVelocity ();
 
+		//hitSound = Instantiate ((AudioClip)Resources.Load ("Audio/Sound/Hit", typeof(AudioClip)));
+		//shootSound = Instantiate ((AudioClip)Resources.Load ("Audio/Sound/Shoot1", typeof(AudioClip)));
 
-
-		hitSound = Instantiate ((AudioClip)Resources.Load ("Audio/Sound/Hit", typeof(AudioClip)));
-		shootSound = Instantiate ((AudioClip)Resources.Load ("Audio/Sound/Shoot1", typeof(AudioClip)));
-
-		//SoundPlayer.PlayClip (shootSound);
-
-		//audioSource = SoundPlayer.getAudioSource ();
-		//audioSource = gameObject.AddComponent<AudioSource> ();
-		//audioSource.clip = shootSound;
-		//audioSource.PlayOneShot (shootSound);
-
+		//SoundPlayer.PlayClip(shootSound);
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		pos = transform.position;
-		float dist = Vector2.Distance (pos, originPos);
-		distance = dist;
+		//pos = transform.position;
+		//float dist = Vector2.Distance (pos, originPos);
+		//distance = dist;
 
-		this.transform.localScale = new Vector3 (scale, scale, scale);
+		//if (Vector2.Distance (transform.position, originPos) > travelDist) {
+			//Destroy (gameObject);
+		//}
 
-		if (dist > travelDist) {
+		/*if (rigidBody.velocity.magnitude < speed || transform.eulerAngles.z != angleRad) {
+			setVelocity();
+		}*/
+
+		distance += speed;
+		if (distance >= travelDist) {
 			Destroy (gameObject);
 		}
 
-		if (rigidBody.velocity.magnitude < speed || transform.eulerAngles.z != angleRad) {
-			setVelocity();
-		}
+		transform.position = new Vector2 (
+			originPos.x - Mathf.Sin (angleRad) * distance,
+			originPos.y + Mathf.Cos (angleRad) * distance
+		);
+
+
 	}
 
-	public static GameObject getBullet() {
-		return (GameObject)Resources.Load ("Prefabs/Bullet");
-	}
+	/*[Server]
+	void setVelocity() {
+		rigidBody.velocity = new Vector2 (
+			-Mathf.Sin (angleRad) * speed,
+			Mathf.Cos (angleRad) * speed
+		);
+	}*/
 
+	[Server]
 	void OnCollisionEnter2D(Collision2D col) {
 
 		GameObject objectHit = col.gameObject;
 
 		if (objectHit.tag == "Player Ship") {
 
-			//audioSource.clip = hitSound;
-			//audioSource.PlayOneShot (hitSound);
-			SoundPlayer.PlayClip(hitSound);
+			//SoundPlayer.PlayClip(hitSound);
 
 			Ship shipHit = objectHit.GetComponent<Ship>();
-			shipHit.damage(1);
+			if (shipHit != owner) {
+				shipHit.damage(damage);
+				//shipHit.setLastHitBy(owner);
+				shipHit.setLastHitBy(owner.getOwner());
+			}
 
 			Destroy (gameObject);
 		}
 	}
 
-	void setVelocity() {
-		rigidBody.velocity = new Vector2 (
-			-Mathf.Sin (angleRad) * speed,
-			Mathf.Cos (angleRad) * speed
-			);
+	public static float getRefireRate() {
+		return refireRate;
 	}
 
-	public void setScale(float newScale) {
-		scale = newScale;
+	public static GameObject getBullet() {
+		return (GameObject)Resources.Load ("Prefabs/Bullets/MachineGunBullet");
 	}
 }

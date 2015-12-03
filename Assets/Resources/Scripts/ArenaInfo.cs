@@ -3,14 +3,15 @@ using System.Collections;
 
 public static class ArenaInfo  {
 
-	static int arenaSize = 5;
-	static int numBeacons = 2;
+	static int arenaSize = 200;
+	static int numBeacons = 50;
 	static int numPowerups = 100;
 	static float powerupRespawnRate = 2.0f;
-	static float beaconRange = 8;
-	static float shipRadarRange = 20;
+	static float beaconRange = 10;
+	static float shipRadarRange = 25;
 	static GameObject[] shipList;
 	static int numControllers = 1;
+	static int minBulletTravelDist = 1000;
 
 	public static int getArenaSize() {
 		return arenaSize;
@@ -38,6 +39,10 @@ public static class ArenaInfo  {
 
 	public static int getNumControllers() {
 		return numControllers;
+	}
+
+	public static int getMinBulletTravelDist() {
+		return minBulletTravelDist;
 	}
 
 	public static GameObject[] getShipList() {
