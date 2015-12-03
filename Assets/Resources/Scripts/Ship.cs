@@ -249,6 +249,7 @@ public class Ship : NetworkBehaviour {
 			Ship shipHit = objectHit.GetComponent<Ship>();
 			float damage = (currentSpeed * rb.mass);
 			shipHit.damage(damage);
+			shipHit.setLastHitBy(ownerNum);
 			this.damage (damage);
 		}
 
