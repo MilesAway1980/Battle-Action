@@ -62,9 +62,14 @@ public class MachineGun : Bullet {
 			Destroy (gameObject);
 		}
 
-		transform.position = new Vector2 (
+		/*transform.position = new Vector2 (
 			originPos.x - Mathf.Sin (angleRad) * distance,
 			originPos.y + Mathf.Cos (angleRad) * distance
+		);*/
+
+		transform.position = new Vector2 (
+			transform.position.x - Mathf.Sin (angleRad) * speed,
+			transform.position.y + Mathf.Cos (angleRad) * speed
 		);
 
 
@@ -78,24 +83,24 @@ public class MachineGun : Bullet {
 		);
 	}*/
 
-	[Server]
+	//[Server]
 	void OnCollisionEnter2D(Collision2D col) {
+
+		if (owner == null) {
+			return;
+		}
 
 		GameObject objectHit = col.gameObject;
 
 		if (objectHit.tag == "Player Ship") {
-
 			//SoundPlayer.PlayClip(hitSound);
 
 			Ship shipHit = objectHit.GetComponent<Ship>();
 			if (shipHit != owner) {
 				shipHit.damage(damage);
-				//shipHit.setLastHitBy(owner);
 				shipHit.setLastHitBy(owner.getOwner());
 				Destroy (gameObject);
 			}
-
-
 		}
 	}
 
@@ -103,14 +108,14 @@ public class MachineGun : Bullet {
 		return (GameObject)Resources.Load ("Prefabs/Bullets/MachineGunBullet");
 	}
 
-	public static float getRefireRate() {
+	public static new float getRefireRate() {
 		if (machinegunInfo == null) {
 			createRocketInfo();
 		}
 		return machinegunInfo.refireRate;
 	}
 	
-	public static float getBulletsPerShot() {
+	public static new float getBulletsPerShot() {
 		if (machinegunInfo == null) {
 			createRocketInfo();
 		}

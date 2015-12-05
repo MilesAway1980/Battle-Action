@@ -12,12 +12,11 @@ public class Homing : NetworkBehaviour {
 
 	Ship owner;
 
-	float targetDist;
+	//float targetDist;
+	//float currentSpeed;
 
-	float currentSpeed;
-
-	Vector2 lastPos;
-	Vector2 currentPos;
+	//Vector2 lastPos;
+	//Vector2 currentPos;
 
 	void FixedUpdate () {
 
@@ -26,9 +25,9 @@ public class Homing : NetworkBehaviour {
 		} else {
 			chaseTarget();
 		}
-		lastPos = currentPos;
-		currentPos = transform.position;
-		currentSpeed = Vector2.Distance (lastPos, currentPos);
+		//lastPos = currentPos;
+		//currentPos = transform.position;
+		//currentSpeed = Vector2.Distance (lastPos, currentPos);
 	}
 
 
@@ -72,7 +71,7 @@ public class Homing : NetworkBehaviour {
 		thisBullet.changeAngle(turnRate * turnDir);
 		
 		//Lose target if it gets out of range.
-		targetDist = Vector2.Distance(transform.position, target.transform.position);
+		//targetDist = Vector2.Distance(transform.position, target.transform.position);
 		if (Vector2.Distance(transform.position, target.transform.position) > detectDistance) {
 			target = null;
 		}

@@ -7,7 +7,41 @@ public class BulletShooter : NetworkBehaviour {
 	Ship owner;
 	bool active;
 
-	[SyncVar] 	float lastShot;
+	int whichWeapon;
+	Vector2 startPos;
+	float angle;
+
+	float lastShot;
+
+	bool isFiring;
+
+	GameObject blasterObject;
+
+	void Start() {
+		isFiring = false;
+		lastShot = float.MinValue;
+	}
+
+	void Update() {
+		if (owner == null) { 
+			active = false;
+		}
+
+		if (isFiring) {
+			whichWeapon = owner.getCurrentWeapon ();
+			startPos = owner.transform.position;
+			angle = owner.getAngle ();
+			fireBullet ();
+		} else {
+			if (blasterObject != null) {
+				Destroy (blasterObject);
+			}
+		}
+	}
+
+	public void setIsFiring(bool newIsFiring) {
+		isFiring = newIsFiring;
+	}
 
 	public void setOwner(Ship newOwner) {
 		owner = newOwner;
@@ -16,22 +50,11 @@ public class BulletShooter : NetworkBehaviour {
 		}
 	}
 
-	void Start() {
-		lastShot = float.MinValue;
-	}
-
-	void Update() {
-		if (owner == null) {
-			active = false;
-		}
-	}
-
 	public bool getActive() {
 		return active;
 	}
 
-	[Server]
-	public void fireBullet(int whichWeapon, Vector2 startPos, float angle) {
+	public void fireBullet() {
 
 		switch (whichWeapon) {
 
@@ -94,6 +117,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 4:		//Blaster
 			{
+				if (blasterObject == null) {
+					blasterObject = (GameObject)Instantiate(Blaster.getBlaster());
+					NetworkServer.Spawn(blasterObject);
+				}
+
+				Blaster blaster = blasterObject.GetComponent<Blaster>();
+				blaster.init(startPos, angle, owner);
+				
 				break;
 			}
 

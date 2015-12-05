@@ -41,11 +41,13 @@ public class Rocket : Bullet {
 		);
 	}
 	
-	[Server]
 	void OnCollisionEnter2D(Collision2D col) {
-		
-		GameObject objectHit = col.gameObject;
-		
+
+		if (owner == null) {
+			return;
+		}
+
+		GameObject objectHit = col.gameObject;		
 		if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
 			if (shipHit != owner) {
@@ -60,14 +62,14 @@ public class Rocket : Bullet {
 		return (GameObject)Resources.Load ("Prefabs/Bullets/RocketBullet");
 	}
 
-	public static float getRefireRate() {
+	public new static float getRefireRate() {
 		if (rocketInfo == null) {
 			createRocketInfo();
 		}
 		return rocketInfo.refireRate;
 	}
 
-	public static float getBulletsPerShot() {
+	public new static float getBulletsPerShot() {
 		if (rocketInfo == null) {
 			createRocketInfo();
 		}

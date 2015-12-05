@@ -12,6 +12,7 @@ public static class WeaponText {
 		case 1: weaponName = "Machine Gun"; break;
 		case 2: weaponName = "Rockets"; break;
 		case 3: weaponName = "Missile"; break;
+		case 4: weaponName = "Beacon"; break;
 		}
 		return weaponName;
 	}

@@ -3,6 +3,15 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
+struct CurrentInfo {
+	public bool shooting;
+	public bool turningLeft;
+	public bool turningRight;
+	public bool shield;
+	public bool speeding;
+	public bool slowing;
+}
+
 public class Player : NetworkBehaviour {
 
 	static int playerCount = 0;
@@ -16,6 +25,10 @@ public class Player : NetworkBehaviour {
 
 	float deadTimer;
 
+	//Use these as flags for holding down buttons so that commands aren't repeatedly sent.
+
+	CurrentInfo current;
+
 	void Awake() {
 		assignPlayerNum ();
 		createShip ();
@@ -23,6 +36,7 @@ public class Player : NetworkBehaviour {
 
 	void Start() {
 		kills = 0;
+
 		if (isLocalPlayer) {
 			ShipCamera sc = gameObject.AddComponent<ShipCamera>();
 			sc.setHeight(10);
@@ -36,8 +50,8 @@ public class Player : NetworkBehaviour {
 	void Update() {
 		if (isLocalPlayer) {
 			if (ship != null) {
-				Ship myShip = ship.GetComponent<Ship>();
-				myShip.updateForLocal();
+				Ship myShip = ship.GetComponent<Ship> ();
+				myShip.updateForLocal ();
 				checkControls ();
 			} 
 		}
@@ -67,7 +81,7 @@ public class Player : NetworkBehaviour {
 		}
 		
 		JoystickButtons[] buttons = ctr.getButtons ();
-		float [,] axis = ctr.getAxis();
+		//float [,] axis = ctr.getAxis();
 		
 		if (!buttonsReady) {
 			if (buttons.Length != 0) {
@@ -94,34 +108,47 @@ public class Player : NetworkBehaviour {
 		
 		if (controlStyle == 0) {
 
-			if (Input.GetKeyDown("1")) {
-				ship.GetComponent<Ship>().setCurrentWeapon(1);
+			for (int i = 1; i <= 4; i++) {
+				string which = i.ToString();
+				if (Input.GetKeyDown(which)) {
+					CmdChangeWeapon(i);
+				}
 			}
 
-			if (Input.GetKeyDown("2")) {
-				ship.GetComponent<Ship>().setCurrentWeapon(2);
-			}
-			
-			if (Input.GetKeyDown("3")) {
-				ship.GetComponent<Ship>().setCurrentWeapon(3);
-			}
+
 
 			if (	
 			    buttons [1].getHeld() || 
 			    shootButton
 			    ) 
 			{
-				CmdShootBullet();
+				//CmdShootBullet();
+				if (!current.shooting) {
+					current.shooting = true;
+					CmdSetShipToShoot(true);
+				}
+			} else {
+				if (current.shooting) {
+					current.shooting = false;
+					CmdSetShipToShoot(false);
+				}
 			}
+
 
 			if (
 				buttons[2].getHeld () ||
 				Input.GetKey ("z")
 				)
 			{
-				CmdActivateShield(true);
+				if (!current.shield) {
+					current.shield = true;
+					CmdActivateShield(true);
+				}
 			} else {
-				CmdActivateShield(false);
+				if (current.shield) {
+					current.shield = false;
+					CmdActivateShield(false);
+				}
 			}
 
 			
@@ -130,8 +157,15 @@ public class Player : NetworkBehaviour {
 				keyboardVertical < 0
 				) 
 			{
-				CmdSlowShip();
-				
+				if (!current.slowing) {
+					current.slowing = true;
+					CmdSlowShip(true);
+				}				
+			} else {
+				if (current.slowing) {
+					current.slowing = false;
+					CmdSlowShip(false);
+				}
 			}
 			
 			if (
@@ -139,8 +173,15 @@ public class Player : NetworkBehaviour {
 				keyboardVertical > 0
 				) 
 			{
-				CmdSpeedUpShip();
-				
+				if (!current.speeding) {
+					current.speeding = true;
+					CmdSpeedUpShip(true);
+				}				
+			} else {
+				if (current.speeding) {
+					current.speeding = false;
+					CmdSpeedUpShip(false);
+				}
 			}
 			
 			if (
@@ -148,15 +189,32 @@ public class Player : NetworkBehaviour {
 				keyboardHorizontal < 0
 				) 
 			{
-				CmdTurnShip (1);
+				if (!current.turningLeft) {
+					current.turningLeft = true;
+					CmdTurnShip (1);
+				}
+			} else {
+				if (current.turningLeft) {
+					current.turningLeft = false;
+					CmdTurnShip (0);
+				}
 			}
+
 			
 			if (
 				buttons [7].getHeld () || 
 				keyboardHorizontal > 0
 				) 
 			{
-				CmdTurnShip (-1);
+				if (!current.turningRight) {
+					current.turningRight = true;
+					CmdTurnShip (-1);
+				}
+			} else {
+				if (current.turningRight) {
+					current.turningRight = false;
+					CmdTurnShip (0);
+				}
 			}
 			
 		} /*else if (controlStyle == 1) {
@@ -222,18 +280,23 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
+	void CmdChangeWeapon(int which) {
+		ship.GetComponent<Ship>().setCurrentWeapon(which);
+	}
+
+	[Command]
 	void CmdDestroyShip() {
 		ship.GetComponent<Ship> ().damage (10000);
 	}
 
 	[Command]
-	void CmdSpeedUpShip() {
-		ship.GetComponent<Ship>().incAccel ();
+	void CmdSpeedUpShip(bool speedingUp) {
+		ship.GetComponent<Ship>().Accel (speedingUp);
 	}
 
 	[Command]
-	void CmdSlowShip() {
-		ship.GetComponent<Ship>().decAccel ();
+	void CmdSlowShip(bool slowingDown) {
+		ship.GetComponent<Ship>().Decel (slowingDown);
 	}
 
 	[Command]
@@ -247,10 +310,17 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	void CmdShootBullet() {
+	void CmdSetShipToShoot(bool isShooting) {
+		BulletShooter shooter = GetComponent<BulletShooter> ();
+		Ship myShip = ship.GetComponent<Ship> ();
+		shooter.setOwner (myShip);
+		shooter.setIsFiring (isShooting);
+	}
+
+	/*[Command]
+	void CmdShootBullet() { 
 
 		Ship myShip = ship.GetComponent<Ship>();
-		//shooter.test ();
 		BulletShooter shooter = GetComponent<BulletShooter> ();
 		shooter.setOwner (myShip);
 
@@ -259,8 +329,8 @@ public class Player : NetworkBehaviour {
 			myShip.transform.position, 
 			myShip.getAngle ()
 		);
-
-	}
+		myShip.GetComponent<Blaster> ().activate();
+	}*/
 
 	void OnGUI() {
 

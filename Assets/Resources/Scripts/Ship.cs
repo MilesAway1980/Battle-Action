@@ -4,26 +4,29 @@ using System.Collections;
 
 public class Ship : NetworkBehaviour {
 
-	[SyncVar] 	public float maxSpeed;
-	[SyncVar] 	public float maxThrust;
-	[SyncVar] 	public float acceleration;
-				public float maxArmor;
-	[SyncVar]	public float turnRate;
-				public int slots;
-	[SyncVar]	private float armor;
-	[SyncVar]	public float currentSpeed;
-				public float angle;
-	[SyncVar]	public float thrust;
+	public float maxSpeed;
+	public float maxThrust;
+	public float acceleration;
+	public float maxArmor;
+	public float turnRate;
+	public int slots;
+	[SyncVar] private float armor;
+	public float currentSpeed;
+	public float angle;
+	[SyncVar] public float thrust;
 
-	[SyncVar]	float moveDist;
-	[SyncVar]	float targetAngle;
+	//[SyncVar]	float moveDist;
+	//[SyncVar]	float targetAngle;
 
-	[SyncVar] 	int ownerNum;
-	[SyncVar] 	public int turnDir;
+	[SyncVar] int ownerNum;
+	public int turnDir;
 
-	[SyncVar] 	int currentWeapon;
+	[SyncVar] int currentWeapon;
 
-	[SyncVar]	bool freshKill;
+	bool freshKill;
+
+	bool accelerating;
+	bool decelerating;
 
 	//Ship lastHitBy;
 	int lastHitBy;
@@ -56,7 +59,7 @@ public class Ship : NetworkBehaviour {
 		armor = maxArmor;
 		transform.Rotate (new Vector3 (0, 0, Random.Range (0, 360)));
 		angle = getAngle ();
-		targetAngle = angle;
+		//targetAngle = angle;
 
 		rb = GetComponent<Rigidbody2D> ();
 
@@ -65,9 +68,9 @@ public class Ship : NetworkBehaviour {
 		currentPos = transform.position;
 		oldPos = currentPos;
 
-		moveDist = Vector2.Distance (currentPos, oldPos);
+		//moveDist = Vector2.Distance (currentPos, oldPos);
 
-		currentWeapon = 2;
+		currentWeapon = 1;
 
 		explosion = (GameObject)Resources.Load ("Detonator Explosion FrameWork/Prefab Examples/Detonator-Base");
 	}
@@ -82,7 +85,7 @@ public class Ship : NetworkBehaviour {
 		turn ();
 
 		if (currentPos != oldPos) {
-			moveDist = Vector2.Distance(currentPos, oldPos);
+			//moveDist = Vector2.Distance(currentPos, oldPos);
 			oldPos = currentPos;
 		}
 
@@ -91,8 +94,6 @@ public class Ship : NetworkBehaviour {
 
 	public void makePointers() {
 		//beaconPointer = (GameObject)Instantiate (sphere);
-
-		GameObject graphic;
 
 		beaconPointer = (GameObject)Instantiate(Resources.Load ("Prefabs/BeaconPointer"));
 		beaconPointer.name = "Beacon Pointer";
@@ -188,6 +189,14 @@ public class Ship : NetworkBehaviour {
 
 	public void accelerate() {
 
+		if (accelerating) {
+			incThrust();
+		}
+
+		if (decelerating) {
+			decThrust();
+		}
+
 		rb.AddRelativeForce (new Vector2 (0, thrust));
 			
 		if (rb.velocity.magnitude > maxSpeed) {
@@ -201,11 +210,12 @@ public class Ship : NetworkBehaviour {
 		rb.angularVelocity = 0;
 		transform.Rotate (new Vector3 (0, 0, turnRate * turnDir));
 		angle = getAngle ();
-		turnDir = 0;
+		//turnDir = 0;
 	}
 
 	public float getOpponentDistance() {
 		return opponentDistance;
+
 	}
 
 	public float getAngle() {
@@ -216,39 +226,50 @@ public class Ship : NetworkBehaviour {
 		return currentSpeed;
 	}
 
-	[Server]
+	public void Accel(bool isAccelerating) {
+		accelerating = isAccelerating;
+	}
+
+	public void Decel(bool isDecelerating) {
+		decelerating = isDecelerating;
+	}
+
 	public void setTurnDir(int direction) {
 		if (direction < 0) {
 			turnDir = -1;
 		} else if (direction > 0) {
 			turnDir = 1;
-		} 
+		} else {
+			turnDir = 0;
+		}
 	}
 
-	[Server]
-	public void decAccel() {
+	public void decThrust() {
 		thrust -= acceleration;
 		if (thrust < 0) {
 			thrust = 0;
 		}
 	}
 
-	[Server]
-	public void incAccel() {
+	public void incThrust() {
 		thrust += acceleration;
 		if (thrust > maxThrust) {
 			thrust = maxThrust;
 		}
 	}
 
-	[Server]
 	public void damage(float amount) {
 		if (amount > 0) {
-			armor -= amount;
+			Shield shield = GetComponent<Shield>();
+			if (shield.getActive()) {
+				armor -= amount / 10;
+				shield.damageShield(amount); 
+			} else {
+				armor -= amount;
+			}
 		}
 	}
 
-	//[Server]
 	public void setShield(bool setting) {
 		Shield shield = GetComponent<Shield> ();
 		if (shield != null) {

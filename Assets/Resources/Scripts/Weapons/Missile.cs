@@ -35,9 +35,11 @@ public class Missile : Bullet {
 			transform.position.y + Mathf.Cos (angleRad) * speed
 			);
 	}
-	
-	[Server]
+
 	void OnCollisionEnter2D(Collision2D col) {
+		if (owner == null) {
+			return;
+		}
 		
 		GameObject objectHit = col.gameObject;
 		
@@ -55,14 +57,14 @@ public class Missile : Bullet {
 		return (GameObject)Resources.Load ("Prefabs/Bullets/Missile");
 	}
 	
-	public static float getRefireRate() {
+	public new static float getRefireRate() {
 		if (missileInfo == null) {
 			createMissileInfo();
 		}
 		return missileInfo.refireRate;
 	}
 	
-	public static float getBulletsPerShot() {
+	public new static float getBulletsPerShot() {
 		if (missileInfo == null) {
 			createMissileInfo();
 		}

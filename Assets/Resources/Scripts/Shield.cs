@@ -59,8 +59,15 @@ public class Shield : NetworkBehaviour {
 		if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
 			shipHit.damage(shieldContactDamage);
-			shipHit.setLastHitBy(owner.getOwner());
+			shipHit.setLastHitBy(owner.getOwner()); 
 		}		
+	}
+
+	public void damageShield(float amount) {
+		charge -= amount;
+		if (charge <= 0) {
+			charge = 0;
+		}
 	}
 
 	public float getCharge() {
@@ -73,5 +80,9 @@ public class Shield : NetworkBehaviour {
 
 	public void setActive(bool setting) {
 		active = setting;
+	}
+
+	public bool getActive() {
+		return active;
 	}
 }
