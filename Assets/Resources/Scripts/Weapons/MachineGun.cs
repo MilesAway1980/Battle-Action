@@ -8,12 +8,12 @@ public class MachineGun : Bullet {
 	AudioClip hitSound;
 	AudioClip shootSound;
 
-	static float refireRate = .1f;
+	static ShootingInfo machinegunInfo;
 
 	void Start () {
 
-		damage = 20;
-		speed = 1;
+		//damage = 20;
+		//speed = 1;
 
 		travelDist = ArenaInfo.getArenaSize() * 2.5f;
 		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
@@ -24,6 +24,15 @@ public class MachineGun : Bullet {
 
 		angleDeg += Random.Range (-2.0f, 2.0f);
 		angleRad = angleDeg / Mathf.Rad2Deg;
+
+		//Move the bullet out in front of the ship
+		float forwardX = originPos.x - Mathf.Sin (angleRad) * 2;
+		float forwardY = originPos.y + Mathf.Cos (angleRad) * 2;
+		
+		originPos = new Vector2 (forwardX, forwardY);
+		
+		transform.position = originPos;
+		transform.Rotate( new Vector3 (0, 0, angleDeg));
 
 		//setVelocity ();
 
@@ -83,17 +92,35 @@ public class MachineGun : Bullet {
 				shipHit.damage(damage);
 				//shipHit.setLastHitBy(owner);
 				shipHit.setLastHitBy(owner.getOwner());
+				Destroy (gameObject);
 			}
 
-			Destroy (gameObject);
-		}
-	}
 
-	public static float getRefireRate() {
-		return refireRate;
+		}
 	}
 
 	public static GameObject getBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Bullets/MachineGunBullet");
+	}
+
+	public static float getRefireRate() {
+		if (machinegunInfo == null) {
+			createRocketInfo();
+		}
+		return machinegunInfo.refireRate;
+	}
+	
+	public static float getBulletsPerShot() {
+		if (machinegunInfo == null) {
+			createRocketInfo();
+		}
+		return machinegunInfo.bulletsPerShot;
+	}
+	
+	static void createRocketInfo() {
+		MachineGun temp = MachineGun.getBullet ().GetComponent<MachineGun>();
+		machinegunInfo = new ShootingInfo();
+		machinegunInfo.bulletsPerShot = temp.bulletsPerShot;
+		machinegunInfo.refireRate = temp.refireRate;
 	}
 }

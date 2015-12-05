@@ -2,7 +2,17 @@
 using UnityEngine.Networking;
 using System.Collections;
 
+public class ShootingInfo {
+	public float refireRate = -1;
+	public float bulletsPerShot = -1;
+}
+
 public class Bullet : NetworkBehaviour {
+
+	public float speed;
+	public float damage;
+	public float refireRate;
+	public float bulletsPerShot;
 
 	protected Ship owner;
 	protected Vector2 originPos;
@@ -12,50 +22,51 @@ public class Bullet : NetworkBehaviour {
 	protected int type;
 	protected float travelDist;
 
-	protected float speed;
 	protected float distance;
 
 	protected Rigidbody2D rigidBody;
 	protected CircleCollider2D circleCollider;
 
-	protected float damage;
-
-	void Awake() {		
-		rigidBody = gameObject.GetComponent<Rigidbody2D> ();
-		if (rigidBody == null) {
-			rigidBody = gameObject.AddComponent<Rigidbody2D>();
-		}
-
-		circleCollider = gameObject.GetComponent<CircleCollider2D> ();
-		if (circleCollider == null) {
-			circleCollider = gameObject.AddComponent<CircleCollider2D> ();
-		}
-	}
-
-	void Update() {
+	void Awake() {	
 
 	}
 
 	[Server]
 	public void init(Ship newOwner, Vector2 startPos, float newAngle, int newType) {
 
-		angleRad = newAngle / Mathf.Rad2Deg;
+		angleDeg = Angle.fixAngle(newAngle);
 
-		//Move the bullet out in front of the ship
-		float forwardX = startPos.x - Mathf.Sin (angleRad) * 2;
-		float forwardY = startPos.y + Mathf.Cos (angleRad) * 2;
-
-		startPos = new Vector2 (forwardX, forwardY);
+		angleRad = angleDeg / Mathf.Rad2Deg;
 
 		owner = newOwner;
 		originPos = startPos;
 		pos = startPos;
-		angleDeg = newAngle;
+
 		type = newType;
 
-		transform.position = startPos;
-		transform.Rotate( new Vector3 (0, 0, newAngle));
+		//Check if the object is homing
+		Homing homing = gameObject.GetComponent<Homing> ();
+		if (homing != null) {
+			homing.setOwner(owner);
+		}
+
 	}
 
+	public void changeAngle(float angleChange) {
+		angleDeg = Angle.fixAngle(angleDeg + angleChange);
+		angleRad = angleDeg / Mathf.Rad2Deg;
+		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angleDeg));
+	}
 
+	public float getAngle() {
+		return angleDeg;
+	}
+
+	public static float getRefireRate() {
+		return float.MaxValue;
+	}
+
+	public static float getBulletsPerShot() {
+		return -1;
+	}
 }

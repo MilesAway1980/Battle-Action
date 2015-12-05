@@ -411,18 +411,20 @@ MonoBehaviour:
   m_OnlineScene: 
   m_SpawnPrefabs:
   - {fileID: 126290, guid: 533071de2cac6b547996597ffed9cf1d, type: 2}
-  - {fileID: 111334, guid: 32b8e200a3030894d8f1aaeacb34dd4e, type: 2}
-  - {fileID: 192810, guid: b230bb034ddc9bb468fe77e81a6e6275, type: 2}
-  - {fileID: 162458, guid: af25e509dbfadaa40b5d515e801eb44a, type: 2}
-  - {fileID: 135348, guid: 952cfd067d335fa49b6ea9b588544483, type: 2}
-  - {fileID: 105852, guid: 76f98fc64f308c14489d491b3f9a8bd0, type: 2}
-  - {fileID: 108970, guid: 45c6134aac9f2524e8242d748049c759, type: 2}
-  - {fileID: 191050, guid: e14395cd3415769479282863f9f7b24c, type: 2}
-  - {fileID: 142782, guid: 99169e7a06cd26e49b58f500ba1904a5, type: 2}
-  - {fileID: 149286, guid: fc6354d9c77c81b49bc3b72dbcdada0a, type: 2}
-  - {fileID: 138410, guid: d50f1cfde2abd6448b6bb37c328fbaf9, type: 2}
+  - {fileID: 198268, guid: 32b8e200a3030894d8f1aaeacb34dd4e, type: 2}
+  - {fileID: 131096, guid: b230bb034ddc9bb468fe77e81a6e6275, type: 2}
+  - {fileID: 142238, guid: af25e509dbfadaa40b5d515e801eb44a, type: 2}
+  - {fileID: 187538, guid: 952cfd067d335fa49b6ea9b588544483, type: 2}
+  - {fileID: 126290, guid: 76f98fc64f308c14489d491b3f9a8bd0, type: 2}
+  - {fileID: 197782, guid: 45c6134aac9f2524e8242d748049c759, type: 2}
+  - {fileID: 109868, guid: e14395cd3415769479282863f9f7b24c, type: 2}
+  - {fileID: 165444, guid: 99169e7a06cd26e49b58f500ba1904a5, type: 2}
+  - {fileID: 178842, guid: fc6354d9c77c81b49bc3b72dbcdada0a, type: 2}
+  - {fileID: 115606, guid: d50f1cfde2abd6448b6bb37c328fbaf9, type: 2}
   - {fileID: 138890, guid: 1d60febbb9ebe884383b047d132ca4af, type: 2}
+  - {fileID: 160098, guid: e0dbc3e89f1ded8469764f51efca4241, type: 2}
   - {fileID: 100000, guid: 8e02e06584f51ab42986fd44c73d976e, type: 2}
+  - {fileID: 195562, guid: f378262fa2e09ee4486fc894502239bb, type: 2}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

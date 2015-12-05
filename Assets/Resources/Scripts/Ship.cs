@@ -67,7 +67,7 @@ public class Ship : NetworkBehaviour {
 
 		moveDist = Vector2.Distance (currentPos, oldPos);
 
-		currentWeapon = 1;
+		currentWeapon = 2;
 
 		explosion = (GameObject)Resources.Load ("Detonator Explosion FrameWork/Prefab Examples/Detonator-Base");
 	}
@@ -142,6 +142,12 @@ public class Ship : NetworkBehaviour {
 
 	public int getCurrentWeapon() {
 		return currentWeapon ;
+	}
+
+	public void setCurrentWeapon(int whichWeapon) {
+		if (currentWeapon > 0 && currentWeapon <= 12) {
+			currentWeapon = whichWeapon;
+		}
 	}
 	
 	public void updateForLocal() {
@@ -239,6 +245,14 @@ public class Ship : NetworkBehaviour {
 	public void damage(float amount) {
 		if (amount > 0) {
 			armor -= amount;
+		}
+	}
+
+	//[Server]
+	public void setShield(bool setting) {
+		Shield shield = GetComponent<Shield> ();
+		if (shield != null) {
+			shield.setActive(setting);
 		}
 	}
 

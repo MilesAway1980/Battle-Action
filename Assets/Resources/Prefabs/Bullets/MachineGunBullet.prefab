@@ -12,6 +12,7 @@ GameObject:
   - 114: {fileID: 11495218}
   - 114: {fileID: 11465214}
   - 61: {fileID: 6151806}
+  - 50: {fileID: 5061992}
   - 114: {fileID: 11405380}
   m_Layer: 0
   m_Name: MachineGunBullet
@@ -32,6 +33,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!50 &5061992
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 138890}
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: .0500000007
+  m_GravityScale: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!61 &6151806
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -56,6 +73,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f15481da044cfcd4c8e9b2d20b94a03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
+  damage: 20
+  refireRate: .100000001
+  bulletsPerShot: 0
 --- !u!114 &11465214
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -68,7 +89,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 1
-  m_SendInterval: .0333333351
+  m_SendInterval: .100000001
   m_SyncRotationAxis: 3
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
@@ -157,7 +178,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: speed
-      value: 30
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Enabled
@@ -165,7 +186,23 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SendInterval
-      value: .0333333351
+      value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPlayerAuthority
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: damage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: refireRate
+      value: .100000001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

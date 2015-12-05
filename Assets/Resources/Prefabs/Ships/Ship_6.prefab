@@ -1,36 +1,16 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &108970
+--- !u!1 &153162
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
-  - 4: {fileID: 475338}
-  - 114: {fileID: 11423608}
-  - 50: {fileID: 5043804}
-  - 58: {fileID: 5893624}
-  - 114: {fileID: 11463580}
-  - 114: {fileID: 11483020}
-  m_Layer: 0
-  m_Name: Ship_6
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &199748
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 491156}
-  - 33: {fileID: 3344026}
-  - 23: {fileID: 2344746}
-  - 95: {fileID: 9545066}
+  - 4: {fileID: 478402}
+  - 33: {fileID: 3324942}
+  - 23: {fileID: 2386398}
+  - 95: {fileID: 9531134}
   m_Layer: 0
   m_Name: Star Blaster
   m_TagString: Untagged
@@ -38,37 +18,58 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &475338
+--- !u!1 &197782
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 448654}
+  - 114: {fileID: 11421188}
+  - 50: {fileID: 5034528}
+  - 58: {fileID: 5855090}
+  - 114: {fileID: 11443906}
+  - 114: {fileID: 11480838}
+  - 114: {fileID: 11456622}
+  m_Layer: 0
+  m_Name: Ship_6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &448654
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108970}
+  m_GameObject: {fileID: 197782}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 491156}
+  - {fileID: 478402}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!4 &491156
+--- !u!4 &478402
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199748}
+  m_GameObject: {fileID: 153162}
   m_LocalRotation: {x: .70710659, y: 0, z: 0, w: -.707106948}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children: []
-  m_Father: {fileID: 475338}
+  m_Father: {fileID: 448654}
   m_RootOrder: 0
---- !u!23 &2344746
+--- !u!23 &2386398
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199748}
+  m_GameObject: {fileID: 153162}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -89,20 +90,20 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
---- !u!33 &3344026
+--- !u!33 &3324942
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199748}
+  m_GameObject: {fileID: 153162}
   m_Mesh: {fileID: 4300000, guid: f8be63edd520032488cf5b981351615d, type: 3}
---- !u!50 &5043804
+--- !u!50 &5034528
 Rigidbody2D:
   serializedVersion: 2
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108970}
+  m_GameObject: {fileID: 197782}
   m_Mass: 1.5
   m_LinearDrag: 1.5
   m_AngularDrag: 1
@@ -112,12 +113,12 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!58 &5893624
+--- !u!58 &5855090
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108970}
+  m_GameObject: {fileID: 197782}
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -125,13 +126,13 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: .75
---- !u!95 &9545066
+--- !u!95 &9531134
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 199748}
+  m_GameObject: {fileID: 153162}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: f8be63edd520032488cf5b981351615d, type: 3}
   m_Controller: {fileID: 0}
@@ -142,12 +143,12 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11423608
+--- !u!114 &11421188
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108970}
+  m_GameObject: {fileID: 197782}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edd1d84513b634f48ae2c087d49f7419, type: 3}
@@ -157,18 +158,18 @@ MonoBehaviour:
   maxThrust: 27
   acceleration: .100000001
   maxArmor: 200
-  turnRate: 1.5
+  turnRate: 3
   slots: 0
   currentSpeed: 0
   angle: 0
   thrust: 0
   turnDir: 0
---- !u!114 &11463580
+--- !u!114 &11443906
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108970}
+  m_GameObject: {fileID: 197782}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 372142912, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
@@ -195,12 +196,26 @@ MonoBehaviour:
     i15: 89
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
---- !u!114 &11483020
+--- !u!114 &11456622
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108970}
+  m_GameObject: {fileID: 197782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 892b7f68b2b927f4391b313bf6f8bf92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldContactDamage: 15
+  maxCharge: 350
+  rechargeRate: 1
+--- !u!114 &11480838
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 197782}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1768714887, guid: 870353891bb340e2b2a9c8707e7419ba, type: 3}
@@ -223,110 +238,18 @@ Prefab:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 0}
-      propertyPath: maxSpeed
-      value: 12
+      propertyPath: maxCharge
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: maxArmor
-      value: 200
+      propertyPath: shieldContactDamage
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 0}
-      propertyPath: turnRate
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: acceleration
-      value: .100000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Mass
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_LinearDrag
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: maxThrust
-      value: 27
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AngularDrag
+      propertyPath: rechargeRate
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i0
-      value: 69
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i1
-      value: 198
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i2
-      value: 19
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i3
-      value: 74
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i4
-      value: 172
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i5
-      value: 159
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i6
-      value: 37
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i7
-      value: 36
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i8
-      value: 232
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i9
-      value: 36
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i10
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i11
-      value: 116
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i12
-      value: 128
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i13
-      value: 73
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i14
-      value: 199
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_AssetId.i15
-      value: 89
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_LocalPlayerAuthority
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Radius
-      value: .75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 108970}
+  m_RootGameObject: {fileID: 197782}
   m_IsPrefabParent: 1

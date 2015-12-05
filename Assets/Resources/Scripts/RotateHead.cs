@@ -7,7 +7,7 @@ public class RotateHead : MonoBehaviour {
 	public float turnRate;
 	Rigidbody2D headRB;
 	Transform headTransform;
-	float angle;
+	//public float angle;
 
 
 	// Use this for initialization
@@ -18,12 +18,13 @@ public class RotateHead : MonoBehaviour {
 		}
 
 		headTransform = head.transform;
-		angle = Random.Range (0, 360);
+		//angle = Random.Range (0, 360);
+		headTransform.rotation = Quaternion.Euler (new Vector3 (0, 0, Random.Range (0, 360)));
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		angle += turnRate;
+		//angle += turnRate;
 		//headRB.rotation = new Vector3 (0, 0, angle);
 		headTransform.Rotate (new Vector3 (0, 0, turnRate));
 	}

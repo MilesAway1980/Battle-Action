@@ -42,20 +42,18 @@ public class Player : NetworkBehaviour {
 			} 
 		}
 
-		if (ship == null) {
-		
-				//Dead!
-				if (deadTimer == -1) {
-					deadTimer = Time.fixedTime;
-				}
-				
-				if ((Time.fixedTime - deadTimer) > 3) {
-					deadTimer = -1;
-					createShip ();
-					assignShip ();
-					setCameraToFollow();
-				}
+		if (ship == null) {		
+			//Dead!
+			if (deadTimer == -1) {
+				deadTimer = Time.fixedTime;
+			}
 
+			if ((Time.fixedTime - deadTimer) > 3) {
+				deadTimer = -1;
+				createShip ();
+				assignShip ();
+				setCameraToFollow();
+			}
 		}
 	}
 
@@ -96,23 +94,42 @@ public class Player : NetworkBehaviour {
 		
 		if (controlStyle == 0) {
 
+			if (Input.GetKeyDown("1")) {
+				ship.GetComponent<Ship>().setCurrentWeapon(1);
+			}
 
+			if (Input.GetKeyDown("2")) {
+				ship.GetComponent<Ship>().setCurrentWeapon(2);
+			}
 			
+			if (Input.GetKeyDown("3")) {
+				ship.GetComponent<Ship>().setCurrentWeapon(3);
+			}
+
 			if (	
 			    buttons [1].getHeld() || 
 			    shootButton
 			    ) 
 			{
-				//Shoot
 				CmdShootBullet();
 			}
+
+			if (
+				buttons[2].getHeld () ||
+				Input.GetKey ("z")
+				)
+			{
+				CmdActivateShield(true);
+			} else {
+				CmdActivateShield(false);
+			}
+
 			
 			if (
 				buttons [4].getHeld () || 
 				keyboardVertical < 0
 				) 
 			{
-				//Slow down
 				CmdSlowShip();
 				
 			}
@@ -122,7 +139,6 @@ public class Player : NetworkBehaviour {
 				keyboardVertical > 0
 				) 
 			{
-				//Speed up
 				CmdSpeedUpShip();
 				
 			}
@@ -132,7 +148,6 @@ public class Player : NetworkBehaviour {
 				keyboardHorizontal < 0
 				) 
 			{
-				//Turn Left
 				CmdTurnShip (1);
 			}
 			
@@ -141,7 +156,6 @@ public class Player : NetworkBehaviour {
 				keyboardHorizontal > 0
 				) 
 			{
-				//Turn Right
 				CmdTurnShip (-1);
 			}
 			
@@ -204,7 +218,12 @@ public class Player : NetworkBehaviour {
 		//print (curThrottle);
 		//throttle = curThrottle * maxSpeed;
 		
-		
+
+	}
+
+	[Command]
+	void CmdDestroyShip() {
+		ship.GetComponent<Ship> ().damage (10000);
 	}
 
 	[Command]
@@ -220,6 +239,11 @@ public class Player : NetworkBehaviour {
 	[Command]
 	void CmdTurnShip(int dir) {
 		ship.GetComponent<Ship>().setTurnDir (dir);
+	}
+
+	[Command]
+	void CmdActivateShield(bool setting) {
+		ship.GetComponent<Ship> ().setShield (setting);
 	}
 
 	[Command]
@@ -245,8 +269,13 @@ public class Player : NetworkBehaviour {
 			if (ship != null) {
 				Ship thisShip = ship.GetComponent<Ship>();
 				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
-				overlay += "\nThrust: " + (int)thisShip.thrust + " \\ " + thisShip.maxThrust;
-				overlay += "\nSpeed: " + (int)thisShip.currentSpeed + " \\ " + thisShip.maxSpeed;
+				overlay += "\nThrust: " + (int)(thisShip.thrust * 100) + " \\ " + (thisShip.maxThrust * 100);
+				overlay += "\nSpeed: " + (int)(thisShip.currentSpeed * 100) + " \\ " + (thisShip.maxSpeed * 100);
+				overlay += "\nWeapon: " + WeaponText.getWeaponName(thisShip.getCurrentWeapon());
+
+				Shield shield = thisShip.GetComponent<Shield>();
+				overlay += "\n" + (int)shield.getCharge() + " \\ " + (int)shield.getMaxCharge();
+
 				float opponentDistance = thisShip.getOpponentDistance();
 				if (opponentDistance >= 0) {
 					overlay += "\nOpponent: " + (int)(opponentDistance * 1000);
@@ -270,7 +299,8 @@ public class Player : NetworkBehaviour {
 	[Server]
 	void createShip() {
 		GameObject[] shipList = ArenaInfo.getShipList ();
-		int whichShip = Random.Range (0, shipList.Length - 1);
+
+		int whichShip = Random.Range (0, shipList.Length);
 
 		ship = (GameObject)Instantiate (
 				shipList [whichShip],
@@ -318,9 +348,12 @@ public class Player : NetworkBehaviour {
 		}
 
 		ShipCamera sc = gameObject.GetComponent<ShipCamera> ();
-		Ship myShip = ship.GetComponent<Ship>();
-
-		sc.setTarget (myShip.gameObject);
+		if (ship != null) {
+			Ship myShip = ship.GetComponent<Ship> ();
+			if (sc != null) {
+				sc.setTarget (myShip.gameObject);
+			}
+		}
 
 	}
 
