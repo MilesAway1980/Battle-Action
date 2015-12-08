@@ -8,9 +8,9 @@ public class Homing : NetworkBehaviour {
 	public float detectDistance;
 
 
-	Ship target = null;
+	public Ship target = null;
 
-	Ship owner;
+	public Ship owner;
 
 	//float targetDist;
 	//float currentSpeed;
@@ -18,6 +18,7 @@ public class Homing : NetworkBehaviour {
 	//Vector2 lastPos;
 	//Vector2 currentPos;
 
+	[Server]
 	void FixedUpdate () {
 
 		if (target == null) {
@@ -30,7 +31,7 @@ public class Homing : NetworkBehaviour {
 		//currentSpeed = Vector2.Distance (lastPos, currentPos);
 	}
 
-
+	[Server]
 	void getTarget() {
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 		if (players == null) {
@@ -60,6 +61,7 @@ public class Homing : NetworkBehaviour {
 		}
 	}
 
+	[Server]
 	void chaseTarget() {
 		Bullet thisBullet = GetComponent<Bullet>();
 		
