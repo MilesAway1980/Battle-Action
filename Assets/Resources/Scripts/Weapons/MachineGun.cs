@@ -12,7 +12,7 @@ public class MachineGun : Bullet {
 
 	void Start () {
 
-		travelDist = ArenaInfo.getArenaSize() * 2.5f;
+		travelDist = ArenaInfo.getArenaSize() * 1.25f;
 		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
 			travelDist = ArenaInfo.getMinBulletTravelDist();
 		}
@@ -46,6 +46,9 @@ public class MachineGun : Bullet {
 			Destroy (gameObject);
 		}
 
+		checkHit ();
+		prevPos = pos;
+
 		pos = new Vector2 (
 			pos.x - Mathf.Sin (angleRad) * speed,
 			pos.y + Mathf.Cos (angleRad) * speed
@@ -53,27 +56,16 @@ public class MachineGun : Bullet {
 
 		transform.position = pos;
 
-
 	}
 
-	void OnCollisionEnter2D(Collision2D col) {
-
-		if (owner == null) {
-			return;
-		}
-
-		GameObject objectHit = col.gameObject;
-
-		if (objectHit.tag == "Player Ship") {
+	void checkHit() {
+		Ship shipHit = checkShipHit ();
+		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
-
-			Ship shipHit = objectHit.GetComponent<Ship>();
-			if (shipHit != owner) {
-				shipHit.damage(damage);
-				shipHit.setLastHitBy(owner.getOwner());
-				Destroy (gameObject);
-			}
-		}
+			shipHit.damage(damage);
+			shipHit.setLastHitBy(owner.getOwner());
+			Destroy (gameObject);
+		}	
 	}
 
 	public static GameObject getBullet() {

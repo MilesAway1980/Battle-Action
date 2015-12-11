@@ -74,12 +74,11 @@ public class Blaster : NetworkBehaviour {
 
 	void checkDamage() {
 
-		if (owner == null) {
+		if (!isServer) {
 			return;
 		}
 
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
-
 		if (players == null) {
 			return;
 		}
@@ -90,14 +89,38 @@ public class Blaster : NetworkBehaviour {
 
 			float dist = Vector2.Distance(startPos, playerShip.transform.position);
 
+
+
 			if (dist < range ) {
+				bool damaged = false;
+
 				float angleToTarget = Angle.getAngle(startPos, playerShip.transform.position);
+
 				if (dist > 1) {
 					float pointAngle = (360 - angle);
 					if (angleToTarget < (pointAngle + 1) && angleToTarget > (pointAngle - 1)) {
-						playerShip.damage (damage);
-						playerShip.setLastHitBy(owner.getOwner());
+						damaged = true;
 					}
+
+					if (damaged == false) {
+
+						CircleCollider2D shipCollider = playerShip.GetComponent<CircleCollider2D>();
+
+						if (Intersect.LineCircle(startPos, leftCorner, playerShip.transform.position, shipCollider.radius)) {
+							damaged = true;
+						}
+
+						if (damaged == false) {
+							if (Intersect.LineCircle(startPos, rightCorner, playerShip.transform.position, shipCollider.radius)) {
+								damaged = true;
+							}
+						}
+					}
+				}
+
+				if (damaged) {
+					playerShip.damage (damage);
+					playerShip.setLastHitBy(owner.getOwner ());
 				}
 			}
 		}

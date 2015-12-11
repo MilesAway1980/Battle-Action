@@ -16,6 +16,7 @@ public class BulletShooter : NetworkBehaviour {
 	bool isFiring;
 
 	GameObject blasterObject;
+	GameObject warper;
 
 	void Start() {
 		isFiring = false;
@@ -157,13 +158,20 @@ public class BulletShooter : NetworkBehaviour {
 				Nuke nuke = newBomb.GetComponent<Nuke>();
 				nuke.init(owner);
 				
-				NetworkServer.Spawn(newBomb);			
+				NetworkServer.Spawn(newBomb);
 				
 				break;	
-		}
+			}
 
 			case 7:		//Warp
 			{
+				if (warper == null) {
+					warper = new GameObject();
+					warper.name = "Warp";
+					warper.transform.parent = transform;
+					warper.AddComponent<Warp>();
+					warper.GetComponent<Warp>().setOwner(owner);
+				}
 				break;
 			}
 

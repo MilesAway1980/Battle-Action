@@ -17,6 +17,7 @@ public class Bullet : NetworkBehaviour {
 	protected Ship owner;
 	[SyncVar] protected Vector2 originPos;
 	[SyncVar] protected Vector2 pos;
+	[SyncVar] protected Vector2 prevPos;
 	[SyncVar] protected float angleRad;
 	[SyncVar] protected float angleDeg;
 	//protected int type;
@@ -51,6 +52,34 @@ public class Bullet : NetworkBehaviour {
 			homing.setOwner(owner);
 		}
 
+	}
+
+	protected Ship checkShipHit() {
+		if (isServer) {		
+
+			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+		
+			if (players == null) {
+				return null;
+			}
+		
+			for (int i = 0; i < players.Length; i++) {
+				Ship playerShip = players [i].GetComponent<Ship> ();
+				if (playerShip == owner) {
+					continue;
+				}
+			
+				if (Vector2.Distance (playerShip.transform.position, pos) <= (speed * 2)) {
+					if (Intersect.LineCircle (prevPos, pos, playerShip.transform.position, speed)) {
+						//playerShip.damage (damage);
+						//Destroy (gameObject);
+						return playerShip;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public void changeAngle(float angleChange) {

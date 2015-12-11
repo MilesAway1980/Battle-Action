@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class WeaponInfo {
 
-	static int weaponCount = 6;
+	static int weaponCount = 7;
 
 	public static string getWeaponName(int whichWeapon) {
 		string weaponName = "";
@@ -15,6 +15,7 @@ public static class WeaponInfo {
 			case 4: weaponName = "Blaster"; break;
 			case 5: weaponName = "Crush"; break;
 			case 6: weaponName = "Nuke"; break;
+			case 7: weaponName = "Warp"; break;
 			default: weaponName = "---"; break;
 		}
 		return weaponName;

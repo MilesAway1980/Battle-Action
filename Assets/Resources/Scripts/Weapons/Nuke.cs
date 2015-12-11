@@ -32,15 +32,10 @@ public class Nuke : NetworkBehaviour {
 		transform.localScale = nukeSize;
 	}
 
-	/*void Update() {
-		print (nukeSize);
-		print (fireballSize);
-		print (thisFireball);
-		transform.localScale = nukeSize;
-
-	}*/
-
 	void FixedUpdate () {
+
+		print (this.transform.parent);
+		print (this.transform.position);
 
 		if (exploded == false) {
 			currentTime += Time.deltaTime;
