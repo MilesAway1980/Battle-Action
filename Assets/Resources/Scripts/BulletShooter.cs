@@ -69,7 +69,7 @@ public class BulletShooter : NetworkBehaviour {
 				
 				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
 				MachineGun mg = newBullet.GetComponent<MachineGun>();				
-				mg.init(owner, startPos, angle);				
+				mg.init(owner, startPos, angle, whichWeapon);				
 
 				NetworkServer.Spawn(newBullet);			
 
@@ -90,7 +90,7 @@ public class BulletShooter : NetworkBehaviour {
 					newAngle += (360.0f / (float)Rocket.getBulletsPerShot());
 					GameObject newBullet = (GameObject)Instantiate(Rocket.getBullet());
 					Rocket rocket = newBullet.GetComponent<Rocket>();				
-					rocket.init(owner, startPos, newAngle);					
+					rocket.init(owner, startPos, newAngle, whichWeapon);					
 					NetworkServer.Spawn(newBullet);						
 				}
 				break;
@@ -109,7 +109,7 @@ public class BulletShooter : NetworkBehaviour {
 					newAngle += (360.0f / (float)Missile.getBulletsPerShot());
 					GameObject newBullet = (GameObject)Instantiate(Missile.getBullet());
 					Missile missile = newBullet.GetComponent<Missile>();				
-					missile.init(owner, startPos, newAngle);					
+					missile.init(owner, startPos, newAngle, whichWeapon);					
 					NetworkServer.Spawn(newBullet);						
 				}
 
@@ -129,25 +129,14 @@ public class BulletShooter : NetworkBehaviour {
 				break;
 			}
 
-			case 5:		//Crush / Flak
+			case 5:		//Nuke
 			{
-				if (Crush.getRefireRate() > (Time.fixedTime - lastShot)) {
-					return;
-				}
-				
-				lastShot = Time.fixedTime;
-				
-				float newAngle = angle;
-				GameObject newBullet = (GameObject)Instantiate(Crush.getBullet());
-				Crush crush = newBullet.GetComponent<Crush>();
-				crush.init(owner, startPos, newAngle);					
-				NetworkServer.Spawn(newBullet);						
-
 				break;
 			}
 
-			case 6:		//Nuke
+			case 6:		//Warp
 			{
+<<<<<<< HEAD
 				if (Nuke.getRefireRate() > (Time.fixedTime - lastShot)) {
 					return;
 				}
@@ -161,9 +150,12 @@ public class BulletShooter : NetworkBehaviour {
 				NetworkServer.Spawn(newBomb);
 				
 				break;	
+=======
+				break;
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 			}
 
-			case 7:		//Warp
+			case 7:		//Flak / Crush
 			{
 				if (warper == null) {
 					warper = new GameObject();

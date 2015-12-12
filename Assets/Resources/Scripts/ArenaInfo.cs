@@ -3,8 +3,13 @@ using System.Collections;
 
 public static class ArenaInfo  {
 
+<<<<<<< HEAD
 	static int arenaSize = 10;//400;
 	static int numBeacons = 1;//50;
+=======
+	static int arenaSize = 20;//0;
+	static int numBeacons = 50;
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 	static int numPowerups = 100;
 	static float powerupRespawnRate = 2.0f;
 	static float beaconRange = 10;

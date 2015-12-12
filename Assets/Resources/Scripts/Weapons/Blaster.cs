@@ -6,8 +6,6 @@ public class Blaster : NetworkBehaviour {
 
 	[SyncVar] Vector2 startPos;
 	[SyncVar] float angle;
-	[SyncVar] Vector2 leftCorner;
-	[SyncVar] Vector2 rightCorner;
 
 	[Range (0, 15)]
 	public float spread;
@@ -22,8 +20,10 @@ public class Blaster : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		//MeshFilter mf = GetComponent<MeshFilter>();
+		MeshFilter mf = GetComponent<MeshFilter>();
 		MeshRenderer mr = GetComponent<MeshRenderer>();
+
+		print (mf + "  " + mr);
 
 		mr.material = mat;
 	}
@@ -42,12 +42,12 @@ public class Blaster : NetworkBehaviour {
 		float leftAngle = (angle - spread) / Mathf.Rad2Deg;
 		float rightAngle = (angle + spread) / Mathf.Rad2Deg;
 
-		leftCorner = new Vector2 (
+		Vector2 leftCorner = new Vector2 (
 			startPos.x - Mathf.Sin (leftAngle) * range,
 			startPos.y + Mathf.Cos (leftAngle) * range
 		);
 
-		rightCorner = new Vector2 (
+		Vector2 rightCorner = new Vector2 (
 			startPos.x - Mathf.Sin (rightAngle) * range,
 			startPos.y + Mathf.Cos (rightAngle) * range
 		);
@@ -130,6 +130,9 @@ public class Blaster : NetworkBehaviour {
 		startPos = newStartPos;
 		angle = newAngle;
 		owner = newOwner;
+
+		print ("Starting!" + startPos + "  " + angle + "  " + owner);
+
 	}
 
 	public static GameObject getBlaster() {

@@ -9,9 +9,21 @@ public class Homing : NetworkBehaviour {
 
 
 	Ship target = null;
+<<<<<<< HEAD
 	Ship owner;
 
 
+=======
+
+	Ship owner;
+
+	//float targetDist;
+	//float currentSpeed;
+
+	//Vector2 lastPos;
+	//Vector2 currentPos;
+
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 	void FixedUpdate () {
 		if (isServer) {
 			if (target == null) {

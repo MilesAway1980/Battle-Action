@@ -32,12 +32,10 @@ public class Rocket : Bullet {
 
 		prevPos = pos;
 		
-		pos = new Vector2 (
-			pos.x - Mathf.Sin (angleRad) * speed,
-			pos.y + Mathf.Cos (angleRad) * speed
+		transform.position = new Vector2 (
+			transform.position.x - Mathf.Sin (angleRad) * speed,
+			transform.position.y + Mathf.Cos (angleRad) * speed
 		);
-
-		transform.position = pos;
 	}
 
 	void checkHit() {

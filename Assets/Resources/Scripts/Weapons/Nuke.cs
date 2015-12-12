@@ -1,31 +1,11 @@
 ﻿using UnityEngine;
-using UnityEngine.Networking;
 using System.Collections;
 
-public class Nuke : NetworkBehaviour {
-
-	static float nukeRefireRate = -1;
-
-	public float refireRate;
-	public float damage;
-	public float detonatorTime;
-	public float maxRadius;
-	public float expansionSpeed;
-	public GameObject fireball;
-	GameObject thisFireball;
-
-	[SyncVar] public float currentTime;
-	[SyncVar] public float currentRadius;
-	[SyncVar] Vector2 pos;
-	[SyncVar] Vector3 nukeSize;
-	[SyncVar] Vector3 fireballSize;
-
-	float angle;
-	Ship owner;
-	[SyncVar] bool exploded;
+public class Nuke : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+<<<<<<< HEAD
 		currentTime = 0;
 		exploded = false;
 		nukeSize = new Vector3 (0.3f, 0.3f, 0.3f);
@@ -110,14 +90,13 @@ public class Nuke : NetworkBehaviour {
 
 	public static GameObject getBomb() {
 		return (GameObject)Resources.Load ("Prefabs/3D Weapons/Nuke");
+=======
+	
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 	}
 	
-	public static float getRefireRate() {
-		if (nukeRefireRate == -1) {
-			Nuke nuke = Nuke.getBomb().GetComponent<Nuke>();
-			nukeRefireRate = nuke.refireRate;
-		}
-
-		return nukeRefireRate;
+	// Update is called once per frame
+	void Update () {
+	
 	}
 }
