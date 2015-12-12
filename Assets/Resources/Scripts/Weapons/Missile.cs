@@ -9,7 +9,7 @@ public class Missile : Bullet {
 	// Use this for initialization
 	void Start () {	
 
-		travelDist = ArenaInfo.getArenaSize () * 1.0f;
+		travelDist = ArenaInfo.getArenaSize () * 0.5f;
 		if (travelDist < ArenaInfo.getMinBulletTravelDist ()) {
 			travelDist = ArenaInfo.getMinBulletTravelDist ();
 		}
@@ -29,24 +29,11 @@ public class Missile : Bullet {
 		if (distance >= travelDist) {
 			Destroy (gameObject);
 		}
-
-		checkHit ();
-		prevPos = pos;
 		
 		transform.position = new Vector2 (
 			transform.position.x - Mathf.Sin (angleRad) * speed,
 			transform.position.y + Mathf.Cos (angleRad) * speed
 			);
-	}
-
-	void checkHit() {
-		Ship shipHit = checkShipHit ();
-		if (shipHit != null) {
-			//SoundPlayer.PlayClip(hitSound);
-			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getOwner());
-			Destroy (gameObject);
-		}	
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {

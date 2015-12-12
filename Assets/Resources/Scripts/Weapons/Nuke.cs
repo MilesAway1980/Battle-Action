@@ -12,10 +12,15 @@ public class Nuke : MonoBehaviour {
 		transform.localScale = nukeSize;
 	}
 
-	void FixedUpdate () {
+	/*void Update() {
+		print (nukeSize);
+		print (fireballSize);
+		print (thisFireball);
+		transform.localScale = nukeSize;
 
-		print (this.transform.parent);
-		print (this.transform.position);
+	}*/
+
+	void FixedUpdate () {
 
 		if (exploded == false) {
 			currentTime += Time.deltaTime;

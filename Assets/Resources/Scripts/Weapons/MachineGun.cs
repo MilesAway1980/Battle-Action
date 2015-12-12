@@ -13,6 +13,7 @@ public class MachineGun : Bullet {
 	void Start () {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		travelDist = ArenaInfo.getArenaSize() * 1.25f;
 =======
 		//damage = 20;
@@ -20,6 +21,9 @@ public class MachineGun : Bullet {
 
 		travelDist = ArenaInfo.getArenaSize() * 2.5f;
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
+=======
+		travelDist = ArenaInfo.getArenaSize() * 2.5f;
+>>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
 			travelDist = ArenaInfo.getMinBulletTravelDist();
 		}
@@ -67,9 +71,12 @@ public class MachineGun : Bullet {
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		checkHit ();
 		prevPos = pos;
 
+=======
+>>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 		pos = new Vector2 (
 			pos.x - Mathf.Sin (angleRad) * speed,
 			pos.y + Mathf.Cos (angleRad) * speed
@@ -86,8 +93,10 @@ public class MachineGun : Bullet {
 			transform.position.y + Mathf.Cos (angleRad) * speed
 		);
 
+
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 	void checkHit() {
 		Ship shipHit = checkShipHit ();
@@ -102,6 +111,8 @@ public class MachineGun : Bullet {
 	}*/
 
 	//[Server]
+=======
+>>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 	void OnCollisionEnter2D(Collision2D col) {
 
 		if (owner == null) {
@@ -111,12 +122,19 @@ public class MachineGun : Bullet {
 		GameObject objectHit = col.gameObject;
 
 		if (objectHit.tag == "Player Ship") {
+<<<<<<< HEAD
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
+=======
+>>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 			//SoundPlayer.PlayClip(hitSound);
-			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getOwner());
-			Destroy (gameObject);
-		}	
+
+			Ship shipHit = objectHit.GetComponent<Ship>();
+			if (shipHit != owner) {
+				shipHit.damage(damage);
+				shipHit.setLastHitBy(owner.getOwner());
+				Destroy (gameObject);
+			}
+		}
 	}
 
 	public static GameObject getBullet() {

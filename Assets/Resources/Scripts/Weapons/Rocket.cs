@@ -9,6 +9,13 @@ public class Rocket : Bullet {
 
 	// Use this for initialization
 	void Start () {
+		//damage = 15;
+		//speed = 0.05f;
+
+		/*travelDist = ArenaInfo.getArenaSize () * 0.5f;
+		if (travelDist < ArenaInfo.getMinBulletTravelDist ()) {
+			travelDist = ArenaInfo.getMinBulletTravelDist ();
+		}*/
 
 		travelDist = range;
 
@@ -22,30 +29,33 @@ public class Rocket : Bullet {
 	}
 
 	void FixedUpdate() {
-
+		//distance += speed;
 		distance = Vector2.Distance (originPos, transform.position);
 		if (distance >= travelDist) {
 			Destroy (gameObject);
 		}
-
-		checkHit ();
-
-		prevPos = pos;
 		
 		transform.position = new Vector2 (
 			transform.position.x - Mathf.Sin (angleRad) * speed,
 			transform.position.y + Mathf.Cos (angleRad) * speed
 		);
 	}
+	
+	void OnCollisionEnter2D(Collision2D col) {
 
-	void checkHit() {
-		Ship shipHit = checkShipHit ();
-		if (shipHit != null) {
-			//SoundPlayer.PlayClip(hitSound);
-			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getOwner());
-			Destroy (gameObject);
-		}	
+		if (owner == null) {
+			return;
+		}
+
+		GameObject objectHit = col.gameObject;		
+		if (objectHit.tag == "Player Ship") {
+			Ship shipHit = objectHit.GetComponent<Ship>();
+			if (shipHit != owner) {
+				shipHit.damage(damage);
+				shipHit.setLastHitBy(owner.getOwner());
+				Destroy (gameObject);
+			}
+		}
 	}
 
 	public static GameObject getBullet() {

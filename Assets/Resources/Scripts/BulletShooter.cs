@@ -16,7 +16,6 @@ public class BulletShooter : NetworkBehaviour {
 	bool isFiring;
 
 	GameObject blasterObject;
-	GameObject warper;
 
 	void Start() {
 		isFiring = false;
@@ -147,23 +146,20 @@ public class BulletShooter : NetworkBehaviour {
 				Nuke nuke = newBomb.GetComponent<Nuke>();
 				nuke.init(owner);
 				
-				NetworkServer.Spawn(newBomb);
+				NetworkServer.Spawn(newBomb);			
 				
 				break;	
+<<<<<<< HEAD
 =======
 				break;
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 			}
+=======
+		}
+>>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 
 			case 7:		//Flak / Crush
 			{
-				if (warper == null) {
-					warper = new GameObject();
-					warper.name = "Warp";
-					warper.transform.parent = transform;
-					warper.AddComponent<Warp>();
-					warper.GetComponent<Warp>().setOwner(owner);
-				}
 				break;
 			}
 
