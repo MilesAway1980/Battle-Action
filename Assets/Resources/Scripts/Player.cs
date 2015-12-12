@@ -23,19 +23,33 @@ public class Player : NetworkBehaviour {
 
 	GameObject ship;
 
-	float deadTimer;
+	[SyncVar] float deadTimer;
+
+	public float spawnDelay;
 
 	//Use these as flags for holding down buttons so that commands aren't repeatedly sent.
 
 	CurrentInfo current;
 
+	Chat chatMessages;
+	bool newMessage = false;
+
+	bool showChatBox = false;
+	string chatText;
+
+	public SyncListString texts = new SyncListString();
+
 	void Awake() {
 		assignPlayerNum ();
-		createShip ();
 	}
 
 	void Start() {
+
 		kills = 0;
+
+		chatMessages = new Chat ();
+		chatMessages.setMessageHistorySize (5);
+		chatMessages.setMessageLifeSpan (10000);
 
 		if (isLocalPlayer) {
 			ShipCamera sc = gameObject.AddComponent<ShipCamera>();
@@ -44,34 +58,50 @@ public class Player : NetworkBehaviour {
 			assignShip();
 			setCameraToFollow();
 		}
-		deadTimer = -1;
+		deadTimer = spawnDelay;
 	}
 
 	void Update() {
-		if (isLocalPlayer) {
-			if (ship != null) {
-				Ship myShip = ship.GetComponent<Ship> ();
-				myShip.updateForLocal ();
-				checkControls ();
+		//if (isServer) {
+			if (isLocalPlayer) {
+				if (ship != null) {
+					Ship myShip = ship.GetComponent<Ship> ();
+					myShip.updateForLocal ();
+					checkControls ();					
+				}					
+			}
+
+			if (ship == null) {		
+				//Dead!
+
+				deadTimer += Time.deltaTime;
+				if (deadTimer >= spawnDelay) {					
+					createShip ();
+					assignShip ();
+					setCameraToFollow ();
+					if (ship != null) {
+						deadTimer = 0;
+					}
+				}
 			} 
-		}
 
-		if (ship == null) {		
-			//Dead!
-			if (deadTimer == -1) {
-				deadTimer = Time.fixedTime;
+		if (newMessage == true) {
+			print ("Passing: " + chatMessages);
+			if (chatMessages != null) {
+				string[] messages = chatMessages.getMessages();
+				if (messages != null) {
+					print (messages.Length);
+				}
 			}
-
-			if ((Time.fixedTime - deadTimer) > 3) {
-				deadTimer = -1;
-				createShip ();
-				assignShip ();
-				setCameraToFollow();
-			}
+			CmdSendMessage(chatMessages);
+			newMessage = false;
 		}
+		//}
+		
+		
 	}
-
-
+	
+	
 	void checkControls() {
 		
 		Controls ctr = GetComponent<Controls> ();
@@ -105,16 +135,28 @@ public class Player : NetworkBehaviour {
 		float keyboardHorizontal = Input.GetAxis ("Horizontal");
 		float keyboardVertical = Input.GetAxis ("Vertical");
 		bool shootButton = Input.GetButton ("Shoot");
-		
+
 		if (controlStyle == 0) {
 
-			for (int i = 1; i <= 4; i++) {
+			for (int i = 1; i <= WeaponInfo.numWeapons(); i++) {
 				string which = i.ToString();
 				if (Input.GetKeyDown(which)) {
 					CmdChangeWeapon(i);
 				}
 			}
 
+			if (Input.GetKeyDown("escape")) {
+				Application.Quit();
+			}
+
+			if (Input.GetKeyDown ("t")) {
+				showChatBox = true;
+			}
+
+			if (Input.GetKeyDown ("enter")) {
+
+				showChatBox = false;
+			}
 
 
 			if (	
@@ -317,20 +359,34 @@ public class Player : NetworkBehaviour {
 		shooter.setIsFiring (isShooting);
 	}
 
-	/*[Command]
-	void CmdShootBullet() { 
+	[Command]
+	void CmdSendMessage(Chat sendMessages) {
+		print ("Sending Message!");
+		print (sendMessages);
+		if (sendMessages != null) {
+			string[] all = sendMessages.getMessages ();
+			if (all != null) {
+				print (all.Length);
+			} else {
+				print ("messages are null");
+			}
+		}
+		RpcReceiveMessage (sendMessages);
+	}
 
-		Ship myShip = ship.GetComponent<Ship>();
-		BulletShooter shooter = GetComponent<BulletShooter> ();
-		shooter.setOwner (myShip);
-
-		shooter.fireBullet(
-			myShip.getCurrentWeapon(), 
-			myShip.transform.position, 
-			myShip.getAngle ()
-		);
-		myShip.GetComponent<Blaster> ().activate();
-	}*/
+	[ClientRpc]
+	void RpcReceiveMessage(Chat newChatMessage) {
+		print ("Receiving message!");
+		if (newChatMessage != null) {
+			string[] messages = newChatMessage.getMessages();
+			if (messages != null) {
+				print (messages.Length);
+			}
+		} else {
+			print (newChatMessage);
+		}
+		chatMessages = newChatMessage;
+	}
 
 	void OnGUI() {
 
@@ -341,7 +397,7 @@ public class Player : NetworkBehaviour {
 				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
 				overlay += "\nThrust: " + (int)(thisShip.thrust * 100) + " \\ " + (thisShip.maxThrust * 100);
 				overlay += "\nSpeed: " + (int)(thisShip.currentSpeed * 100) + " \\ " + (thisShip.maxSpeed * 100);
-				overlay += "\nWeapon: " + WeaponText.getWeaponName(thisShip.getCurrentWeapon());
+				overlay += "\nWeapon: " + WeaponInfo.getWeaponName(thisShip.getCurrentWeapon());
 
 				Shield shield = thisShip.GetComponent<Shield>();
 				overlay += "\n" + (int)shield.getCharge() + " \\ " + (int)shield.getMaxCharge();
@@ -352,22 +408,87 @@ public class Player : NetworkBehaviour {
 				}
 			}
 
+			if (showChatBox) {
+				if (chatText == null) {
+					chatText = "";
+				}
+				bool userHitReturn = false;
+				Event e = Event.current;
+				if (e.keyCode == KeyCode.Return) {
+					userHitReturn = true;
+					showChatBox = false;
+
+					//chatMessages.newMessage(chatText);
+					//newMessage = true;
+
+					texts.Add(chatText);
+				} 
+
+				if (userHitReturn == false) {
+					GUI.SetNextControlName("ChatText");
+					chatText = GUI.TextField(new Rect(50, 200, 200, 50), chatText);
+					GUI.FocusControl("ChatText");
+				}
+			}
+
+			string chats = "";
+
+			/*string[] allChatMessages = chatMessages.getMessages();
+			if (allChatMessages != null) {
+				for (int i = 0; i < allChatMessages.Length; i++) {
+					chats += "\n" + i + " " +  allChatMessages[i];
+				}
+			}
+			chatMessages.updateTimers();*/
+
+			for (int i = 0; i < texts.Count; i++) {
+				chats += "\n" + i + " " +texts[i];
+				texts.Dirty(i);
+			}
+
+
+			/*GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+
+			if (players != null) {
+				overlay += "Players: " + players.Length;
+				for (int i = 0; i < players.Length; i++) {
+					Ship theShip = players[i].GetComponent<Ship>();
+					if (theShip != null) {
+						overlay += "\ni :   " + theShip.getArmor();
+					}
+				}
+			} else {
+				overlay += "Players is NULL";
+			}*/
+
+			//string killCount = "";
+
+			/*killCount += "\nShield  : " + current.shield;
+			killCount += "\nShooting : " + current.shooting;
+			killCount += "\nSlowing  : " + current.slowing;
+			killCount += "\nSpeeding : " + current.speeding;
+			killCount += "\nLeft     : " + current.turningLeft;
+			killCount += "\nRight   : " + current.turningRight;*/
+
 			string killCount = "Kills: " + kills;
+			//killCount += "\nRespawn:" + deadTimer + " / " + spawnDelay;
 			GUI.backgroundColor = new Color(0, 0, 0, 0);
-			GUI.Box (new Rect (300, 10, 300, 100), "" + overlay);
-			GUI.Box (new Rect (200, 10, 300, 100), "" + killCount);
+			GUI.Box (new Rect (300, 10, 300, 150), "" + overlay);
+			GUI.Box (new Rect (200, 10, 300, 150), "" + killCount);
+			GUI.Box (new Rect (0, 100, 400, 300), "" + chats);
 		}
 
 
 	}
 
-	[Server]
 	void assignPlayerNum() {
 		playerNum = ++playerCount;
 	}
 
-	[Server]
 	void createShip() {
+		if (!isServer) {
+			return;
+		}
 		GameObject[] shipList = ArenaInfo.getShipList ();
 
 		int whichShip = Random.Range (0, shipList.Length);
@@ -392,9 +513,6 @@ public class Player : NetworkBehaviour {
 	}
 
 	void assignShip() {
-		if (!isLocalPlayer) {
-			return;
-		}
 
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 
@@ -406,15 +524,18 @@ public class Player : NetworkBehaviour {
 				}
 			}			
 		}
-		if (ship != null) {
-			Ship myShip = ship.GetComponent<Ship> ();
-			myShip.makePointers ();
-		}
+
+		/*if (isLocalPlayer) {
+			if (ship != null) {
+				Ship myShip = ship.GetComponent<Ship> ();
+				myShip.makePointers ();
+			}
+		}*/
 	}
 
 	void setCameraToFollow() {
 		if (!isLocalPlayer) {
-			return;
+			//return;
 		}
 
 		ShipCamera sc = gameObject.GetComponent<ShipCamera> ();

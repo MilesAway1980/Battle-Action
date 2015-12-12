@@ -6,6 +6,7 @@ public static class ArenaInfo  {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	static int arenaSize = 10;//400;
 	static int numBeacons = 1;//50;
 =======
@@ -19,6 +20,10 @@ public static class ArenaInfo  {
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 	static int numBeacons = 50;
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
+=======
+	static int arenaSize = 10;//400;
+	static int numBeacons = 1;//50;
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 	static int numPowerups = 100;
 	static float powerupRespawnRate = 2.0f;
 	static float beaconRange = 10;

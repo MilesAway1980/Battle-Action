@@ -15,6 +15,7 @@ public class MachineGun : Bullet {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		travelDist = ArenaInfo.getArenaSize() * 1.25f;
 =======
 		//damage = 20;
@@ -30,25 +31,27 @@ public class MachineGun : Bullet {
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 		travelDist = ArenaInfo.getArenaSize() * 2.5f;
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
+=======
+		travelDist = ArenaInfo.getArenaSize() * 1.25f;
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
 			travelDist = ArenaInfo.getMinBulletTravelDist();
 		}
-
-		//travelDist = 100;
 
 		angleDeg += Random.Range (-2.0f, 2.0f);
 		angleRad = angleDeg / Mathf.Rad2Deg;
 
 		//Move the bullet out in front of the ship
-		float forwardX = originPos.x - Mathf.Sin (angleRad) * 2;
-		float forwardY = originPos.y + Mathf.Cos (angleRad) * 2;
+
+		originPos = new Vector2 (
+			originPos.x - Mathf.Sin (angleRad) * 2,
+			originPos.y + Mathf.Cos (angleRad) * 2
+		);
 		
-		originPos = new Vector2 (forwardX, forwardY);
+
 		
 		transform.position = originPos;
 		transform.Rotate( new Vector3 (0, 0, angleDeg));
-
-		//setVelocity ();
 
 		//hitSound = Instantiate ((AudioClip)Resources.Load ("Audio/Sound/Hit", typeof(AudioClip)));
 		//shootSound = Instantiate ((AudioClip)Resources.Load ("Audio/Sound/Shoot1", typeof(AudioClip)));
@@ -59,18 +62,6 @@ public class MachineGun : Bullet {
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		//pos = transform.position;
-		//float dist = Vector2.Distance (pos, originPos);
-		//distance = dist;
-
-		//if (Vector2.Distance (transform.position, originPos) > travelDist) {
-			//Destroy (gameObject);
-		//}
-
-		/*if (rigidBody.velocity.magnitude < speed || transform.eulerAngles.z != angleRad) {
-			setVelocity();
-		}*/
-
 		distance += speed;
 		if (distance >= travelDist) {
 			Destroy (gameObject);
@@ -79,6 +70,9 @@ public class MachineGun : Bullet {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 		checkHit ();
 		prevPos = pos;
 
@@ -88,6 +82,7 @@ public class MachineGun : Bullet {
 			pos.x - Mathf.Sin (angleRad) * speed,
 			pos.y + Mathf.Cos (angleRad) * speed
 		);
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
@@ -104,10 +99,15 @@ public class MachineGun : Bullet {
 			transform.position.x - Mathf.Sin (angleRad) * speed,
 			transform.position.y + Mathf.Cos (angleRad) * speed
 		);
+=======
+
+		transform.position = pos;
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 
 
 	}
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -144,6 +144,11 @@ public class MachineGun : Bullet {
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 =======
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
+=======
+	void checkHit() {
+		Ship shipHit = checkShipHit ();
+		if (shipHit != null) {
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 			//SoundPlayer.PlayClip(hitSound);
 
 			Ship shipHit = objectHit.GetComponent<Ship>();
@@ -161,19 +166,19 @@ public class MachineGun : Bullet {
 
 	public static new float getRefireRate() {
 		if (machinegunInfo == null) {
-			createRocketInfo();
+			createMachineGunInfo();
 		}
 		return machinegunInfo.refireRate;
 	}
 	
 	public static new float getBulletsPerShot() {
 		if (machinegunInfo == null) {
-			createRocketInfo();
+			createMachineGunInfo();
 		}
 		return machinegunInfo.bulletsPerShot;
 	}
 	
-	static void createRocketInfo() {
+	static void createMachineGunInfo() {
 		MachineGun temp = MachineGun.getBullet ().GetComponent<MachineGun>();
 		machinegunInfo = new ShootingInfo();
 		machinegunInfo.bulletsPerShot = temp.bulletsPerShot;

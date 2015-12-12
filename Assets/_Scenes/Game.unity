@@ -429,18 +429,24 @@ MonoBehaviour:
   - {fileID: 115380, guid: 212410e33811f4a47a065b472a284252, type: 2}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
   - {fileID: 130068, guid: 3c84577161b0b154392c26e87940cc10, type: 2}
 <<<<<<< HEAD
   - {fileID: 147364, guid: 07a91b6db46c6a84a865804c8ebe431c, type: 2}
   - {fileID: 175192, guid: be7db9946016557489a464a213e70d83, type: 2}
   - {fileID: 191330, guid: e2bda4668f9ce844e95fc8e6454bafd8, type: 2}
   - {fileID: 156342, guid: 14b75824473b91a41aaca3711ac493a8, type: 2}
+<<<<<<< HEAD
 =======
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 =======
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 =======
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
+=======
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

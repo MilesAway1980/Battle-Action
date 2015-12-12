@@ -11,7 +11,6 @@ public class Homing : NetworkBehaviour {
 <<<<<<< HEAD
 <<<<<<< HEAD
 	Ship target = null;
-<<<<<<< HEAD
 	Ship owner;
 =======
 	public Ship target = null;
@@ -22,6 +21,7 @@ public class Homing : NetworkBehaviour {
 
 	Ship owner;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 
@@ -43,6 +43,8 @@ public class Homing : NetworkBehaviour {
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
 =======
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
+=======
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 	void FixedUpdate () {
 
 		if (target == null) {

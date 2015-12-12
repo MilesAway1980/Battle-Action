@@ -68,7 +68,7 @@ public class BulletShooter : NetworkBehaviour {
 				
 				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
 				MachineGun mg = newBullet.GetComponent<MachineGun>();				
-				mg.init(owner, startPos, angle, whichWeapon);				
+				mg.init(owner, startPos, angle);				
 
 				NetworkServer.Spawn(newBullet);			
 
@@ -89,7 +89,7 @@ public class BulletShooter : NetworkBehaviour {
 					newAngle += (360.0f / (float)Rocket.getBulletsPerShot());
 					GameObject newBullet = (GameObject)Instantiate(Rocket.getBullet());
 					Rocket rocket = newBullet.GetComponent<Rocket>();				
-					rocket.init(owner, startPos, newAngle, whichWeapon);					
+					rocket.init(owner, startPos, newAngle);					
 					NetworkServer.Spawn(newBullet);						
 				}
 				break;
@@ -108,7 +108,7 @@ public class BulletShooter : NetworkBehaviour {
 					newAngle += (360.0f / (float)Missile.getBulletsPerShot());
 					GameObject newBullet = (GameObject)Instantiate(Missile.getBullet());
 					Missile missile = newBullet.GetComponent<Missile>();				
-					missile.init(owner, startPos, newAngle, whichWeapon);					
+					missile.init(owner, startPos, newAngle);					
 					NetworkServer.Spawn(newBullet);						
 				}
 
@@ -128,15 +128,30 @@ public class BulletShooter : NetworkBehaviour {
 				break;
 			}
 
-			case 5:		//Nuke
+			case 5:		//Crush / Flak
 			{
+				if (Crush.getRefireRate() > (Time.fixedTime - lastShot)) {
+					return;
+				}
+				
+				lastShot = Time.fixedTime;
+				
+				float newAngle = angle;
+				GameObject newBullet = (GameObject)Instantiate(Crush.getBullet());
+				Crush crush = newBullet.GetComponent<Crush>();
+				crush.init(owner, startPos, newAngle);					
+				NetworkServer.Spawn(newBullet);						
+
 				break;
 			}
 
-			case 6:		//Warp
+			case 6:		//Nuke
 			{
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 				if (Nuke.getRefireRate() > (Time.fixedTime - lastShot)) {
 					return;
 				}
@@ -151,9 +166,12 @@ public class BulletShooter : NetworkBehaviour {
 				
 				break;	
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 				break;
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
+=======
+>>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 			}
 =======
 		}
@@ -163,7 +181,7 @@ public class BulletShooter : NetworkBehaviour {
 			}
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 
-			case 7:		//Flak / Crush
+			case 7:		//Warp
 			{
 				break;
 			}

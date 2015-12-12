@@ -35,10 +35,12 @@ public class Rocket : Bullet {
 			Destroy (gameObject);
 		}
 		
-		transform.position = new Vector2 (
-			transform.position.x - Mathf.Sin (angleRad) * speed,
-			transform.position.y + Mathf.Cos (angleRad) * speed
+		pos = new Vector2 (
+			pos.x - Mathf.Sin (angleRad) * speed,
+			pos.y + Mathf.Cos (angleRad) * speed
 		);
+
+		transform.position = pos;
 	}
 	
 	void OnCollisionEnter2D(Collision2D col) {

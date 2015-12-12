@@ -11,7 +11,7 @@ public class Ship : NetworkBehaviour {
 	public float turnRate;
 	public int slots;
 	[SyncVar] private float armor;
-	public float currentSpeed;
+	[SyncVar] public float currentSpeed;
 	public float angle;
 	[SyncVar] public float thrust;
 
@@ -106,13 +106,16 @@ public class Ship : NetworkBehaviour {
 		SpriteRenderer sr;
 
 		sr = beaconPointer.GetComponent<SpriteRenderer> ();
-		sr.transform.localScale = new Vector2 (0.2f, 0.2f);
+		sr.transform.localScale = new Vector2 (0.15f, 0.15f);
 
 		sr = shipPointer.GetComponent<SpriteRenderer> ();
-		sr.transform.localScale = new Vector2 (0.15f, 0.15f);
+		sr.transform.localScale = new Vector2 (0.1f, 0.1f);
 	}
 
 	void checkDamage() {
+		if (!isServer) {
+			return;
+		}
 		if (armor <= 0) {
 			explode();
 			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
@@ -127,7 +130,6 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
-	[Server]
 	void explode() {
 		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
 		NetworkServer.Spawn (boom);
@@ -156,11 +158,16 @@ public class Ship : NetworkBehaviour {
 
 		ObjectInfo closestBeacon = Beacon.getNearestBeacon (this.gameObject);
 		float beaconAngle = (int)Angle.getAngle (transform.position, closestBeacon.pos);
-		
-		beaconPointer.transform.position = new Vector2 (
-			transform.position.x + Mathf.Sin (beaconAngle / Mathf.Rad2Deg) * 2.5f,
-			transform.position.y + Mathf.Cos (beaconAngle / Mathf.Rad2Deg) * 2.5f
-			);
+
+		if (beaconPointer == null || shipPointer == null) {
+			makePointers();
+		}
+
+		beaconPointer.transform.position = new Vector3 (
+			transform.position.x + Mathf.Sin (beaconAngle / Mathf.Rad2Deg) * 1.8f,
+			transform.position.y + Mathf.Cos (beaconAngle / Mathf.Rad2Deg) * 1.8f,
+			-5
+		);
 
 		beaconPointer.transform.rotation = Quaternion.Euler (new Vector3 (0, 0, -beaconAngle));
 		
@@ -176,9 +183,10 @@ public class Ship : NetworkBehaviour {
 			opponentDistance = closestShip.distance;
 			shipPointer.GetComponent<SpriteRenderer> ().enabled = true;
 			shipPointer.transform.position = new Vector3 (
-				transform.position.x + Mathf.Sin (shipAngle / Mathf.Rad2Deg) * 3.5f,
-				transform.position.y + Mathf.Cos (shipAngle / Mathf.Rad2Deg) * 3.5f
-				);
+				transform.position.x + Mathf.Sin (shipAngle / Mathf.Rad2Deg) * 2.5f,
+				transform.position.y + Mathf.Cos (shipAngle / Mathf.Rad2Deg) * 2.5f,
+				-5
+			);
 
 			shipPointer.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -shipAngle));
 		} else {
@@ -258,6 +266,7 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
+	[Server]
 	public void damage(float amount) {
 		if (amount > 0) {
 			Shield shield = GetComponent<Shield>();
@@ -278,6 +287,10 @@ public class Ship : NetworkBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
+		if (!isServer) {
+			return;
+		}
+
 		GameObject objectHit = col.gameObject;
 
 		if (objectHit.tag == "Player Ship") {
