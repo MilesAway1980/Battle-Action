@@ -136,6 +136,7 @@ public class BulletShooter : NetworkBehaviour {
 			case 6:		//Warp
 			{
 <<<<<<< HEAD
+<<<<<<< HEAD
 				if (Nuke.getRefireRate() > (Time.fixedTime - lastShot)) {
 					return;
 				}
@@ -157,6 +158,10 @@ public class BulletShooter : NetworkBehaviour {
 =======
 		}
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
+=======
+				break;
+			}
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 
 			case 7:		//Flak / Crush
 			{

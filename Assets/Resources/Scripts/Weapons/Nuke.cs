@@ -6,6 +6,7 @@ public class Nuke : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 <<<<<<< HEAD
+<<<<<<< HEAD
 		currentTime = 0;
 		exploded = false;
 		nukeSize = new Vector3 (0.3f, 0.3f, 0.3f);
@@ -95,6 +96,9 @@ public class Nuke : MonoBehaviour {
 
 	public static GameObject getBomb() {
 		return (GameObject)Resources.Load ("Prefabs/3D Weapons/Nuke");
+=======
+	
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 =======
 	
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.

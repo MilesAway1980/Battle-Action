@@ -15,6 +15,7 @@ public class Bullet : NetworkBehaviour {
 	public float bulletsPerShot;
 
 	protected Ship owner;
+<<<<<<< HEAD:Assets/Resources/Scripts/Bullet.cs
 <<<<<<< HEAD:Assets/Resources/Scripts/Weapons/Bullet.cs
 	[SyncVar] protected Vector2 originPos;
 	[SyncVar] protected Vector2 pos;
@@ -22,11 +23,16 @@ public class Bullet : NetworkBehaviour {
 	[SyncVar] protected float angleDeg;
 	//protected int type;
 =======
+=======
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.:Assets/Resources/Scripts/Bullet.cs
 	protected Vector2 originPos;
 	protected Vector2 pos;
 	protected float angleRad;
 	protected float angleDeg;
 	protected int type;
+<<<<<<< HEAD:Assets/Resources/Scripts/Bullet.cs
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.:Assets/Resources/Scripts/Bullet.cs
+=======
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.:Assets/Resources/Scripts/Bullet.cs
 	protected float travelDist;
 

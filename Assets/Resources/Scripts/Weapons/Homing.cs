@@ -9,14 +9,18 @@ public class Homing : NetworkBehaviour {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	Ship target = null;
 <<<<<<< HEAD
 	Ship owner;
 =======
 	public Ship target = null;
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
+=======
+	Ship target = null;
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 
-	public Ship owner;
+	Ship owner;
 
 <<<<<<< HEAD
 =======
@@ -32,10 +36,13 @@ public class Homing : NetworkBehaviour {
 	//Vector2 currentPos;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 =======
 	[Server]
 >>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
+=======
+>>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
 	void FixedUpdate () {
 
 		if (target == null) {
@@ -48,7 +55,7 @@ public class Homing : NetworkBehaviour {
 		//currentSpeed = Vector2.Distance (lastPos, currentPos);
 	}
 
-	[Server]
+
 	void getTarget() {
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 		if (players == null) {
@@ -78,7 +85,6 @@ public class Homing : NetworkBehaviour {
 		}
 	}
 
-	[Server]
 	void chaseTarget() {
 		Bullet thisBullet = GetComponent<Bullet>();
 		
