@@ -279,7 +279,6 @@ GameObject:
   - 4: {fileID: 1965244946}
   - 114: {fileID: 1965244949}
   - 114: {fileID: 1965244948}
-  - 50: {fileID: 1965244950}
   m_Layer: 0
   m_Name: Script Manager
   m_TagString: Untagged
@@ -323,22 +322,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSounds: 50
---- !u!50 &1965244950
-Rigidbody2D:
-  serializedVersion: 2
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1965244945}
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: .0500000007
-  m_GravityScale: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!1 &2058793599
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,7 +346,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2058793599}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 704.006897, y: 94.0608826, z: -.125883609}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -427,26 +410,11 @@ MonoBehaviour:
   - {fileID: 195562, guid: f378262fa2e09ee4486fc894502239bb, type: 2}
   - {fileID: 100502, guid: 972b81bffd79d314b85bfe4a9571dab0, type: 2}
   - {fileID: 115380, guid: 212410e33811f4a47a065b472a284252, type: 2}
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
   - {fileID: 130068, guid: 3c84577161b0b154392c26e87940cc10, type: 2}
-<<<<<<< HEAD
   - {fileID: 147364, guid: 07a91b6db46c6a84a865804c8ebe431c, type: 2}
   - {fileID: 175192, guid: be7db9946016557489a464a213e70d83, type: 2}
   - {fileID: 191330, guid: e2bda4668f9ce844e95fc8e6454bafd8, type: 2}
   - {fileID: 156342, guid: 14b75824473b91a41aaca3711ac493a8, type: 2}
-<<<<<<< HEAD
-=======
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
-=======
->>>>>>> parent of 1dbc944... Added Intersect.cs, which adds the ability to check whether or not a line passes through a circle.  Altered the way bullets detect collisions by detecting if the line between the last position and the current position passes through the circle around the ship.  Extremely effective.  Also, completed Warp.
-=======
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
-=======
->>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

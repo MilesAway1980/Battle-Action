@@ -26,26 +26,16 @@ public class Nuke : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 		currentTime = 0;
 		exploded = false;
 		nukeSize = new Vector3 (0.3f, 0.3f, 0.3f);
 		transform.localScale = nukeSize;
 	}
 
-	/*void Update() {
-		print (nukeSize);
-		print (fireballSize);
-		print (thisFireball);
-		transform.localScale = nukeSize;
-
-	}*/
-
 	void FixedUpdate () {
+
+		print (this.transform.parent);
+		print (this.transform.position);
 
 		if (exploded == false) {
 			currentTime += Time.deltaTime;
@@ -120,15 +110,6 @@ public class Nuke : NetworkBehaviour {
 
 	public static GameObject getBomb() {
 		return (GameObject)Resources.Load ("Prefabs/3D Weapons/Nuke");
-<<<<<<< HEAD
-=======
-	
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
-=======
-	
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.
-=======
->>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.
 	}
 	
 	public static float getRefireRate() {

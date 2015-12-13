@@ -15,31 +15,12 @@ public class Bullet : NetworkBehaviour {
 	public float bulletsPerShot;
 
 	protected Ship owner;
-<<<<<<< HEAD:Assets/Resources/Scripts/Bullet.cs
-<<<<<<< HEAD:Assets/Resources/Scripts/Bullet.cs
-<<<<<<< HEAD:Assets/Resources/Scripts/Weapons/Bullet.cs
-=======
->>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.:Assets/Resources/Scripts/Weapons/Bullet.cs
 	[SyncVar] protected Vector2 originPos;
 	[SyncVar] protected Vector2 pos;
+	[SyncVar] protected Vector2 prevPos;
 	[SyncVar] protected float angleRad;
 	[SyncVar] protected float angleDeg;
 	//protected int type;
-<<<<<<< HEAD:Assets/Resources/Scripts/Bullet.cs
-=======
-=======
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.:Assets/Resources/Scripts/Bullet.cs
-	protected Vector2 originPos;
-	protected Vector2 pos;
-	protected float angleRad;
-	protected float angleDeg;
-	protected int type;
-<<<<<<< HEAD:Assets/Resources/Scripts/Bullet.cs
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.:Assets/Resources/Scripts/Bullet.cs
-=======
->>>>>>> parent of da0b892... Added Nuke weapon. Began work on Crush.:Assets/Resources/Scripts/Bullet.cs
-=======
->>>>>>> parent of b66e2f5... Added new prefabs for Plasma weapon.:Assets/Resources/Scripts/Weapons/Bullet.cs
 	protected float travelDist;
 
 	protected float distance;
@@ -71,6 +52,34 @@ public class Bullet : NetworkBehaviour {
 			homing.setOwner(owner);
 		}
 
+	}
+
+	protected Ship checkShipHit() {
+		if (isServer) {		
+
+			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+		
+			if (players == null) {
+				return null;
+			}
+		
+			for (int i = 0; i < players.Length; i++) {
+				Ship playerShip = players [i].GetComponent<Ship> ();
+				if (playerShip == owner) {
+					continue;
+				}
+			
+				if (Vector2.Distance (playerShip.transform.position, pos) <= (speed * 2)) {
+					if (Intersect.LineCircle (prevPos, pos, playerShip.transform.position, speed)) {
+						//playerShip.damage (damage);
+						//Destroy (gameObject);
+						return playerShip;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public void changeAngle(float angleChange) {
