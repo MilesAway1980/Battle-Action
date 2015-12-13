@@ -86,11 +86,6 @@ public class StarField : MonoBehaviour {
 	void Start () {
 		stars = new Star[numStars];
 
-		//Create a game object to hold all of the stars
-		GameObject starContainer = new GameObject ();
-		starContainer.name = "Stars";
-		starContainer.transform.parent = transform;
-
 		GameObject star = (GameObject)Resources.Load ("Prefabs/Star", typeof(GameObject));
 
 		float minX = -10;
@@ -107,7 +102,7 @@ public class StarField : MonoBehaviour {
 
 			GameObject newStar = (GameObject)Instantiate (star, new Vector2(0, 0), Quaternion.identity);
 
-			stars[i].init (newStar, starPos, starContainer.transform);
+			stars[i].init (newStar, starPos, transform);
 			stars[i].setStarLayer(starLayer);
 		}
 	}

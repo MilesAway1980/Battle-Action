@@ -43,8 +43,8 @@ public class SpawnBeacons : NetworkBehaviour {
 			GameObject newBeacon = (GameObject)Instantiate (
 				beacons, 
 				new Vector2 (
-					Random.Range (-ArenaInfo.getArenaSize () / 2, ArenaInfo.getArenaSize () / 2), 
-					Random.Range (-ArenaInfo.getArenaSize () / 2, ArenaInfo.getArenaSize () / 2)
+					Random.Range (-ArenaInfo.getArenaSize (), ArenaInfo.getArenaSize ()), 
+					Random.Range (-ArenaInfo.getArenaSize (), ArenaInfo.getArenaSize ())
 				),
 				Quaternion.identity
 			);
