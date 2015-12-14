@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BulletShooter : NetworkBehaviour {
 
@@ -14,16 +15,22 @@ public class BulletShooter : NetworkBehaviour {
 	float lastShot;
 
 	bool isFiring;
+	bool firstShot;
+	float shootTimer;
 
 	GameObject blasterObject;
 	GameObject warper;
 
+	ObjectList chargingPlasmas;
+
 	void Start() {
 		isFiring = false;
 		lastShot = float.MinValue;
+		firstShot = true;
+		shootTimer = 0;
 	}
 
-	void Update() {
+	void FixedUpdate() {
 		if (owner == null) { 
 			active = false;
 		}
@@ -33,9 +40,12 @@ public class BulletShooter : NetworkBehaviour {
 			startPos = owner.transform.position;
 			angle = owner.getAngle ();
 			fireBullet ();
+			shootTimer += Time.deltaTime;
 		} else {
-			if (blasterObject != null) {
-				Destroy (blasterObject);
+			firstShot = true;
+			if (shootTimer != 0) {
+				release ();	
+				shootTimer = 0;
 			}
 		}
 	}
@@ -53,6 +63,29 @@ public class BulletShooter : NetworkBehaviour {
 
 	public bool getActive() {
 		return active;
+	}
+
+	void release() {
+		switch (whichWeapon) {
+			case 4: //Blaster
+			{
+				if (blasterObject != null) {
+					Destroy (blasterObject);
+				}
+				break;
+			}
+			case 8:	//Plasma
+			{
+				if (chargingPlasmas != null) {
+					GameObject[] plasmas = chargingPlasmas.getObjects ();
+					for (int i = 0; i < plasmas.Length; i++) {
+						Plasma plasma = plasmas [i].GetComponent<Plasma> ();
+						plasma.release ();
+					}
+				}
+				break;
+			}
+		}
 	}
 
 	public void fireBullet() {
@@ -177,6 +210,77 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 8:		//Plasma
 			{
+				if (Plasma.getRefireRate() > (Time.fixedTime - lastShot)) {
+					return;
+				}
+
+				float newAngle = 0;
+				float angleChange = 0;
+				float arc = 0;
+
+				if (firstShot == false) {
+					//Increase charge
+
+					if (chargingPlasmas != null) {
+						GameObject[] plasmas = chargingPlasmas.getObjects ();
+
+						for (int i = 0; i < plasmas.Length; i++) {
+							Plasma plasma = plasmas [i].GetComponent<Plasma> ();
+							plasma.incCharge (Time.deltaTime);
+
+							if (i == 0) {
+								arc = plasma.getArc ();
+								newAngle = angle - (arc / 2.0f);
+								if (Plasma.getBulletsPerShot () > 1) {
+									angleChange = (arc / (Plasma.getBulletsPerShot () - 1));
+								} else {
+									angleChange = 0;
+									newAngle = angle;
+								}
+							}
+
+							plasma.setAngle (newAngle);
+
+							newAngle += angleChange;
+						}
+					}
+
+					return;
+				}
+
+				firstShot = false;
+				lastShot = Time.fixedTime;
+
+				if (chargingPlasmas == null) {
+					chargingPlasmas = new ObjectList ();
+				}
+
+				chargingPlasmas.clearList ();
+
+				for (int i = 0; i < Plasma.getBulletsPerShot(); i++) {
+
+					GameObject newBullet = (GameObject)Instantiate (Plasma.getBullet ());
+					Plasma plasma = newBullet.GetComponent<Plasma> ();
+					plasma.setRadius (0);
+
+					chargingPlasmas.addObject (newBullet);
+
+					if (i == 0) {
+						arc = plasma.getArc ();
+						newAngle = angle - (arc / 2.0f);
+						if (Plasma.getBulletsPerShot () > 1) {
+							angleChange = (arc / (Plasma.getBulletsPerShot () - 1));
+						} else {
+							angleChange = 0;
+							newAngle = angle;
+						}
+					}
+
+					plasma.init(owner, startPos, newAngle);					
+					NetworkServer.Spawn(newBullet);
+
+					newAngle += angleChange;
+				}
 				break;
 			}
 

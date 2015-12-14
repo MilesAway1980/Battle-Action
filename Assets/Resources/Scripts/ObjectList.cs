@@ -18,6 +18,18 @@ public class ObjectList {
 	public void setObjectList(List<GameObject> newList) {
 		objectList = newList;
 	}
+
+	public GameObject[] getObjects() {
+		if (objectList == null) {
+			return null;
+		}
+		GameObject[] allObjects = new GameObject[objectList.Count];
+		for (int i = 0; i < objectList.Count; i++) {
+			allObjects [i] = objectList [i];
+		}
+
+		return allObjects;
+	}
 	
 	public void addObject(GameObject newObject) {
 		if (objectList == null) {
@@ -26,9 +38,15 @@ public class ObjectList {
 		objectList.Add (newObject);
 	}
 	
-	public  void removeObject(GameObject deadObject) {
+	public void removeObject(GameObject deadObject) {
 		if (objectList != null) {
 			objectList.Remove (deadObject);
+		}
+	}
+
+	public void clearList() {
+		if (objectList != null) {
+			objectList.Clear ();
 		}
 	}
 	

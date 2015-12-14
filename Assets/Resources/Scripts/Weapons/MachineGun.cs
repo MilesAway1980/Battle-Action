@@ -27,7 +27,7 @@ public class MachineGun : Bullet {
 			originPos.y + Mathf.Cos (angleRad) * 2
 		);
 		
-
+		pos = originPos;
 		
 		transform.position = originPos;
 		transform.Rotate( new Vector3 (0, 0, angleDeg));

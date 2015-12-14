@@ -34,8 +34,8 @@ public class Nuke : NetworkBehaviour {
 
 	void FixedUpdate () {
 
-		print (this.transform.parent);
-		print (this.transform.position);
+		//print (this.transform.parent);
+		//print (this.transform.position);
 
 		if (exploded == false) {
 			currentTime += Time.deltaTime;

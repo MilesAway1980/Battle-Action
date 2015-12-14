@@ -5,9 +5,15 @@ using System.Collections;
 public class Missile : Bullet {
 	
 	static ShootingInfo missileInfo = null;
+
+	public float speedMultiplier;
+	public float initialSpeed;
+	float currentSpeed;
 	
 	// Use this for initialization
-	void Start () {	
+	void Start () {
+
+		currentSpeed = initialSpeed;
 
 		travelDist = ArenaInfo.getArenaSize () * 1.0f;
 		if (travelDist < ArenaInfo.getMinBulletTravelDist ()) {
@@ -20,6 +26,8 @@ public class Missile : Bullet {
 		originPos = new Vector2 (forwardX, forwardY);
 		
 		transform.position = originPos;
+		pos = originPos;
+
 		transform.Rotate( new Vector3 (0, 0, angleDeg));
 	}
 	
@@ -32,11 +40,18 @@ public class Missile : Bullet {
 
 		checkHit ();
 		prevPos = pos;
+
+		if (currentSpeed < speed) {
+			currentSpeed *= speedMultiplier;
+			if (currentSpeed > speed) {
+				currentSpeed = speed;
+			}
+		}
 		
 		pos = new Vector2 (
-			pos.x - Mathf.Sin (angleRad) * speed,
-			pos.y + Mathf.Cos (angleRad) * speed
-			);
+			pos.x - Mathf.Sin (angleRad) * currentSpeed,
+			pos.y + Mathf.Cos (angleRad) * currentSpeed
+		);
 
 		transform.position = pos;
 	}

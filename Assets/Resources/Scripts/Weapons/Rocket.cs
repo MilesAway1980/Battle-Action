@@ -18,6 +18,8 @@ public class Rocket : Bullet {
 		originPos = new Vector2 (forwardX, forwardY);
 		
 		transform.position = originPos;
+		pos = originPos;
+
 		transform.Rotate( new Vector3 (0, 0, angleDeg));
 	}
 
