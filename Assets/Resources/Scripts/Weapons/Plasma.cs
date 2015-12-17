@@ -132,7 +132,7 @@ public class Plasma : Bullet {
 	}
 
 	public static GameObject getBullet() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/Plasma");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Plasma");
 	}
 
 	public new static float getRefireRate() {

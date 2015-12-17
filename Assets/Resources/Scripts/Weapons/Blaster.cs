@@ -133,6 +133,6 @@ public class Blaster : NetworkBehaviour {
 	}
 
 	public static GameObject getBlaster() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/Blaster");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Blaster");
 	}
 }

@@ -67,11 +67,11 @@ public class Warp : NetworkBehaviour {
 	}
 
 	public static GameObject getWarp() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/Warp");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Warp");
 	}
 
 	public static GameObject getWarpField() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/Warp Field");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Warp Field");
 	}
 
 	public void setOwner(Ship newOwner) {

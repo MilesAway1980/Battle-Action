@@ -109,7 +109,7 @@ public class Nuke : NetworkBehaviour {
 	}
 
 	public static GameObject getBomb() {
-		return (GameObject)Resources.Load ("Prefabs/3D Weapons/Nuke");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Nuke");
 	}
 	
 	public static float getRefireRate() {

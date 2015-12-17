@@ -284,12 +284,24 @@ public class BulletShooter : NetworkBehaviour {
 				break;
 			}
 
-			case 9:		//Turrets
+			case 9:		//Mines
 			{
+				if (MineField.getRefireRate() > (Time.fixedTime - lastShot)) {
+					return;
+				}
+
+				lastShot = Time.fixedTime;
+
+				GameObject newMineField = (GameObject)Instantiate(MineField.getMineField());
+				MineField mf = newMineField.GetComponent<MineField>();
+
+				mf.init(owner, startPos);
+
+				NetworkServer.Spawn(newMineField);	
 				break;
 			}
 
-			case 10:	//Mines
+			case 10:	//Turrets
 			{
 				break;
 			}

@@ -16,7 +16,7 @@ public class Crush : Bullet {
 	}
 
 	public static GameObject getBullet() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/Crush");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Crush");
 	}
 	
 	public static new float getRefireRate() {

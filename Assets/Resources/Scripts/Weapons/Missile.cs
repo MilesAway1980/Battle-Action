@@ -84,7 +84,7 @@ public class Missile : Bullet {
 	}
 	
 	public static GameObject getBullet() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/Missile");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Missile");
 	}
 	
 	public new static float getRefireRate() {

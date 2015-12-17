@@ -30,7 +30,8 @@ public class Ship : NetworkBehaviour {
 
 	//Ship lastHitBy;
 	int lastHitBy;
-	GameObject explosion;
+
+	public Exploder explosion;
 
 	Rigidbody2D rb;
 
@@ -72,7 +73,7 @@ public class Ship : NetworkBehaviour {
 
 		currentWeapon = 1;
 
-		explosion = (GameObject)Resources.Load ("Detonator Explosion FrameWork/Prefab Examples/Detonator-Base");
+		//explosion = (GameObject)Resources.Load ("Detonator Explosion FrameWork/Prefab Examples/Detonator-Base");
 	}
 
 	void Update() {
@@ -131,7 +132,13 @@ public class Ship : NetworkBehaviour {
 	}
 
 	void explode() {
+		
 		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+
+		Exploder exp = boom.GetComponent<Exploder> ();
+		exp.init (0.5f, 10);
+
+
 		NetworkServer.Spawn (boom);
 	}
 

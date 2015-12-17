@@ -69,7 +69,7 @@ public class MachineGun : Bullet {
 	}
 
 	public static GameObject getBullet() {
-		return (GameObject)Resources.Load ("Prefabs/Bullets/MachineGunBullet");
+		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/MachineGunBullet");
 	}
 
 	public static new float getRefireRate() {

@@ -14,6 +14,9 @@ struct CurrentInfo {
 
 public class Player : NetworkBehaviour {
 
+	static Player thisPlayer;
+	//static Ship thisPlayerShip;
+
 	static int playerCount = 0;
 	[SyncVar] int playerNum;
 
@@ -57,6 +60,8 @@ public class Player : NetworkBehaviour {
 
 			assignShip();
 			setCameraToFollow();
+
+			thisPlayer = this;
 		}
 		deadTimer = spawnDelay;
 	}
@@ -546,6 +551,10 @@ public class Player : NetworkBehaviour {
 			}
 		}
 
+	}
+
+	public static Player getLocalPlayer() {
+		return thisPlayer;
 	}
 
 	public int getPlayerNum() {
