@@ -73,7 +73,7 @@ Transform:
   m_GameObject: {fileID: 140046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .150000006, y: .150000006, z: .150000006}
+  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
   m_Children:
   - {fileID: 419404}
   m_Father: {fileID: 494724}
@@ -112,7 +112,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -131,7 +131,8 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 115606}
-  m_Mass: 1.79999995
+  m_UseAutoMass: 0
+  m_Mass: 1.8
   m_LinearDrag: 1
   m_AngularDrag: 1
   m_GravityScale: 1
@@ -147,12 +148,13 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 115606}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: .75
+  m_Radius: 0.75
 --- !u!114 &11422626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -166,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 6
   maxThrust: 11
-  acceleration: .100000001
+  acceleration: 0.1
   maxArmor: 750
   turnRate: 1
   slots: 0
@@ -174,6 +176,7 @@ MonoBehaviour:
   angle: 0
   thrust: 0
   turnDir: 0
+  explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
 --- !u!114 &11447162
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -218,11 +221,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 2
-  m_SendInterval: .100000001
+  m_SendInterval: 0.1
   m_SyncRotationAxis: 3
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
-  m_MovementTheshold: .00100000005
+  m_MovementTheshold: 0.001
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
@@ -259,6 +262,10 @@ Prefab:
       propertyPath: rechargeRate
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 115606}

@@ -19,14 +19,12 @@ public class Player : NetworkBehaviour {
 
 	static int playerCount = 0;
 	[SyncVar] int playerNum;
-
 	[SyncVar] int kills;
+	[SyncVar] float deadTimer;
 
 	bool buttonsReady = false;
 
 	GameObject ship;
-
-	[SyncVar] float deadTimer;
 
 	public float spawnDelay;
 

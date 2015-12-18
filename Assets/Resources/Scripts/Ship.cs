@@ -31,7 +31,7 @@ public class Ship : NetworkBehaviour {
 	//Ship lastHitBy;
 	int lastHitBy;
 
-	public Exploder explosion;
+	public GameObject explosion;
 
 	Rigidbody2D rb;
 
@@ -69,11 +69,7 @@ public class Ship : NetworkBehaviour {
 		currentPos = transform.position;
 		oldPos = currentPos;
 
-		//moveDist = Vector2.Distance (currentPos, oldPos);
-
 		currentWeapon = 1;
-
-		//explosion = (GameObject)Resources.Load ("Detonator Explosion FrameWork/Prefab Examples/Detonator-Base");
 	}
 
 	void Update() {
@@ -86,15 +82,13 @@ public class Ship : NetworkBehaviour {
 		turn ();
 
 		if (currentPos != oldPos) {
-			//moveDist = Vector2.Distance(currentPos, oldPos);
 			oldPos = currentPos;
 		}
 
 		currentPos = transform.position;
 	}
 
-	public void makePointers() {
-		//beaconPointer = (GameObject)Instantiate (sphere);
+	public void makePointers() {	
 
 		beaconPointer = (GameObject)Instantiate(Resources.Load ("Prefabs/BeaconPointer"));
 		beaconPointer.name = "Beacon Pointer";
@@ -136,8 +130,7 @@ public class Ship : NetworkBehaviour {
 		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
 
 		Exploder exp = boom.GetComponent<Exploder> ();
-		exp.init (0.5f, 10);
-
+		exp.init (0.2f, 10);
 
 		NetworkServer.Spawn (boom);
 	}

@@ -21,21 +21,23 @@ public class Mine : NetworkBehaviour {
 	void Start () {		
 		transform.position = pos;
 
-		/*Player thisPlayer = Player.getLocalPlayer ();
-		if (thisPlayer == null) {
-			return;
-		}*/
-
 		if (isServer) {
 			ownerNum = owner.getOwner ();
 		}
+	}
+		void Update() {
+		
 
+		Player thisPlayer = Player.getLocalPlayer ();
+		if (thisPlayer == null) {
+			return;
+		}
 
-		//if (ownerNum == thisPlayer.getPlayerNum()) {
+		if (ownerNum == thisPlayer.getPlayerNum()) {
 			size = new Vector3 (ownerScale, ownerScale, ownerScale);
-		//} else {
-		//	size = new Vector3 (nonOwnerScale, nonOwnerScale, nonOwnerScale);
-		//}
+		} else {
+			size = new Vector3 (nonOwnerScale, nonOwnerScale, nonOwnerScale);
+		}
 
 		transform.localScale = size;
 	}

@@ -70,7 +70,7 @@ public class MineField : NetworkBehaviour {
 		for (int i = 0; i < players.Length; i++) {
 			Ship ship = players [i].GetComponent<Ship> ();
 			if (ship == owner) {
-				//continue;
+				continue;
 			}
 
 			//Ship is within the mine field, check for mine hits

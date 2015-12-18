@@ -15,6 +15,7 @@ public class Bullet : NetworkBehaviour {
 	public float bulletsPerShot;
 
 	protected Ship owner;
+
 	[SyncVar] protected Vector2 originPos;
 	[SyncVar] protected Vector2 pos;
 	[SyncVar] protected Vector2 prevPos;

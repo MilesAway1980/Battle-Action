@@ -93,7 +93,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 134110}
-  m_LocalRotation: {x: .49999994, y: .499999851, z: -.500000238, w: -.500000119}
+  m_LocalRotation: {x: 0.49999994, y: 0.49999985, z: -0.50000024, w: -0.5000001}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
@@ -108,9 +108,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151732}
-  m_LocalRotation: {x: -.5, y: -.5, z: -.5, w: .5}
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .705489337, y: .705489337, z: .705489337}
+  m_LocalScale: {x: 0.70548934, y: 0.70548934, z: 0.70548934}
   m_Children: []
   m_Father: {fileID: 412580}
   m_RootOrder: 2
@@ -120,9 +120,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 107100}
-  m_LocalRotation: {x: -.5, y: -.5, z: -.5, w: .5}
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .705489337, y: .705489337, z: .705489337}
+  m_LocalScale: {x: 0.70548934, y: 0.70548934, z: 0.70548934}
   m_Children: []
   m_Father: {fileID: 412580}
   m_RootOrder: 0
@@ -132,9 +132,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 145062}
-  m_LocalRotation: {x: -.5, y: -.5, z: -.5, w: .5}
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .705489337, y: .705489337, z: .705489337}
+  m_LocalScale: {x: 0.70548934, y: 0.70548934, z: 0.70548934}
   m_Children: []
   m_Father: {fileID: 412580}
   m_RootOrder: 1
@@ -172,7 +172,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -198,7 +198,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -224,7 +224,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -257,6 +257,7 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 198268}
+  m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 1
   m_AngularDrag: 1
@@ -273,12 +274,13 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 198268}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: .25}
+  m_Offset: {x: 0, y: 0.25}
   serializedVersion: 2
-  m_Radius: .75
+  m_Radius: 0.75
 --- !u!114 &11403210
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -291,11 +293,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 2
-  m_SendInterval: .100000001
+  m_SendInterval: 0.1
   m_SyncRotationAxis: 3
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
-  m_MovementTheshold: .00100000005
+  m_MovementTheshold: 0.001
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
@@ -344,14 +346,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 12
   maxThrust: 12
-  acceleration: .100000001
+  acceleration: 0.1
   maxArmor: 150
-  turnRate: 2.79999995
+  turnRate: 2.8
   slots: 0
   currentSpeed: 0
   angle: 0
   thrust: 0
   turnDir: 0
+  explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
 --- !u!114 &11448804
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -385,6 +388,10 @@ Prefab:
       propertyPath: rechargeRate
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 198268}

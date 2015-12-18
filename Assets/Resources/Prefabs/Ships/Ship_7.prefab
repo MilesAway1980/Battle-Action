@@ -59,9 +59,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 126706}
-  m_LocalRotation: {x: -1.15202326e-07, y: .707106709, z: -.707106829, w: -1.15202312e-07}
-  m_LocalPosition: {x: .0250000004, y: -.0900000036, z: 0}
-  m_LocalScale: {x: .850000024, y: .850000024, z: .850000024}
+  m_LocalRotation: {x: -0.000000115202326, y: 0.7071067, z: -0.7071068, w: -0.00000011520231}
+  m_LocalPosition: {x: 0.025, y: -0.09, z: 0}
+  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
   m_Children:
   - {fileID: 433590}
   m_Father: {fileID: 492398}
@@ -112,7 +112,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: .5
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -131,8 +131,9 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 109868}
-  m_Mass: .600000024
-  m_LinearDrag: .800000012
+  m_UseAutoMass: 0
+  m_Mass: 0.6
+  m_LinearDrag: 0.8
   m_AngularDrag: 1
   m_GravityScale: 1
   m_IsKinematic: 0
@@ -147,12 +148,13 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 109868}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: .75
+  m_Radius: 0.75
 --- !u!114 &11411074
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -165,11 +167,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TransformSyncMode: 2
-  m_SendInterval: .100000001
+  m_SendInterval: 0.1
   m_SyncRotationAxis: 3
   m_RotationSyncCompression: 0
   m_SyncSpin: 0
-  m_MovementTheshold: .00100000005
+  m_MovementTheshold: 0.001
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
@@ -232,7 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 22
   maxThrust: 12
-  acceleration: .5
+  acceleration: 0.5
   maxArmor: 50
   turnRate: 2.5
   slots: 0
@@ -240,6 +242,7 @@ MonoBehaviour:
   angle: 0
   thrust: 0
   turnDir: 0
+  explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -259,6 +262,10 @@ Prefab:
       propertyPath: rechargeRate
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: explosion
+      value: 
+      objectReference: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 109868}
