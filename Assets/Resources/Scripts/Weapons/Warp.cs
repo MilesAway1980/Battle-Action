@@ -42,9 +42,9 @@ public class Warp : NetworkBehaviour {
 
 	[Server]
 	void warpShip() {
-		float max = (ArenaInfo.getArenaSize () * (maxPercentageOfArenaToWarp / 100.0f));
-		float min = (ArenaInfo.getArenaSize () * (minPercentageOfArenaToWarp / 100.0f));
 		
+		float min = (ArenaInfo.getArenaSize () * (minPercentageOfArenaToWarp / 100.0f));
+		float max = (ArenaInfo.getArenaSize () * (maxPercentageOfArenaToWarp / 100.0f));		
 		float distance = Random.Range (min, max);
 
 		if (distance < minimumWarpDistance) {
@@ -56,20 +56,17 @@ public class Warp : NetworkBehaviour {
 		Vector2 halfWay = new Vector2 (
 			ownerShip.transform.position.x - Mathf.Sin (angleRad) * (distance * 0.5f),
 			ownerShip.transform.position.y + Mathf.Cos (angleRad) * (distance * 0.5f)
-			);
+		);
 
-		ownerShip.transform.position = new Vector3 (
+		Vector2 destination = new Vector3 (
 			ownerShip.transform.position.x - Mathf.Sin (angleRad) * distance,
 			ownerShip.transform.position.y + Mathf.Cos (angleRad) * distance
 		);
 
-
-
-		GameObject warpField = (GameObject)Instantiate (getWarpField ());
+		GameObject warpField = (GameObject)Instantiate (getWarpField (), halfWay, Quaternion.identity);
 
 		WarpField wf = warpField.GetComponent<WarpField> ();
-		wf.init (owner, halfWay, distance * 0.5f, ownerShip.getAngle ());
-
+		wf.init (owner, halfWay, distance * 0.5f, ownerShip.getAngle (), destination);
 
 		NetworkServer.Spawn (warpField);
 		

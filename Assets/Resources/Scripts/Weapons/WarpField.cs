@@ -10,11 +10,14 @@ public class WarpField : NetworkBehaviour {
 	[SyncVar] float currentTime;
 	[SyncVar] float radius;
 	[SyncVar] float length;
-	[SyncVar] float rotation;
-	[SyncVar] Vector2 pos;
+	[SyncVar] float rotation;	
+	[SyncVar] Vector2 pos;			
+	[SyncVar] Vector2 targetPos;	//Where the ship is warping to
 
 	Player owner;
 	Ship ownerShip;
+
+	[SyncVar] bool warped;
 
 	// Use this for initialization
 	void Start () {
@@ -22,6 +25,8 @@ public class WarpField : NetworkBehaviour {
 		radius = transform.localScale.y;
 		transform.position = pos;
 		transform.rotation = Quaternion.Euler(new Vector3 (0, 0, rotation));
+		transform.localScale = Vector3.zero;
+		warped = false;
 	}
 	
 	// Update is called once per frame
@@ -29,7 +34,21 @@ public class WarpField : NetworkBehaviour {
 		if (owner != null) {
 			if (ownerShip == null) {			
 				ownerShip = owner.getShip ();
+				if (ownerShip == null) {
+					return;
+				}
 			}
+		}
+
+		if (ownerShip != null) {
+			if (warped == false) {
+				ownerShip.transform.position = targetPos;
+			}
+			warped = true;
+		}
+
+		if (warped == false) {
+			return;
 		}
 
 		currentTime += Time.deltaTime;
@@ -45,11 +64,12 @@ public class WarpField : NetworkBehaviour {
 		}
 	}
 
-	public void init(Player newOwner, Vector2 newPos, float newLength, float newRotation) {
+	public void init(Player newOwner, Vector2 newPos, float newLength, float newRotation, Vector2 destination) {
 		owner = newOwner;
 		pos = newPos;
 		length = newLength;
 		rotation = newRotation;
+		targetPos = destination;
 	}
 
 	void OnTriggerStay2D(Collider2D col) {
