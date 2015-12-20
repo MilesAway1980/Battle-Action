@@ -20,6 +20,8 @@ public class Warp : NetworkBehaviour {
 	public float refireRate;
 	static float warpRefireRate = -1;
 
+	static float lastShot;
+
 	// Use this for initialization
 	void Start () {
 		currentTime = 0;
@@ -71,6 +73,14 @@ public class Warp : NetworkBehaviour {
 		NetworkServer.Spawn (warpField);
 		
 		Destroy (gameObject);
+	}
+
+	public static float getLastShot() {
+		return lastShot;
+	}
+
+	public static void updateLastShot() {
+		lastShot = Time.fixedTime;
 	}
 
 	public static GameObject getWarp() {

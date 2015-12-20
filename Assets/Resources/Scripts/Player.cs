@@ -397,24 +397,50 @@ public class Player : NetworkBehaviour {
 				Ship thisShip = ship.GetComponent<Ship>();
 
 				float timeUntilReady = 0;
+				float lastShot = 0; 
 				int currentWeapon = thisShip.getCurrentWeapon ();
 
 				switch (currentWeapon) {
-					case 1: timeUntilReady = MachineGun.getRefireRate (); break;
-					case 2: timeUntilReady = Rocket.getRefireRate (); break;
-					case 3: timeUntilReady = Missile.getRefireRate (); break;
-					case 4: timeUntilReady = 0; break;
-					case 5: timeUntilReady = Crush.getRefireRate (); break;
-					case 6: timeUntilReady = Nuke.getRefireRate (); break;
-					case 7: timeUntilReady = Warp.getRefireRate(); break;
-					case 8: timeUntilReady = Plasma.getRefireRate (); break;
-					case 9: timeUntilReady = MineField.getRefireRate (); break;
+					case 1: 
+						timeUntilReady = MachineGun.getRefireRate (); 
+						lastShot = MachineGun.getLastShot ();
+						break;
+					case 2: 
+						timeUntilReady = Rocket.getRefireRate (); 
+						lastShot = Rocket.getLastShot ();
+						break;
+					case 3: 
+						timeUntilReady = Missile.getRefireRate (); 
+						lastShot = Missile.getLastShot ();
+						break;
+					case 4: 
+						timeUntilReady = 0; 
+						lastShot = 0;
+						break;
+					case 5: 
+						timeUntilReady = Crush.getRefireRate (); 
+						lastShot = Crush.getLastShot ();
+						break;
+					case 6: 
+						timeUntilReady = Nuke.getRefireRate (); 
+						lastShot = Nuke.getLastShot ();
+						break;
+					case 7: 
+						timeUntilReady = Warp.getRefireRate (); 
+						lastShot = Warp.getLastShot ();
+						break;
+					case 8: 
+						timeUntilReady = Plasma.getRefireRate (); 
+						lastShot = Plasma.getLastShot ();
+						break;
+					case 9: 
+						timeUntilReady = MineField.getRefireRate (); 
+						lastShot = MineField.getLastShot ();
+						break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
 				}
-				BulletShooter bs = GetComponent<BulletShooter> ();
-				float lastShot = bs.getLastShot ();
 
 				timeUntilReady = (int)((timeUntilReady - (Time.fixedTime - lastShot)) * 1000);
 				if (timeUntilReady < 0) {

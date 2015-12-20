@@ -11,6 +11,7 @@ public class Missile : Bullet {
 	float currentSpeed;
 
 	float maxTurnRate;
+	static float lastShot;
 	
 	void Start () {
 
@@ -95,6 +96,14 @@ public class Missile : Bullet {
 			shipHit.setLastHitBy(owner.getPlayerNum());
 			Destroy (gameObject);
 		}
+	}
+
+	public static float getLastShot() {
+		return lastShot;
+	}
+
+	public static void updateLastShot() {
+		lastShot = Time.fixedTime;
 	}
 	
 	public static GameObject getBullet() {

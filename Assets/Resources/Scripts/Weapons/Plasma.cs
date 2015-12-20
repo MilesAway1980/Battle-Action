@@ -15,6 +15,7 @@ public class Plasma : Bullet {
 	[SyncVar] float charge;
 	[SyncVar] float radius;
 	bool released;
+	static float lastShot;
 
 	//Vector2 pivot;
 
@@ -138,6 +139,14 @@ public class Plasma : Bullet {
 
 	public float getArc() {
 		return arc;
+	}
+
+	public static float getLastShot() {
+		return lastShot;
+	}
+
+	public static void updateLastShot() {
+		lastShot = Time.fixedTime;
 	}
 
 	public static GameObject getBullet() {

@@ -6,6 +6,7 @@ public class Rocket : Bullet {
 
 	public int range;
 	static ShootingInfo rocketInfo = null;
+	static float lastShot;
 
 	// Use this for initialization
 	void Start () {
@@ -50,6 +51,14 @@ public class Rocket : Bullet {
 			shipHit.setLastHitBy (owner.getPlayerNum ());
 			Destroy (gameObject);
 		}	
+	}
+
+	public static float getLastShot() {
+		return lastShot;
+	}
+
+	public static void updateLastShot() {
+		lastShot = Time.fixedTime;
 	}
 
 	public static GameObject getBullet() {

@@ -15,6 +15,8 @@ public class Crush : Bullet {
 	[SyncVar] float crushLevel;
 	[SyncVar] bool hasTarget;
 
+	static float lastShot;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -92,6 +94,14 @@ public class Crush : Bullet {
 		if (crushLevel < minCrushLevel) {
 			Destroy (gameObject);
 		}
+	}
+
+	public static float getLastShot() {
+		return lastShot;
+	}
+
+	public static void updateLastShot() {
+		lastShot = Time.fixedTime;
 	}
 
 	public static GameObject getBullet() {

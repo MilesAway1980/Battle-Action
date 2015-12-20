@@ -12,7 +12,7 @@ public class BulletShooter : NetworkBehaviour {
 	Vector2 startPos;				//The weapon's starting position
 	float angle;					//The weapon's starting angle
 
-	[SyncVar] float lastShot;					//How long it has been since the weapon last fired.
+	//[SyncVar] float lastShot;					//How long it has been since the weapon last fired.
 
 	bool isFiring;					//Used to keep track if the bullet shooter is firing/charging, or should be reset
 	bool firstShot;					//Keeps track if the shot is the very first shot of a rapid fire
@@ -27,7 +27,7 @@ public class BulletShooter : NetworkBehaviour {
 
 	void Start() {
 		isFiring = false;
-		lastShot = float.MinValue;
+		//lastShot = float.MinValue;
 		firstShot = true;
 		shootTimer = 0;
 	}
@@ -68,9 +68,9 @@ public class BulletShooter : NetworkBehaviour {
 		owner = newOwner;
 	}
 
-	public float getLastShot() {
+	/*public float getLastShot() {
 		return lastShot;
-	}
+	}*/
 
 	void release() {
 		switch (whichWeapon) {
@@ -105,11 +105,11 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 1:		//Machine gun
 			{
-				if (MachineGun.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (MachineGun.getRefireRate() > (Time.fixedTime - MachineGun.getLastShot())) {
 					return;
 				}
+				MachineGun.updateLastShot ();
 
-				lastShot = Time.fixedTime;
 				
 				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
 				MachineGun mg = newBullet.GetComponent<MachineGun>();				
@@ -123,11 +123,11 @@ public class BulletShooter : NetworkBehaviour {
 			case 2:		//Rockets
 			{
 				
-				if (Rocket.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (Rocket.getRefireRate() > (Time.fixedTime - Rocket.getLastShot())) {
 					return;
 				}
 				
-				lastShot = Time.fixedTime;
+				Rocket.updateLastShot ();
 				
 				float newAngle = angle;
 				for (int i = 0; i < Rocket.getBulletsPerShot(); i++) {
@@ -142,11 +142,11 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 3:		//Missile
 			{
-				if (Missile.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (Missile.getRefireRate() > (Time.fixedTime - Missile.getLastShot())) {
 					return;
 				}
 				
-				lastShot = Time.fixedTime;
+				Missile.updateLastShot();
 				
 				float newAngle = angle;
 				for (int i = 0; i < Missile.getBulletsPerShot(); i++) {
@@ -175,11 +175,11 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 5:		//Crush / Flak
 			{
-				if (Crush.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (Crush.getRefireRate() > (Time.fixedTime - Crush.getLastShot())) {
 					return;
 				}
 				
-				lastShot = Time.fixedTime;
+				Crush.updateLastShot (); 
 				
 				float newAngle = angle;
 				GameObject newBullet = (GameObject)Instantiate(Crush.getBullet());
@@ -194,11 +194,11 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 6:		//Nuke
 			{
-				if (Nuke.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (Nuke.getRefireRate() > (Time.fixedTime - Nuke.getLastShot())) {
 					return;
 				}
 				
-				lastShot = Time.fixedTime;
+				Nuke.updateLastShot ();
 				
 				GameObject newBomb = (GameObject)Instantiate(Nuke.getBomb());
 				Nuke nuke = newBomb.GetComponent<Nuke>();
@@ -211,10 +211,11 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 7:		//Warp
 			{
-				if (Warp.getRefireRate () > (Time.fixedTime - lastShot)) {
+				if (Warp.getRefireRate () > (Time.fixedTime - Warp.getLastShot())) {
 					return;
 				}
-				lastShot = Time.fixedTime;
+
+				Warp.updateLastShot ();
 
 				GameObject newWarp = (GameObject)Instantiate(Warp.getWarp());
 				Warp warp = newWarp.GetComponent<Warp> ();
@@ -271,11 +272,11 @@ public class BulletShooter : NetworkBehaviour {
 				}
 
 
-				if (Plasma.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (Plasma.getRefireRate() > (Time.fixedTime - Plasma.getLastShot())) {
 					return;
 				}
 
-				lastShot = Time.fixedTime;
+				Plasma.updateLastShot ();
 
 				//firstShot is true, set it to false before continuing
 				firstShot = false;
@@ -316,11 +317,11 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 9:		//Mines
 			{
-				if (MineField.getRefireRate() > (Time.fixedTime - lastShot)) {
+				if (MineField.getRefireRate() > (Time.fixedTime - MineField.getLastShot())) {
 					return;
 				}
 
-				lastShot = Time.fixedTime;
+				MineField.updateLastShot();
 
 				GameObject newMineField = (GameObject)Instantiate(MineField.getMineField());
 				MineField mf = newMineField.GetComponent<MineField>();

@@ -19,6 +19,7 @@ public class Nuke : NetworkBehaviour {
 	[SyncVar] Vector2 pos;
 	[SyncVar] public Vector3 nukeSize;
 	[SyncVar] public Vector3 fireballSize;
+	static float lastShot;
 
 	float angle;
 	Player owner;
@@ -30,7 +31,7 @@ public class Nuke : NetworkBehaviour {
 		currentTime = 0;
 		exploded = false;
 		nukeSize = new Vector3 (0.3f, 0.3f, 0.3f);
-		transform.localScale = nukeSize;
+		transform.localScale = Vector3.zero;
 	}
 
 	void FixedUpdate () {
@@ -61,14 +62,15 @@ public class Nuke : NetworkBehaviour {
 			if (currentTime >= detonatorTime) {
 				exploded = true;
 
-				nukeSize = new Vector3(0, 0, 0);
-				fireballSize = new Vector3(0, 0, 0);
-				transform.localScale = nukeSize;
+				nukeSize = new Vector3 (0, 0, 0);
+				fireballSize = new Vector3 (0, 0, 0);
 
 				thisFireball = (GameObject)Instantiate (fireball);
 				thisFireball.transform.position = pos;
 				thisFireball.transform.localScale = fireballSize;
-			}
+			} 
+
+			transform.localScale = nukeSize;
 
 		} else {
 			currentRadius += expansionSpeed;
@@ -124,6 +126,14 @@ public class Nuke : NetworkBehaviour {
 
 	public void init(Player newOwner) {
 		owner = newOwner;
+	}
+
+	public static float getLastShot() {
+		return lastShot;
+	}
+
+	public static void updateLastShot() {
+		lastShot = Time.fixedTime;
 	}
 
 	public static GameObject getBomb() {
