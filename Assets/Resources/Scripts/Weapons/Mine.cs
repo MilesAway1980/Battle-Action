@@ -15,18 +15,26 @@ public class Mine : NetworkBehaviour {
 	[SyncVar] Vector3 pos;
 	[SyncVar] Vector3 size;
 	[SyncVar] int ownerNum;
-	Ship owner;
+
+	Player owner;
+	Ship ownerShip;
 
 	// Use this for initialization
 	void Start () {		
 		transform.position = pos;
-
+		transform.localScale = Vector3.zero;
 		if (isServer) {
-			ownerNum = owner.getOwner ();
+			ownerNum = owner.getPlayerNum ();
 		}
 	}
-		void Update() {
-		
+
+	void Update() {
+
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+			}
+		}
 
 		Player thisPlayer = Player.getLocalPlayer ();
 		if (thisPlayer == null) {
@@ -46,7 +54,7 @@ public class Mine : NetworkBehaviour {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Mine");
 	}
 
-	public void init(Ship newOwner, Vector3 newPos) {		
+	public void init(Player newOwner, Vector3 newPos) {		
 		pos = newPos;
 		owner = newOwner;
 	}

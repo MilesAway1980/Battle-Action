@@ -17,18 +17,27 @@ public class Blaster : NetworkBehaviour {
 	GameObject blasterObject;
 
 	public Material mat;
-	Ship owner;
+	Player owner;
+	Ship ownerShip;
 
 	// Use this for initialization
 	void Start () {
 
 		//MeshFilter mf = GetComponent<MeshFilter>();
 		MeshRenderer mr = GetComponent<MeshRenderer>();
-
 		mr.material = mat;
 	}
 
 	void FixedUpdate() {
+
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+				if (ownerShip == null) {
+					return;
+				}
+			}
+		}
 
 		setShape ();
 		checkDamage ();
@@ -89,8 +98,6 @@ public class Blaster : NetworkBehaviour {
 
 			float dist = Vector2.Distance(startPos, playerShip.transform.position);
 
-
-
 			if (dist < range ) {
 				bool damaged = false;
 
@@ -120,13 +127,13 @@ public class Blaster : NetworkBehaviour {
 
 				if (damaged) {
 					playerShip.damage (damage);
-					playerShip.setLastHitBy(owner.getOwner ());
+					playerShip.setLastHitBy (owner.getPlayerNum ());
 				}
 			}
 		}
 	}
 
-	public void init(Vector2 newStartPos, float newAngle, Ship newOwner) {
+	public void init(Vector2 newStartPos, float newAngle, Player newOwner) {
 		startPos = newStartPos;
 		angle = newAngle;
 		owner = newOwner;

@@ -75,7 +75,8 @@ MonoBehaviour:
   warpTimer: 0.5
   minPercentageOfArenaToWarp: 10
   maxPercentageOfArenaToWarp: 50
-  currentTime: 0
+  minimumWarpDistance: 100
+  refireRate: 4
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -85,7 +86,19 @@ Prefab:
     m_Modifications:
     - target: {fileID: 0}
       propertyPath: warpTimer
-      value: .5
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minimumWarpDistance
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: xx
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: refireRate
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

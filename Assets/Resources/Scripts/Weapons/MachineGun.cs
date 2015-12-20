@@ -55,15 +55,14 @@ public class MachineGun : Bullet {
 		);
 
 		transform.position = pos;
-
 	}
 
 	void checkHit() {
-		Ship shipHit = checkShipHit ();
+		Ship shipHit = checkShipHit (true);
 		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
 			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getOwner());
+			shipHit.setLastHitBy(owner.getPlayerNum());
 			Destroy (gameObject);
 		}	
 	}

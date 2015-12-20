@@ -10,25 +10,30 @@ public class Warp : NetworkBehaviour {
 	public float minPercentageOfArenaToWarp;
 	[Range (0, 100)]
 	public float maxPercentageOfArenaToWarp;
-	Ship owner;
 
-	[SyncVar] public float currentTime;
+	Player owner;
+	Ship ownerShip;
 
+	[SyncVar] float currentTime;
 
+	public float minimumWarpDistance;
+	public float refireRate;
+	static float warpRefireRate = -1;
 
 	// Use this for initialization
 	void Start () {
 		currentTime = 0;
-
-		if (minPercentageOfArenaToWarp == 0 && maxPercentageOfArenaToWarp == 0) {
-			minPercentageOfArenaToWarp = getWarp ().GetComponent<Warp>().minPercentageOfArenaToWarp;
-			maxPercentageOfArenaToWarp = getWarp ().GetComponent<Warp>().maxPercentageOfArenaToWarp;
-			warpTimer = getWarp ().GetComponent<Warp>().warpTimer;
-		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+			}
+		}
+
 		currentTime += Time.deltaTime;
 		if (currentTime > warpTimer) {
 			warpShip();
@@ -37,20 +42,25 @@ public class Warp : NetworkBehaviour {
 
 	[Server]
 	void warpShip() {
-		float maxWarpDist = (ArenaInfo.getArenaSize () * (maxPercentageOfArenaToWarp / 100.0f));
-		float minWarpDist = (ArenaInfo.getArenaSize () * (minPercentageOfArenaToWarp / 100.0f));
+		float max = (ArenaInfo.getArenaSize () * (maxPercentageOfArenaToWarp / 100.0f));
+		float min = (ArenaInfo.getArenaSize () * (minPercentageOfArenaToWarp / 100.0f));
 		
-		float distance = Random.Range (minWarpDist, maxWarpDist);
-		float angleRad = owner.getAngle () / Mathf.Rad2Deg;
+		float distance = Random.Range (min, max);
+
+		if (distance < minimumWarpDistance) {
+			distance = minimumWarpDistance;
+		}
+
+		float angleRad = ownerShip.getAngle () / Mathf.Rad2Deg;
 
 		Vector2 halfWay = new Vector2 (
-			owner.transform.position.x - Mathf.Sin (angleRad) * (distance * 0.5f),
-			owner.transform.position.y + Mathf.Cos (angleRad) * (distance * 0.5f)
+			ownerShip.transform.position.x - Mathf.Sin (angleRad) * (distance * 0.5f),
+			ownerShip.transform.position.y + Mathf.Cos (angleRad) * (distance * 0.5f)
 			);
 
-		owner.transform.position = new Vector3 (
-			owner.transform.position.x - Mathf.Sin (angleRad) * distance,
-			owner.transform.position.y + Mathf.Cos (angleRad) * distance
+		ownerShip.transform.position = new Vector3 (
+			ownerShip.transform.position.x - Mathf.Sin (angleRad) * distance,
+			ownerShip.transform.position.y + Mathf.Cos (angleRad) * distance
 		);
 
 
@@ -58,7 +68,7 @@ public class Warp : NetworkBehaviour {
 		GameObject warpField = (GameObject)Instantiate (getWarpField ());
 
 		WarpField wf = warpField.GetComponent<WarpField> ();
-		wf.init (owner, halfWay, distance * 0.5f, owner.getAngle ());
+		wf.init (owner, halfWay, distance * 0.5f, ownerShip.getAngle ());
 
 
 		NetworkServer.Spawn (warpField);
@@ -74,7 +84,14 @@ public class Warp : NetworkBehaviour {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Warp Field");
 	}
 
-	public void setOwner(Ship newOwner) {
+	public static float getRefireRate() {
+		if (warpRefireRate == -1) {
+			warpRefireRate = getWarp ().GetComponent<Warp> ().refireRate;
+		}
+		return warpRefireRate;
+	}
+
+	public void setOwner(Player newOwner) {
 		owner = newOwner;
 	}
 }

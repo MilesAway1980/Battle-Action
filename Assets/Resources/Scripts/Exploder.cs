@@ -7,29 +7,33 @@ public class Exploder : NetworkBehaviour {
 	public GameObject explosion;
 	[SyncVar] float explosionDelay;
 	[SyncVar] float explosionSize;
-	[SyncVar] float timer;
+	[SyncVar] public float timer;
 	Detonator det;
 	GameObject spawnedExplosion;
 
 	// Use this for initialization
 	void Start () {	
-		
-		spawnedExplosion = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+
+		/*spawnedExplosion = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
 		det = spawnedExplosion.GetComponent<Detonator> ();
 
 		if (isServer) {
 			NetworkServer.Spawn (spawnedExplosion);
 		}
 
-		timer = 0;
+		timer = 0;*/
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		timer += Time.deltaTime;
-		det.size = explosionSize;
+		//det.size = explosionSize;
 		if (timer >= explosionDelay) {
+
+			spawnedExplosion = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+			det = spawnedExplosion.GetComponent<Detonator> ();
+			det.size = explosionSize;			
 			det.Explode ();
 			Destroy (gameObject);
 		}

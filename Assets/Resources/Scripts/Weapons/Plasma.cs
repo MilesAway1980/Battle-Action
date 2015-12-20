@@ -37,12 +37,12 @@ public class Plasma : Bullet {
 
 	void setPosition() {
 
-		if (owner == null) {
+		if (ownerShip == null) {
 			return;
 		}
 
-		float forwardX = owner.transform.position.x - Mathf.Sin (angleRad) * 2;
-		float forwardY = owner.transform.position.y + Mathf.Cos (angleRad) * 2;
+		float forwardX = ownerShip.transform.position.x - Mathf.Sin (angleRad) * 2;
+		float forwardY = ownerShip.transform.position.y + Mathf.Cos (angleRad) * 2;
 
 		originPos = new Vector2 (forwardX, forwardY);
 
@@ -51,6 +51,15 @@ public class Plasma : Bullet {
 	}
 	
 	void FixedUpdate () {
+
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+				if (ownerShip == null) {
+					return;
+				}
+			}
+		}
 		distance = Vector2.Distance (originPos, transform.position);
 		if (distance >= travelDist) {
 			Destroy (gameObject);
@@ -73,15 +82,15 @@ public class Plasma : Bullet {
 	}
 
 	void checkHit() {
-		Ship shipHit = checkShipHit ();
+		Ship shipHit = checkShipHit (true);
 		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
 
 			float chargeDamage = (charge / (maxChargeTime + initialCharge)) * maxDamage;
-			print (chargeDamage);
+			//print (chargeDamage);
 
 			shipHit.damage(chargeDamage);
-			shipHit.setLastHitBy(owner.getOwner());
+			shipHit.setLastHitBy (owner.getPlayerNum ());
 			Destroy (gameObject);
 		}	
 	}

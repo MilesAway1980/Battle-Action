@@ -4,46 +4,40 @@ using System.Collections;
 
 public class Ship : NetworkBehaviour {
 
-	public float maxSpeed;
-	public float maxThrust;
-	public float acceleration;
-	public float maxArmor;
-	public float turnRate;
-	public int slots;
-	[SyncVar] private float armor;
-	[SyncVar] public float currentSpeed;
-	public float angle;
-	[SyncVar] public float thrust;
+	static ObjectList shipList;					//A static list of all the ships in the game.
 
-	//[SyncVar]	float moveDist;
-	//[SyncVar]	float targetAngle;
+	public float maxSpeed;						//The fastest the shop can travel
+	public float maxThrust;						//The maximum thrust output
+	public float acceleration;					//How much thrust the ship can increase/decrease in one frame
+	public float maxArmor;						//The ship's maximum armor
+	public float turnRate;						//How quickly the ship can turn
+	public int slots;							//How many weapons the ship can use (not implemented)
 
-	[SyncVar] int ownerNum;
-	public int turnDir;
+	private int turnDir;						//The direction the ship is turning (-1 - 0 - 1)
 
-	[SyncVar] int currentWeapon;
+	public GameObject explosion;				//The explosion that plays when the ship is destroyed
 
-	bool freshKill;
+	[SyncVar] private float armor;				//How much armor the ship currently has.
+	[SyncVar] private float currentSpeed;		//The ship's current speed
+	[SyncVar] private float thrust;				//How much thrust the ship currently has
+	[SyncVar] private int ownerNum;				//The number of the player that owns the ship.
+	[SyncVar] private int currentWeapon;		//The ship's currently selected weapon
 
-	bool accelerating;
-	bool decelerating;
+	private bool freshKill;						//Signals to the player that their ship just earned a kill
+	private bool accelerating;					//The player is accelerating the ship
+	private bool decelerating;					//The player is decelerating the ship
 
-	//Ship lastHitBy;
-	int lastHitBy;
+	private int lastHitBy;						//The number of the player the ship was last hit by
 
-	public GameObject explosion;
+	private Vector2 currentPos;					//The ship's current position
+	private Vector2 oldPos;						//The ship's previous position
 
-	Rigidbody2D rb;
+	private GameObject beaconPointer;			//The object that points to the closest beacon
+	private GameObject shipPointer;				//The object that points to the closest ship
 
-	Vector2 currentPos;
-	Vector2 oldPos;
+	private float opponentDistance;				//The distance to the closest opponent
 
-	static ObjectList shipList;
-
-	GameObject beaconPointer;
-	GameObject shipPointer;
-
-	float opponentDistance;
+	private Rigidbody2D rb;						//The ship's rigid body component
 
 	void Awake() {
 
@@ -59,8 +53,6 @@ public class Ship : NetworkBehaviour {
 	void Start () {
 		armor = maxArmor;
 		transform.Rotate (new Vector3 (0, 0, Random.Range (0, 360)));
-		angle = getAngle ();
-		//targetAngle = angle;
 
 		rb = GetComponent<Rigidbody2D> ();
 
@@ -126,11 +118,9 @@ public class Ship : NetworkBehaviour {
 	}
 
 	void explode() {
-		
 		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
-
 		Exploder exp = boom.GetComponent<Exploder> ();
-		exp.init (0.2f, 10);
+		exp.init (0.0f, 10);
 
 		NetworkServer.Spawn (boom);
 	}
@@ -139,7 +129,7 @@ public class Ship : NetworkBehaviour {
 		ownerNum = newOwner;
 	}
 
-	public int getOwner() {
+	public int getOwnerNum() {
 		return ownerNum;
 	}
 
@@ -217,8 +207,6 @@ public class Ship : NetworkBehaviour {
 	public void turn() {
 		rb.angularVelocity = 0;
 		transform.Rotate (new Vector3 (0, 0, turnRate * turnDir));
-		angle = getAngle ();
-		//turnDir = 0;
 	}
 
 	public float getOpponentDistance() {
@@ -309,5 +297,13 @@ public class Ship : NetworkBehaviour {
 
 	public float getArmor() {
 		return armor;
+	}
+
+	public float getThrust() {
+		return thrust;
+	}
+
+	public float getCurrentSpeed() {
+		return currentSpeed;
 	}
 }

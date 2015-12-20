@@ -14,7 +14,8 @@ public class MineField : NetworkBehaviour {
 
 	[SyncVar] Vector2 pos;
 
-	Ship owner;
+	Player owner;
+	Ship ownerShip;
 
 	// Use this for initialization
 	void Start () {
@@ -46,8 +47,15 @@ public class MineField : NetworkBehaviour {
 	}
 
 	public void Update() {
+		
 		if (!isServer) {
 			return;
+		}
+
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+			}
 		}
 
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
@@ -69,7 +77,7 @@ public class MineField : NetworkBehaviour {
 
 		for (int i = 0; i < players.Length; i++) {
 			Ship ship = players [i].GetComponent<Ship> ();
-			if (ship == owner) {
+			if (ship == ownerShip) {
 				continue;
 			}
 
@@ -101,7 +109,7 @@ public class MineField : NetworkBehaviour {
 		}
 	}
 
-	public void init (Ship newOwner, Vector2 newPos) {
+	public void init (Player newOwner, Vector2 newPos) {
 		owner = newOwner;
 		pos = newPos;
 	}

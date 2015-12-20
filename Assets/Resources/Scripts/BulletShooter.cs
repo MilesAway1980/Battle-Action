@@ -5,23 +5,25 @@ using System.Collections.Generic;
 
 public class BulletShooter : NetworkBehaviour {
 
-	Ship owner;
-	bool active;
+	Player owner;					//The Player that owns the bullet shooter
+	Ship ownerShip;					//The Player's ship that is shooting
 
-	int whichWeapon;
-	Vector2 startPos;
-	float angle;
+	int whichWeapon;				//Which weapon the ship is equipped with
+	Vector2 startPos;				//The weapon's starting position
+	float angle;					//The weapon's starting angle
 
-	float lastShot;
+	float lastShot;					//How long it has been since the weapon last fired.
 
-	bool isFiring;
-	bool firstShot;
-	float shootTimer;
+	bool isFiring;					//Used to keep track if the bullet shooter is firing/charging, or should be reset
+	bool firstShot;					//Keeps track if the shot is the very first shot of a rapid fire
+	float shootTimer;				//How long the shooter has been firing in rapid fire
 
-	GameObject blasterObject;
-	GameObject warper;
+	GameObject blasterObject;		//The object used to fire the Blaster laser
+	//GameObject warper;				//An object used to contain the ship's Warp
+	ObjectList chargingPlasmas;		//A list used to contain all of the ship's Plasma balls
 
-	ObjectList chargingPlasmas;
+	float prevShot;
+
 
 	void Start() {
 		isFiring = false;
@@ -31,14 +33,22 @@ public class BulletShooter : NetworkBehaviour {
 	}
 
 	void FixedUpdate() {
+
 		if (owner == null) { 
-			active = false;
+			return;
 		}
 
-		if (isFiring) {
-			whichWeapon = owner.getCurrentWeapon ();
-			startPos = owner.transform.position;
-			angle = owner.getAngle ();
+		if (ownerShip == null) {			//If the player has no ship, it was recently destroyed.  
+			ownerShip = owner.getShip();	//Get their new ship
+			if (ownerShip == null) {		//If they still don't have one, it hasn't respawned
+				return;						//Exit and check later
+			}
+		}
+
+		if (isFiring) {			
+			whichWeapon = ownerShip.getCurrentWeapon ();
+			startPos = ownerShip.transform.position;
+			angle = ownerShip.getAngle ();
 			fireBullet ();
 			shootTimer += Time.deltaTime;
 		} else {
@@ -54,15 +64,12 @@ public class BulletShooter : NetworkBehaviour {
 		isFiring = newIsFiring;
 	}
 
-	public void setOwner(Ship newOwner) {
+	public void setOwner(Player newOwner) {
 		owner = newOwner;
-		if (owner != null) {
-			active = true;
-		}
 	}
 
-	public bool getActive() {
-		return active;
+	public float getLastShot() {
+		return lastShot;
 	}
 
 	void release() {
@@ -79,6 +86,10 @@ public class BulletShooter : NetworkBehaviour {
 				if (chargingPlasmas != null) {
 					GameObject[] plasmas = chargingPlasmas.getObjects ();
 					for (int i = 0; i < plasmas.Length; i++) {
+						//The plasma ball has hit something or been destroyed.
+						if (plasmas [i] == null) {
+							continue;
+						}
 						Plasma plasma = plasmas [i].GetComponent<Plasma> ();
 						plasma.release ();
 					}
@@ -198,36 +209,47 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 7:		//Warp
 			{
-				if (warper == null) {
-					warper = new GameObject();
-					warper.name = "Warp";
-					warper.transform.parent = transform;
-					warper.AddComponent<Warp>();
-					warper.GetComponent<Warp>().setOwner(owner);
+				if (Warp.getRefireRate () > (Time.fixedTime - lastShot)) {
+					return;
 				}
+				lastShot = Time.fixedTime;
+
+				GameObject newWarp = (GameObject)Instantiate(Warp.getWarp());
+				Warp warp = newWarp.GetComponent<Warp> ();
+
+				warp.setOwner (owner);
 				break;
 			}
 
 			case 8:		//Plasma
-			{
-				if (Plasma.getRefireRate() > (Time.fixedTime - lastShot)) {
-					return;
-				}
+			{			
 
 				float newAngle = 0;
 				float angleChange = 0;
 				float arc = 0;
 
-				if (firstShot == false) {
-					//Increase charge
+				//Check to see if it's the first shot.
+				//If not, the plasma has already been activated and it should charge
+				if (firstShot == false) {					
+					//Increase the Plasma's charge
 
 					if (chargingPlasmas != null) {
-						GameObject[] plasmas = chargingPlasmas.getObjects ();
+						//Get the array of Plasmas
+						//GameObject[] plasmas = chargingPlasmas.getObjects ();
 
-						for (int i = 0; i < plasmas.Length; i++) {
+						List<GameObject> plasmas = chargingPlasmas.getObjectList ();
+
+						for (int i = 0; i < plasmas.Count; i++) {
+							//The plasma ball has hit something or is destroyed
+							if (plasmas [i] == null) {
+								continue;
+							}
+
+							//Get the plasma and increase its charge
 							Plasma plasma = plasmas [i].GetComponent<Plasma> ();
 							plasma.incCharge (Time.deltaTime);
 
+							//If it is the first plasma ball, figure out the angle to increase each shot by.
 							if (i == 0) {
 								arc = plasma.getArc ();
 								newAngle = angle - (arc / 2.0f);
@@ -240,22 +262,28 @@ public class BulletShooter : NetworkBehaviour {
 							}
 
 							plasma.setAngle (newAngle);
-
 							newAngle += angleChange;
 						}
 					}
-
 					return;
 				}
 
-				firstShot = false;
+
+				if (Plasma.getRefireRate() > (Time.fixedTime - lastShot)) {
+					return;
+				}
+
 				lastShot = Time.fixedTime;
+
+				//firstShot is true, set it to false before continuing
+				firstShot = false;
 
 				if (chargingPlasmas == null) {
 					chargingPlasmas = new ObjectList ();
 				}
 
-				chargingPlasmas.clearList ();
+				//Clear the list so that plasmas that are already fired are not affected
+				chargingPlasmas.clearList ();		
 
 				for (int i = 0; i < Plasma.getBulletsPerShot(); i++) {
 

@@ -9,8 +9,9 @@ public class Missile : Bullet {
 	public float speedMultiplier;
 	public float initialSpeed;
 	float currentSpeed;
+
+	float maxTurnRate;
 	
-	// Use this for initialization
 	void Start () {
 
 		currentSpeed = initialSpeed;
@@ -29,9 +30,17 @@ public class Missile : Bullet {
 		pos = originPos;
 
 		transform.Rotate( new Vector3 (0, 0, angleDeg));
+
+		maxTurnRate = GetComponent<Homing> ().getTurnRate ();
 	}
 	
 	void FixedUpdate() {
+
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+			}
+		}
 
 		distance = Vector2.Distance (originPos, transform.position);
 		if (distance >= travelDist) {
@@ -47,6 +56,9 @@ public class Missile : Bullet {
 				currentSpeed = speed;
 			}
 		}
+
+		float turnRate = (currentSpeed / speed) * maxTurnRate;
+		GetComponent<Homing> ().setTurnRate (turnRate);
 		
 		pos = new Vector2 (
 			pos.x - Mathf.Sin (angleRad) * currentSpeed,
@@ -57,17 +69,17 @@ public class Missile : Bullet {
 	}
 
 	void checkHit() {
-		Ship shipHit = checkShipHit ();
+		Ship shipHit = checkShipHit (true);
 		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
 			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getOwner());
+			shipHit.setLastHitBy(owner.getPlayerNum());
 			Destroy (gameObject);
 		}	
 	}
 
 	void OnCollisionEnter2D(Collision2D col) {
-		if (owner == null) {
+		if (!isServer) {
 			return;
 		}
 		
@@ -75,11 +87,13 @@ public class Missile : Bullet {
 		
 		if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
-			if (shipHit != owner) {
-				shipHit.damage(damage);
-				shipHit.setLastHitBy(owner.getOwner());
-				Destroy (gameObject);
+			if (shipHit == ownerShip) {
+				return;
 			}
+
+			shipHit.damage(damage);
+			shipHit.setLastHitBy(owner.getPlayerNum());
+			Destroy (gameObject);
 		}
 	}
 	

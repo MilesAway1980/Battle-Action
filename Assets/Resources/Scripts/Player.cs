@@ -99,9 +99,7 @@ public class Player : NetworkBehaviour {
 			CmdSendMessage(chatMessages);
 			newMessage = false;
 		}
-		//}
-		
-		
+		//}		
 	}
 	
 	
@@ -357,8 +355,8 @@ public class Player : NetworkBehaviour {
 	[Command]
 	void CmdSetShipToShoot(bool isShooting) {
 		BulletShooter shooter = GetComponent<BulletShooter> ();
-		Ship myShip = ship.GetComponent<Ship> ();
-		shooter.setOwner (myShip);
+		//Ship myShip = ship.GetComponent<Ship> ();
+		shooter.setOwner (this);
 		shooter.setIsFiring (isShooting);
 	}
 
@@ -397,10 +395,36 @@ public class Player : NetworkBehaviour {
 			string overlay = "";
 			if (ship != null) {
 				Ship thisShip = ship.GetComponent<Ship>();
+
+				float timeUntilReady = 0;
+				int currentWeapon = thisShip.getCurrentWeapon ();
+
+				switch (currentWeapon) {
+					case 1: timeUntilReady = MachineGun.getRefireRate (); break;
+					case 2: timeUntilReady = Rocket.getRefireRate (); break;
+					case 3: timeUntilReady = Missile.getRefireRate (); break;
+					case 4: timeUntilReady = 0; break;
+					case 5: timeUntilReady = Crush.getRefireRate (); break;
+					case 6: timeUntilReady = Nuke.getRefireRate (); break;
+					case 7: timeUntilReady = Warp.getRefireRate(); break;
+					case 8: timeUntilReady = Plasma.getRefireRate (); break;
+					case 9: timeUntilReady = MineField.getRefireRate (); break;
+					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
+					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
+					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
+				}
+				BulletShooter bs = GetComponent<BulletShooter> ();
+				float lastShot = bs.getLastShot ();
+
+				timeUntilReady = (int)((timeUntilReady - (Time.fixedTime - lastShot)) * 1000);
+				if (timeUntilReady < 0) {
+					timeUntilReady = 0;
+				}
+
 				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
-				overlay += "\nThrust: " + (int)(thisShip.thrust * 100) + " \\ " + (thisShip.maxThrust * 100);
-				overlay += "\nSpeed: " + (int)(thisShip.currentSpeed * 100) + " \\ " + (thisShip.maxSpeed * 100);
-				overlay += "\nWeapon: " + WeaponInfo.getWeaponName(thisShip.getCurrentWeapon());
+				overlay += "\nThrust: " + (int)(thisShip.getThrust() * 100) + " \\ " + (thisShip.maxThrust * 100);
+				overlay += "\nSpeed: " + (int)(thisShip.getCurrentSpeed() * 100) + " \\ " + (thisShip.maxSpeed * 100);
+				overlay += "\nWeapon: " + WeaponInfo.getWeaponName(thisShip.getCurrentWeapon())  + " " + timeUntilReady;
 
 				Shield shield = thisShip.GetComponent<Shield>();
 				overlay += "\n" + (int)shield.getCharge() + " \\ " + (int)shield.getMaxCharge();
@@ -521,19 +545,12 @@ public class Player : NetworkBehaviour {
 
 		if (players != null) {
 			for (int i = 0; i < players.Length; i++) {
-				if (players[i].GetComponent<Ship>().getOwner() == playerNum) {
+				if (players[i].GetComponent<Ship>().getOwnerNum() == playerNum) {
 					ship = players[i];
 					break;
 				}
 			}			
 		}
-
-		/*if (isLocalPlayer) {
-			if (ship != null) {
-				Ship myShip = ship.GetComponent<Ship> ();
-				myShip.makePointers ();
-			}
-		}*/
 	}
 
 	void setCameraToFollow() {
@@ -549,6 +566,14 @@ public class Player : NetworkBehaviour {
 			}
 		}
 
+	}
+
+	public Ship getShip() {
+		if (ship != null) {
+			return ship.GetComponent<Ship> ();
+		} else {
+			return null;
+		}
 	}
 
 	public static Player getLocalPlayer() {

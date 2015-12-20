@@ -59,7 +59,7 @@ public class Shield : NetworkBehaviour {
 		if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
 			shipHit.damage(shieldContactDamage);
-			shipHit.setLastHitBy(owner.getOwner()); 
+			shipHit.setLastHitBy(owner.getOwnerNum()); 
 		}		
 	}
 

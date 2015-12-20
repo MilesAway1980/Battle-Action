@@ -7,12 +7,18 @@ public class Homing : NetworkBehaviour {
 	public float turnRate;
 	public float detectDistance;
 
-
 	Ship target = null;
-	Ship owner;
-
+	Player owner;
+	Ship ownerShip;
 
 	void FixedUpdate () {
+		
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+			}
+		}
+
 		if (isServer) {
 			if (target == null) {
 				getTarget ();
@@ -39,7 +45,7 @@ public class Homing : NetworkBehaviour {
 				}
 			
 				//Don't chase yourself!
-				if (potentialTarget == owner) {
+				if (potentialTarget == ownerShip) {
 					continue;
 				}
 
@@ -72,7 +78,17 @@ public class Homing : NetworkBehaviour {
 		}
 	}
 
-	public void setOwner(Ship newOwner) {
+	public void setOwner(Player newOwner) {
 		owner = newOwner;
+	}
+
+	public float getTurnRate() {
+		return turnRate;
+	}
+
+	public void setTurnRate(float newTurnRate) {
+		if (newTurnRate >= 0) {
+			turnRate = newTurnRate;
+		}
 	}
 }

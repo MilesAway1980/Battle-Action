@@ -13,7 +13,6 @@ GameObject:
   - 76: {fileID: 7606298}
   - 12: {fileID: 1209442}
   - 26: {fileID: 2649108}
-  - 114: {fileID: 11426806}
   - 54: {fileID: 5477610}
   m_Layer: 0
   m_Name: Energy Cluster
@@ -155,17 +154,6 @@ WorldParticleCollider:
     m_Bits: 4294967295
   m_SendCollisionMessage: 0
   m_MinKillVelocity: 0
---- !u!114 &11426806
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 122400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!136 &13694482
 CapsuleCollider:
   m_ObjectHideFlags: 1

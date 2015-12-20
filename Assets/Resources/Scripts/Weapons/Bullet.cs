@@ -14,28 +14,23 @@ public class Bullet : NetworkBehaviour {
 	public float refireRate;
 	public float bulletsPerShot;
 
-	protected Ship owner;
+	protected Player owner;
+	protected Ship ownerShip;
 
 	[SyncVar] protected Vector2 originPos;
 	[SyncVar] protected Vector2 pos;
 	[SyncVar] protected Vector2 prevPos;
 	[SyncVar] protected float angleRad;
 	[SyncVar] protected float angleDeg;
-	//protected int type;
-	protected float travelDist;
 
+	protected float travelDist;
 	protected float distance;
 
 	protected Rigidbody2D rigidBody;
 	protected CircleCollider2D circleCollider;
 
-	void Awake() {	
-
-	}
-
 	[Server]
-	//public void init(Ship newOwner, Vector2 startPos, float newAngle, int newType) {
-	public void init(Ship newOwner, Vector2 startPos, float newAngle) {
+	public void init(Player newOwner, Vector2 startPos, float newAngle) {
 
 		angleDeg = Angle.fixAngle(newAngle);
 
@@ -45,17 +40,22 @@ public class Bullet : NetworkBehaviour {
 		originPos = startPos;
 		pos = startPos;
 
-		//type = newType;
-
 		//Check if the object is homing
 		Homing homing = gameObject.GetComponent<Homing> ();
 		if (homing != null) {
 			homing.setOwner(owner);
 		}
-
 	}
 
-	protected Ship checkShipHit() {
+	void Update() {
+		if (owner != null) {
+			if (ownerShip == null) {
+				ownerShip = owner.getShip ();
+			}
+		}
+	}
+
+	protected Ship checkShipHit(bool ignoreOwner) {
 		if (isServer) {		
 
 			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
@@ -63,17 +63,20 @@ public class Bullet : NetworkBehaviour {
 			if (players == null) {
 				return null;
 			}
+
+			int ownerNum = owner.getPlayerNum ();
 		
 			for (int i = 0; i < players.Length; i++) {
 				Ship playerShip = players [i].GetComponent<Ship> ();
-				if (playerShip == owner) {
-					continue;
+
+				if (ignoreOwner) {
+					if (ownerNum == playerShip.getOwnerNum()) {
+						continue;
+					}
 				}
 			
 				if (Vector2.Distance (playerShip.transform.position, pos) <= (speed * 2)) {
 					if (Intersect.LineCircle (prevPos, pos, playerShip.transform.position, speed)) {
-						//playerShip.damage (damage);
-						//Destroy (gameObject);
 						return playerShip;
 					}
 				}

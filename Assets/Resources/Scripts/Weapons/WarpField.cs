@@ -13,8 +13,8 @@ public class WarpField : NetworkBehaviour {
 	[SyncVar] float rotation;
 	[SyncVar] Vector2 pos;
 
-
-	Ship owner;
+	Player owner;
+	Ship ownerShip;
 
 	// Use this for initialization
 	void Start () {
@@ -26,11 +26,16 @@ public class WarpField : NetworkBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+			}
+		}
+
 		currentTime += Time.deltaTime;
 		if (currentTime > lingerTime) {
 			Destroy (gameObject);
 		} else {
-
 			float currentRadius = radius * ((lingerTime - currentTime) / lingerTime);
 			transform.localScale = new Vector3(
 				currentRadius,
@@ -40,7 +45,7 @@ public class WarpField : NetworkBehaviour {
 		}
 	}
 
-	public void init(Ship newOwner, Vector2 newPos, float newLength, float newRotation) {
+	public void init(Player newOwner, Vector2 newPos, float newLength, float newRotation) {
 		owner = newOwner;
 		pos = newPos;
 		length = newLength;
@@ -56,12 +61,12 @@ public class WarpField : NetworkBehaviour {
 		
 		if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
-			if (shipHit == owner) {
+			if (shipHit == ownerShip) {
 				return;
 			}
 
 			shipHit.damage(trailDamage);
-			shipHit.setLastHitBy(owner.getOwner());
+			shipHit.setLastHitBy (owner.getPlayerNum ());
 		}
 		
 	}

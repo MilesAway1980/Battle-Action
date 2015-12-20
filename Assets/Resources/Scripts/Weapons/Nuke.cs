@@ -12,16 +12,17 @@ public class Nuke : NetworkBehaviour {
 	public float maxRadius;
 	public float expansionSpeed;
 	public GameObject fireball;
-	GameObject thisFireball;
+	public GameObject thisFireball;
 
 	[SyncVar] public float currentTime;
 	[SyncVar] public float currentRadius;
 	[SyncVar] Vector2 pos;
-	[SyncVar] Vector3 nukeSize;
-	[SyncVar] Vector3 fireballSize;
+	[SyncVar] public Vector3 nukeSize;
+	[SyncVar] public Vector3 fireballSize;
 
 	float angle;
-	Ship owner;
+	Player owner;
+	Ship ownerShip;
 	[SyncVar] bool exploded;
 
 	// Use this for initialization
@@ -37,14 +38,23 @@ public class Nuke : NetworkBehaviour {
 		//print (this.transform.parent);
 		//print (this.transform.position);
 
+		if (owner != null) {
+			if (ownerShip == null) {			
+				ownerShip = owner.getShip ();
+				if (ownerShip == null) {
+					return;
+				}
+			}
+		}
+
 		if (exploded == false) {
 			currentTime += Time.deltaTime;
 
-			if (owner != null) {
-				angle = owner.getAngle () / Mathf.Rad2Deg;
+			if (ownerShip != null) {
+				angle = ownerShip.getAngle () / Mathf.Rad2Deg;
 				pos = new Vector2 (
-					owner.transform.position.x - Mathf.Sin (angle) * -2,
-					owner.transform.position.y + Mathf.Cos (angle) * -2
+					ownerShip.transform.position.x - Mathf.Sin (angle) * -2,
+					ownerShip.transform.position.y + Mathf.Cos (angle) * -2
 				);
 			}
 
@@ -73,8 +83,16 @@ public class Nuke : NetworkBehaviour {
 			checkDamage();
 
 			if (currentRadius >= maxRadius) {
-				Destroy (this.gameObject);
-				Destroy (thisFireball);
+				
+				if (thisFireball != null) {
+					Destroy (thisFireball);
+				}
+
+				//Only destroy the Nuke object if the fireball is gone
+				//Otherwise, it risks the chance of leaving a permanent fireball
+				if (thisFireball == null) {
+					Destroy (this.gameObject);
+				}
 			}
 		}
 
@@ -91,7 +109,7 @@ public class Nuke : NetworkBehaviour {
 		for (int i = 0; i < players.Length; i++) {
 
 			Ship whichShip = players[i].GetComponent<Ship>();
-			if (whichShip == owner) {
+			if (whichShip == ownerShip) {
 				continue;
 			}
 
@@ -104,7 +122,7 @@ public class Nuke : NetworkBehaviour {
 		}
 	}
 
-	public void init(Ship newOwner) {
+	public void init(Player newOwner) {
 		owner = newOwner;
 	}
 
