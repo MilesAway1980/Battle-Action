@@ -8,6 +8,8 @@ public class MachineGun : Bullet {
 	AudioClip hitSound;
 	AudioClip shootSound;
 
+	public float shotSpread;
+
 	static ShootingInfo machinegunInfo;
 
 	void Start () {
@@ -17,7 +19,7 @@ public class MachineGun : Bullet {
 			travelDist = ArenaInfo.getMinBulletTravelDist();
 		}
 
-		angleDeg += Random.Range (-2.0f, 2.0f);
+		angleDeg += Random.Range (-shotSpread, shotSpread);
 		angleRad = angleDeg / Mathf.Rad2Deg;
 
 		//Move the bullet out in front of the ship

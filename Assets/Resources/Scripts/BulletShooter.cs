@@ -12,7 +12,7 @@ public class BulletShooter : NetworkBehaviour {
 	Vector2 startPos;				//The weapon's starting position
 	float angle;					//The weapon's starting angle
 
-	float lastShot;					//How long it has been since the weapon last fired.
+	[SyncVar] float lastShot;					//How long it has been since the weapon last fired.
 
 	bool isFiring;					//Used to keep track if the bullet shooter is firing/charging, or should be reset
 	bool firstShot;					//Keeps track if the shot is the very first shot of a rapid fire
@@ -184,7 +184,9 @@ public class BulletShooter : NetworkBehaviour {
 				float newAngle = angle;
 				GameObject newBullet = (GameObject)Instantiate(Crush.getBullet());
 				Crush crush = newBullet.GetComponent<Crush>();
-				crush.init(owner, startPos, newAngle);					
+
+				crush.init(owner, startPos, newAngle);	
+
 				NetworkServer.Spawn(newBullet);						
 
 				break;
