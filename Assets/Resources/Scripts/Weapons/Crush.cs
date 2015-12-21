@@ -15,7 +15,7 @@ public class Crush : Bullet {
 	[SyncVar] float crushLevel;
 	[SyncVar] bool hasTarget;
 
-	static float lastShot;
+	static ShotTimer shotTimer;
 
 	// Use this for initialization
 	void Start () {
@@ -96,12 +96,11 @@ public class Crush : Bullet {
 		}
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 
 	public static GameObject getBullet() {

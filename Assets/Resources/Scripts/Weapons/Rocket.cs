@@ -6,7 +6,8 @@ public class Rocket : Bullet {
 
 	public int range;
 	static ShootingInfo rocketInfo = null;
-	static float lastShot;
+
+	static ShotTimer shotTimer;
 
 	// Use this for initialization
 	void Start () {
@@ -53,14 +54,6 @@ public class Rocket : Bullet {
 		}	
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
-	}
-
 	public static GameObject getBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/RocketBullet");
 	}
@@ -77,6 +70,13 @@ public class Rocket : Bullet {
 			createRocketInfo();
 		}
 		return rocketInfo.bulletsPerShot;
+	}
+
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 
 	static void createRocketInfo() {

@@ -11,7 +11,7 @@ public class Missile : Bullet {
 	float currentSpeed;
 
 	float maxTurnRate;
-	static float lastShot;
+	static ShotTimer shotTimer;
 	
 	void Start () {
 
@@ -98,12 +98,11 @@ public class Missile : Bullet {
 		}
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 	
 	public static GameObject getBullet() {

@@ -20,7 +20,7 @@ public class Warp : NetworkBehaviour {
 	public float refireRate;
 	static float warpRefireRate = -1;
 
-	static float lastShot;
+	static ShotTimer shotTimer;
 
 	// Use this for initialization
 	void Start () {
@@ -75,12 +75,11 @@ public class Warp : NetworkBehaviour {
 		Destroy (gameObject);
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 
 	public static GameObject getWarp() {

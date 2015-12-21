@@ -19,7 +19,7 @@ public class Nuke : NetworkBehaviour {
 	[SyncVar] Vector2 pos;
 	[SyncVar] public Vector3 nukeSize;
 	[SyncVar] public Vector3 fireballSize;
-	static float lastShot;
+	static ShotTimer shotTimer;
 
 	float angle;
 	Player owner;
@@ -128,12 +128,11 @@ public class Nuke : NetworkBehaviour {
 		owner = newOwner;
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 
 	public static GameObject getBomb() {

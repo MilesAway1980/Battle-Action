@@ -13,7 +13,7 @@ public class MineField : NetworkBehaviour {
 	GameObject[] mines;
 
 	[SyncVar] Vector2 pos;
-	static float lastShot;
+	static ShotTimer shotTimer;
 
 	Player owner;
 	Ship ownerShip;
@@ -110,12 +110,11 @@ public class MineField : NetworkBehaviour {
 		}
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 
 	public void init (Player newOwner, Vector2 newPos) {

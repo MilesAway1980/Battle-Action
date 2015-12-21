@@ -403,15 +403,15 @@ public class Player : NetworkBehaviour {
 				switch (currentWeapon) {
 					case 1: 
 						timeUntilReady = MachineGun.getRefireRate (); 
-						lastShot = MachineGun.getLastShot ();
+						lastShot = MachineGun.getShotTimer().getLastShot ();
 						break;
 					case 2: 
 						timeUntilReady = Rocket.getRefireRate (); 
-						lastShot = Rocket.getLastShot ();
+						lastShot = Rocket.getShotTimer().getLastShot ();
 						break;
 					case 3: 
 						timeUntilReady = Missile.getRefireRate (); 
-						lastShot = Missile.getLastShot ();
+						lastShot = Missile.getShotTimer().getLastShot ();
 						break;
 					case 4: 
 						timeUntilReady = 0; 
@@ -419,23 +419,23 @@ public class Player : NetworkBehaviour {
 						break;
 					case 5: 
 						timeUntilReady = Crush.getRefireRate (); 
-						lastShot = Crush.getLastShot ();
+						lastShot = Crush.getShotTimer().getLastShot ();
 						break;
 					case 6: 
 						timeUntilReady = Nuke.getRefireRate (); 
-						lastShot = Nuke.getLastShot ();
+						lastShot = Nuke.getShotTimer().getLastShot ();
 						break;
 					case 7: 
 						timeUntilReady = Warp.getRefireRate (); 
-						lastShot = Warp.getLastShot ();
+						lastShot = Warp.getShotTimer().getLastShot ();
 						break;
 					case 8: 
 						timeUntilReady = Plasma.getRefireRate (); 
-						lastShot = Plasma.getLastShot ();
+						lastShot = Plasma.getShotTimer().getLastShot ();
 						break;
 					case 9: 
 						timeUntilReady = MineField.getRefireRate (); 
-						lastShot = MineField.getLastShot ();
+						lastShot = MineField.getShotTimer().getLastShot ();
 						break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;

@@ -12,7 +12,7 @@ public class MachineGun : Bullet {
 
 	static ShootingInfo machinegunInfo;
 
-	static float lastShot;
+	static ShotTimer shotTimer;
 
 	void Start () {
 
@@ -71,12 +71,11 @@ public class MachineGun : Bullet {
 		}	
 	}
 
-	public static float getLastShot() {
-		return lastShot;
-	}
-
-	public static void updateLastShot() {
-		lastShot = Time.fixedTime;
+	public static ShotTimer getShotTimer() {
+		if (shotTimer == null) {
+			shotTimer = new ShotTimer ();
+		}
+		return shotTimer;
 	}
 
 	public static GameObject getBullet() {
