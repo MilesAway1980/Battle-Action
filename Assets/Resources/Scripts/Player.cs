@@ -139,7 +139,7 @@ public class Player : NetworkBehaviour {
 
 		if (controlStyle == 0) {
 
-			for (int i = 1; i <= WeaponInfo.numWeapons(); i++) {
+			for (int i = 1; i <= WeaponInfo.getWeaponCount(); i++) {
 				string which = i.ToString();
 				if (Input.GetKeyDown(which)) {
 					CmdChangeWeapon(i);
@@ -400,43 +400,22 @@ public class Player : NetworkBehaviour {
 				float lastShot = 0; 
 				int currentWeapon = thisShip.getCurrentWeapon ();
 
+				BulletShooter bs = GetComponent<BulletShooter> ();
+				if (bs != null) {
+					lastShot = bs.getLastShot (currentWeapon);
+					print (lastShot);
+				}
+
 				switch (currentWeapon) {
-					case 1: 
-						timeUntilReady = MachineGun.getRefireRate (); 
-						lastShot = MachineGun.getShotTimer().getLastShot ();
-						break;
-					case 2: 
-						timeUntilReady = Rocket.getRefireRate (); 
-						lastShot = Rocket.getShotTimer().getLastShot ();
-						break;
-					case 3: 
-						timeUntilReady = Missile.getRefireRate (); 
-						lastShot = Missile.getShotTimer().getLastShot ();
-						break;
-					case 4: 
-						timeUntilReady = 0; 
-						lastShot = 0;
-						break;
-					case 5: 
-						timeUntilReady = Crush.getRefireRate (); 
-						lastShot = Crush.getShotTimer().getLastShot ();
-						break;
-					case 6: 
-						timeUntilReady = Nuke.getRefireRate (); 
-						lastShot = Nuke.getShotTimer().getLastShot ();
-						break;
-					case 7: 
-						timeUntilReady = Warp.getRefireRate (); 
-						lastShot = Warp.getShotTimer().getLastShot ();
-						break;
-					case 8: 
-						timeUntilReady = Plasma.getRefireRate (); 
-						lastShot = Plasma.getShotTimer().getLastShot ();
-						break;
-					case 9: 
-						timeUntilReady = MineField.getRefireRate (); 
-						lastShot = MineField.getShotTimer().getLastShot ();
-						break;
+					case 1: timeUntilReady = MachineGun.getRefireRate (); break;
+					case 2: timeUntilReady = Rocket.getRefireRate (); break;
+					case 3: timeUntilReady = Missile.getRefireRate (); break;
+					case 4: timeUntilReady = 0; break;
+					case 5: timeUntilReady = Crush.getRefireRate (); break;
+					case 6: timeUntilReady = Nuke.getRefireRate (); break;
+					case 7: timeUntilReady = Warp.getRefireRate (); break;
+					case 8: timeUntilReady = Plasma.getRefireRate (); break;
+					case 9: timeUntilReady = MineField.getRefireRate (); break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
 					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;

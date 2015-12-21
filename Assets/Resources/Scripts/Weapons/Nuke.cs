@@ -19,7 +19,6 @@ public class Nuke : NetworkBehaviour {
 	[SyncVar] Vector2 pos;
 	[SyncVar] public Vector3 nukeSize;
 	[SyncVar] public Vector3 fireballSize;
-	static ShotTimer shotTimer;
 
 	float angle;
 	Player owner;
@@ -126,13 +125,6 @@ public class Nuke : NetworkBehaviour {
 
 	public void init(Player newOwner) {
 		owner = newOwner;
-	}
-
-	public static ShotTimer getShotTimer() {
-		if (shotTimer == null) {
-			shotTimer = new ShotTimer ();
-		}
-		return shotTimer;
 	}
 
 	public static GameObject getBomb() {

@@ -13,7 +13,6 @@ public class MineField : NetworkBehaviour {
 	GameObject[] mines;
 
 	[SyncVar] Vector2 pos;
-	static ShotTimer shotTimer;
 
 	Player owner;
 	Ship ownerShip;
@@ -108,13 +107,6 @@ public class MineField : NetworkBehaviour {
 				}
 			}
 		}
-	}
-
-	public static ShotTimer getShotTimer() {
-		if (shotTimer == null) {
-			shotTimer = new ShotTimer ();
-		}
-		return shotTimer;
 	}
 
 	public void init (Player newOwner, Vector2 newPos) {

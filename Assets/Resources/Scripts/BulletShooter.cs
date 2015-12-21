@@ -19,13 +19,17 @@ public class BulletShooter : NetworkBehaviour {
 	GameObject blasterObject;		//The object used to fire the Blaster laser
 	ObjectList chargingPlasmas;		//A list used to contain all of the ship's Plasma balls
 
-	float prevShot;
+	ShotTimer[] shotTimer;			//The ShotTimers for each weapon
+	Ammo[] ammo;
 
+	float prevShot;
 
 	void Start() {
 		isFiring = false;
 		firstShot = true;
 		shootTimer = 0;
+		shotTimer = new ShotTimer [WeaponInfo.getWeaponCount () + 1];
+		ammo = new Ammo[WeaponInfo.getWeaponCount () + 1];
 	}
 
 	void FixedUpdate() {
@@ -97,14 +101,29 @@ public class BulletShooter : NetworkBehaviour {
 
 	public void fireBullet() {
 
+		if (shotTimer [whichWeapon] == null) {
+			shotTimer [whichWeapon] = new ShotTimer ();
+		}
+
+		if (ammo [whichWeapon] == null) {
+			ammo [whichWeapon] = new Ammo (100, 100);
+
+		}
+
+
+
 		switch (whichWeapon) {
 
 			case 1:		//Machine gun
 			{
-				if (MachineGun.getRefireRate() > (Time.fixedTime - MachineGun.getShotTimer().getLastShot())) {
+				if (MachineGun.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
-				MachineGun.getShotTimer().updateLastShot ();
+				shotTimer [whichWeapon].updateLastShot ();
+
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 
 				
 				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
@@ -119,11 +138,14 @@ public class BulletShooter : NetworkBehaviour {
 			case 2:		//Rockets
 			{
 				
-				if (Rocket.getRefireRate() > (Time.fixedTime - Rocket.getShotTimer().getLastShot())) {
+				if (Rocket.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
-				
-				Rocket.getShotTimer().updateLastShot ();
+				shotTimer [whichWeapon].updateLastShot ();
+
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 				
 				float newAngle = angle;
 				for (int i = 0; i < Rocket.getBulletsPerShot(); i++) {
@@ -138,11 +160,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 3:		//Missile
 			{
-				if (Missile.getRefireRate() > (Time.fixedTime - Missile.getShotTimer().getLastShot())) {
+				if (Missile.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
-				
-				Missile.getShotTimer().updateLastShot ();
+				shotTimer [whichWeapon].updateLastShot ();
+
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 				
 				float newAngle = angle;
 				for (int i = 0; i < Missile.getBulletsPerShot(); i++) {
@@ -158,6 +183,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 4:		//Blaster
 			{
+				//No refire rate.  It's ON / OFF
+
+				if (ammo [whichWeapon].useAmmo() == false) {
+					release ();
+
+					return;
+				} 
+
 				if (blasterObject == null) {
 					blasterObject = (GameObject)Instantiate(Blaster.getBlaster());
 					NetworkServer.Spawn(blasterObject);
@@ -171,11 +204,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 5:		//Crush / Flak
 			{
-				if (Crush.getRefireRate() > (Time.fixedTime - Crush.getShotTimer().getLastShot())) {
+				if (Crush.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
-				
-				Crush.getShotTimer().updateLastShot ();
+				shotTimer [whichWeapon].updateLastShot ();
+
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 				
 				float newAngle = angle;
 				GameObject newBullet = (GameObject)Instantiate(Crush.getBullet());
@@ -190,11 +226,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 6:		//Nuke
 			{
-				if (Nuke.getRefireRate() > (Time.fixedTime - Nuke.getShotTimer().getLastShot())) {
+				if (Nuke.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
-				
-				Nuke.getShotTimer().updateLastShot ();
+				shotTimer [whichWeapon].updateLastShot ();
+
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 				
 				GameObject newBomb = (GameObject)Instantiate(Nuke.getBomb());
 				Nuke nuke = newBomb.GetComponent<Nuke>();
@@ -207,11 +246,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 7:		//Warp
 			{
-				if (Warp.getRefireRate () > (Time.fixedTime - Warp.getShotTimer().getLastShot())) {
+				if (Warp.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
+				shotTimer [whichWeapon].updateLastShot ();
 
-				Warp.getShotTimer().updateLastShot ();
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 
 				GameObject newWarp = (GameObject)Instantiate(Warp.getWarp());
 				Warp warp = newWarp.GetComponent<Warp> ();
@@ -267,12 +309,15 @@ public class BulletShooter : NetworkBehaviour {
 					return;
 				}
 
-
-				if (Plasma.getRefireRate() > (Time.fixedTime - Plasma.getShotTimer().getLastShot())) {
+				if (Plasma.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
+				shotTimer [whichWeapon].updateLastShot ();
 
-				Plasma.getShotTimer().updateLastShot ();
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
+
 
 				//firstShot is true, set it to false before continuing
 				firstShot = false;
@@ -313,11 +358,14 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 9:		//Mines
 			{
-				if (MineField.getRefireRate() > (Time.fixedTime - MineField.getShotTimer().getLastShot())) {
+				if (MineField.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
 					return;
 				}
+				shotTimer [whichWeapon].updateLastShot ();
 
-				MineField.getShotTimer().updateLastShot ();
+				if (ammo [whichWeapon].useAmmo() == false) {
+					return;
+				} 
 
 				GameObject newMineField = (GameObject)Instantiate(MineField.getMineField());
 				MineField mf = newMineField.GetComponent<MineField>();
@@ -342,6 +390,19 @@ public class BulletShooter : NetworkBehaviour {
 			{
 				break;
 			}
+		}
+	}
+
+	public float getLastShot(int which) {
+
+		if (which < 0 || which > shotTimer.Length) {
+			return -1;
+		}
+
+		if (shotTimer [which] != null) {
+			return shotTimer [which].getLastShot ();
+		} else {
+			return 0;
 		}
 	}
 }

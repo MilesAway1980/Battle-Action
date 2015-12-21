@@ -11,6 +11,11 @@ public class Ammo  {
 		currentAmmo = startingAmmo;
 	}
 
+	public Ammo(int newMaxAmmo, int newCurrentAmmo) {
+		maxAmmo = newMaxAmmo;
+		currentAmmo = newCurrentAmmo;
+	}
+
 	public bool useAmmo() {
 		if (currentAmmo > 0) {
 			currentAmmo--;

@@ -12,8 +12,6 @@ public class MachineGun : Bullet {
 
 	static ShootingInfo machinegunInfo;
 
-	static ShotTimer shotTimer;
-
 	void Start () {
 
 		travelDist = ArenaInfo.getArenaSize() * 1.25f;
@@ -69,13 +67,6 @@ public class MachineGun : Bullet {
 			shipHit.setLastHitBy(owner.getPlayerNum());
 			Destroy (gameObject);
 		}	
-	}
-
-	public static ShotTimer getShotTimer() {
-		if (shotTimer == null) {
-			shotTimer = new ShotTimer ();
-		}
-		return shotTimer;
 	}
 
 	public static GameObject getBullet() {

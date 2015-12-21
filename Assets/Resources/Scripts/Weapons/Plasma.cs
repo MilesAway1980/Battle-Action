@@ -16,8 +16,6 @@ public class Plasma : Bullet {
 	[SyncVar] float radius;
 	bool released;
 
-	static ShotTimer shotTimer;
-
 	//Vector2 pivot;
 
 	// Use this for initialization
@@ -140,13 +138,6 @@ public class Plasma : Bullet {
 
 	public float getArc() {
 		return arc;
-	}
-
-	public static ShotTimer getShotTimer() {
-		if (shotTimer == null) {
-			shotTimer = new ShotTimer ();
-		}
-		return shotTimer;
 	}
 
 	public static GameObject getBullet() {

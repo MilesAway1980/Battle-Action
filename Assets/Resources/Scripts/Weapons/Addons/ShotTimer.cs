@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class ShotTimer {
+public class ShotTimer  {
 
-	float lastShot;
+	[SyncVar] float lastShot;
 
 	public float getLastShot() {
 		return lastShot;

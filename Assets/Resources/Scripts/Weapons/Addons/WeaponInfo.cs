@@ -23,9 +23,7 @@ public static class WeaponInfo {
 		return weaponName;
 	}
 
-	public static int numWeapons() {
+	public static int getWeaponCount () {
 		return weaponCount;
 	}
-
-
 }
