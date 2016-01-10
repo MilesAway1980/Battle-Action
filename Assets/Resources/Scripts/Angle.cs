@@ -32,6 +32,8 @@ public static class Angle {
 			 * from turning the full arc of the circle to point the correct direction.
 			*/
 
+			//Debug.Log (angleDist);
+
 			if (angleDist > 180) {
 				if (targetAngle > currentAngle) {
 					return -1;

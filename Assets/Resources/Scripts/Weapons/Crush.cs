@@ -5,7 +5,7 @@ using System.Collections;
 public class Crush : Bullet {
 
 	static ShootingInfo crushInfo;
-	Ship target;
+	GameObject target;
 	[SyncVar] Vector3 size;
 
 	public float crushSpeed;
@@ -72,10 +72,12 @@ public class Crush : Bullet {
 	}
 
 	void checkHit() {
-		Ship shipHit = checkShipHit (true);
-		if (shipHit != null) {
+		//Ship shipHit = checkShipHit (true);
+		GameObject objectHit = checkObjectHit(true);
+		//Ship shipHit = objectHit.GetComponent<Ship> ();
+		if (objectHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
-			target = shipHit;
+			target = objectHit;
 			crushLevel = startingCrushLevel;
 		}	
 	}
@@ -88,7 +90,11 @@ public class Crush : Bullet {
 			crushLevel
 		);
 		crushLevel -= crushSpeed;
-		target.damage (damage);
+		Damageable dm = target.GetComponent<Damageable> ();
+		if (dm) {
+			dm.damage (damage);
+		}
+		//target.damage (damage);
 		if (crushLevel < minCrushLevel) {
 			Destroy (gameObject);
 		}

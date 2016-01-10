@@ -14,8 +14,10 @@ public class Bullet : NetworkBehaviour {
 	public float refireRate;
 	public float bulletsPerShot;
 
-	protected Player owner;
-	protected Ship ownerShip;
+	/*protected Player owner;
+	protected Ship ownerShip;*/
+
+	protected GameObject owner;
 
 	[SyncVar] protected Vector2 originPos;
 	[SyncVar] protected Vector2 pos;
@@ -30,7 +32,7 @@ public class Bullet : NetworkBehaviour {
 	protected CircleCollider2D circleCollider;
 
 	[Server]
-	public void init(Player newOwner, Vector2 startPos, float newAngle) {
+	public void init(GameObject newOwner, Vector2 startPos, float newAngle) {
 
 		angleDeg = Angle.fixAngle(newAngle);
 
@@ -48,17 +50,56 @@ public class Bullet : NetworkBehaviour {
 	}
 
 	void Update() {
-		if (owner != null) {
+		/*if (owner != null) {
 			if (ownerShip == null) {
 				ownerShip = owner.getShip ();
 			}
-		}
+		}*/
 	}
 
-	protected Ship checkShipHit(bool ignoreOwner) {
+	protected GameObject checkObjectHit(bool ignoreOwner) {
 		if (isServer) {		
 
-			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+			Damageable[] targets = Object.FindObjectsOfType<Damageable> ();
+
+			if (targets.Length == 0) {
+				return null;
+			}
+
+			int ownerNum = -1;
+
+			//Owner shipOwner = owner.GetComponent<Owner> ();
+			//print (ownerNum + "   " + shipOwner.getOwnerNum ());
+
+			//print (shipOwner);
+
+			if (owner) {
+				Owner ownerInfo = owner.GetComponent<Owner> ();
+				if (ownerInfo) {
+					//ownerNum = owner.getPlayerNum ();
+					ownerNum = ownerInfo.getOwnerNum();
+				}
+			}
+
+			for (int i = 0; i < targets.Length; i++) {
+				GameObject target = targets [i].gameObject;
+				if (ignoreOwner) {
+					Owner targetOwner = target.GetComponent<Owner> ();
+					if (targetOwner) {
+						if (targetOwner.getOwnerNum () == ownerNum) {
+							continue;
+						}
+					}
+				}
+
+				if (Vector2.Distance (target.transform.position, pos) <= (speed * 2)) {
+					if (Intersect.LineCircle (prevPos, pos, target.transform.position, speed)) {
+						return target;
+					}
+				}
+			}
+
+			/*GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 		
 			if (players == null) {
 				return null;
@@ -80,7 +121,7 @@ public class Bullet : NetworkBehaviour {
 						return playerShip;
 					}
 				}
-			}
+			}*/
 		}
 
 		return null;

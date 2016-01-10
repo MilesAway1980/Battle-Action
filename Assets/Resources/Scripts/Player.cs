@@ -15,7 +15,6 @@ struct CurrentInfo {
 public class Player : NetworkBehaviour {
 
 	static Player thisPlayer;
-	//static Ship thisPlayerShip;
 
 	static int playerCount = 0;
 	[SyncVar] int playerNum;
@@ -31,6 +30,7 @@ public class Player : NetworkBehaviour {
 	//Use these as flags for holding down buttons so that commands aren't repeatedly sent.
 
 	CurrentInfo current;
+	MouseControl mouseControl;
 
 	Chat chatMessages;
 	bool newMessage = false;
@@ -62,31 +62,32 @@ public class Player : NetworkBehaviour {
 			thisPlayer = this;
 		}
 		deadTimer = spawnDelay;
+		mouseControl = gameObject.AddComponent<MouseControl> ();
 	}
 
 	void Update() {
-		//if (isServer) {
-			if (isLocalPlayer) {
+		
+		if (isLocalPlayer) {
+			if (ship != null) {
+				Ship myShip = ship.GetComponent<Ship> ();
+				myShip.updateForLocal ();
+				checkControls ();					
+			}					
+		}
+
+		if (ship == null) {		
+			//Dead!
+
+			deadTimer += Time.deltaTime;
+			if (deadTimer >= spawnDelay) {					
+				createShip ();
+				assignShip ();
+				setCameraToFollow ();
 				if (ship != null) {
-					Ship myShip = ship.GetComponent<Ship> ();
-					myShip.updateForLocal ();
-					checkControls ();					
-				}					
-			}
-
-			if (ship == null) {		
-				//Dead!
-
-				deadTimer += Time.deltaTime;
-				if (deadTimer >= spawnDelay) {					
-					createShip ();
-					assignShip ();
-					setCameraToFollow ();
-					if (ship != null) {
-						deadTimer = 0;
-					}
+					deadTimer = 0;
 				}
-			} 
+			}
+		} 
 
 		if (newMessage == true) {
 			print ("Passing: " + chatMessages);
@@ -99,11 +100,24 @@ public class Player : NetworkBehaviour {
 			CmdSendMessage(chatMessages);
 			newMessage = false;
 		}
-		//}		
 	}
 	
 	
 	void checkControls() {
+
+		if (mouseControl.button [0]) {
+			//A little fancy math to get the angles to line up.
+			float clickAngle = 180 - Angle.getAngle (
+				mouseControl.pos,
+				new Vector2 (Screen.width / 2, Screen.height / 2)
+			);
+			if (clickAngle < 0) {
+				clickAngle += 360;
+			}
+			Ship thisShip = ship.GetComponent<Ship> ();
+		}
+
+
 		
 		Controls ctr = GetComponent<Controls> ();
 		if (ctr == null) {
@@ -126,6 +140,8 @@ public class Player : NetworkBehaviour {
 			}
 		}
 
+
+
 		int whichJoy = ctr.getJoystick ();
 		for (int i = 0; i < buttons.Length; i++) {		
 			buttons[i].setHeld (Input.GetButton("Joy" + whichJoy + "_Button" + (i + 1)));
@@ -140,9 +156,20 @@ public class Player : NetworkBehaviour {
 		if (controlStyle == 0) {
 
 			for (int i = 1; i <= WeaponInfo.getWeaponCount(); i++) {
-				string which = i.ToString();
-				if (Input.GetKeyDown(which)) {
-					CmdChangeWeapon(i);
+				string which = "";
+				if (i <= 9) {
+					which = i.ToString ();
+				} else {
+					switch (i) {
+						case 10: which = "u"; break;
+						case 11: which = "i"; break;
+						case 12: which = "o"; break;
+						case 13: which = "p"; break;
+					}
+				}
+
+				if (Input.GetKeyDown (which)) {
+					CmdChangeWeapon (i);
 				}
 			}
 
@@ -155,14 +182,14 @@ public class Player : NetworkBehaviour {
 			}
 
 			if (Input.GetKeyDown ("enter")) {
-
 				showChatBox = false;
 			}
 
 
 			if (	
 			    buttons [1].getHeld() || 
-			    shootButton
+			    shootButton ||
+				mouseControl.button[1]
 			    ) 
 			{
 				//CmdShootBullet();
@@ -180,7 +207,8 @@ public class Player : NetworkBehaviour {
 
 			if (
 				buttons[2].getHeld () ||
-				Input.GetKey ("z")
+				Input.GetKey ("z") ||
+				mouseControl.button[3]
 				)
 			{
 				if (!current.shield) {
@@ -323,13 +351,18 @@ public class Player : NetworkBehaviour {
 	}
 
 	[Command]
-	void CmdChangeWeapon(int which) {
-		ship.GetComponent<Ship>().setCurrentWeapon(which);
+	void CmdChangeWeapon(int which) {		
+		BulletShooter shooter = GetComponent<BulletShooter> ();
+		shooter.setCurrentWeapon (which);
 	}
 
 	[Command]
 	void CmdDestroyShip() {
-		ship.GetComponent<Ship> ().damage (10000);
+		//ship.GetComponent<Ship> ().damage (10000);
+		Damageable d = ship.GetComponent<Damageable>();
+		if (d) {
+			d.damage (100000);
+		}
 	}
 
 	[Command]
@@ -355,8 +388,6 @@ public class Player : NetworkBehaviour {
 	[Command]
 	void CmdSetShipToShoot(bool isShooting) {
 		BulletShooter shooter = GetComponent<BulletShooter> ();
-		//Ship myShip = ship.GetComponent<Ship> ();
-		shooter.setOwner (this);
 		shooter.setIsFiring (isShooting);
 	}
 
@@ -395,15 +426,15 @@ public class Player : NetworkBehaviour {
 			string overlay = "";
 			if (ship != null) {
 				Ship thisShip = ship.GetComponent<Ship>();
+				BulletShooter shooter = GetComponent<BulletShooter> ();
 
 				float timeUntilReady = 0;
 				float lastShot = 0; 
-				int currentWeapon = thisShip.getCurrentWeapon ();
+				int currentWeapon = shooter.getCurrentWeapon ();
 
-				BulletShooter bs = GetComponent<BulletShooter> ();
-				if (bs != null) {
-					lastShot = bs.getLastShot (currentWeapon);
-					print (lastShot);
+				if (shooter != null) {
+					lastShot = shooter.getLastShot (currentWeapon);
+					//print (lastShot);
 				}
 
 				switch (currentWeapon) {
@@ -429,7 +460,7 @@ public class Player : NetworkBehaviour {
 				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
 				overlay += "\nThrust: " + (int)(thisShip.getThrust() * 100) + " \\ " + (thisShip.maxThrust * 100);
 				overlay += "\nSpeed: " + (int)(thisShip.getCurrentSpeed() * 100) + " \\ " + (thisShip.maxSpeed * 100);
-				overlay += "\nWeapon: " + WeaponInfo.getWeaponName(thisShip.getCurrentWeapon())  + " " + timeUntilReady;
+				overlay += "\nWeapon: " + WeaponInfo.getWeaponName(shooter.getCurrentWeapon())  + " " + timeUntilReady;
 
 				Shield shield = thisShip.GetComponent<Shield>();
 				overlay += "\n" + (int)shield.getCharge() + " \\ " + (int)shield.getMaxCharge();
@@ -537,7 +568,16 @@ public class Player : NetworkBehaviour {
 		ship.transform.parent = this.transform;
 		Ship thisShip = ship.GetComponent<Ship> ();
 
-		thisShip.setOwner (playerNum);
+		BulletShooter shooter = GetComponent<BulletShooter> ();
+		shooter.setOwner (ship);
+		shooter.setCurrentWeapon (1);
+
+		Owner owner = thisShip.GetComponent<Owner> ();
+		if (owner) {
+			owner.setOwnerNum (playerNum);
+		}
+
+
 		ship.tag = "Player Ship";
 		ship.name = "playership" + playerNum;
 
@@ -550,19 +590,18 @@ public class Player : NetworkBehaviour {
 
 		if (players != null) {
 			for (int i = 0; i < players.Length; i++) {
-				if (players[i].GetComponent<Ship>().getOwnerNum() == playerNum) {
-					ship = players[i];
-					break;
+				Owner owner = players [i].GetComponent<Owner> ();
+				if (owner) {
+					if (owner.getOwnerNum () == playerNum) {
+						ship = players [i];
+						break;
+					}
 				}
 			}			
 		}
 	}
 
 	void setCameraToFollow() {
-		if (!isLocalPlayer) {
-			//return;
-		}
-
 		ShipCamera sc = gameObject.GetComponent<ShipCamera> ();
 		if (ship != null) {
 			Ship myShip = ship.GetComponent<Ship> ();
@@ -570,7 +609,6 @@ public class Player : NetworkBehaviour {
 				sc.setTarget (myShip.gameObject);
 			}
 		}
-
 	}
 
 	public Ship getShip() {

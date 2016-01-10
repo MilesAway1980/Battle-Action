@@ -7,18 +7,11 @@ public class Homing : NetworkBehaviour {
 	public float turnRate;
 	public float detectDistance;
 
-	Ship target = null;
-	Player owner;
-	Ship ownerShip;
+	GameObject owner;
+	GameObject target;
 
 	void FixedUpdate () {
 		
-		if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-			}
-		}
-
 		if (isServer) {
 			if (target == null) {
 				getTarget ();
@@ -30,31 +23,25 @@ public class Homing : NetworkBehaviour {
 
 
 	void getTarget() {
-		if (isServer) {
-			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
-			if (players == null) {
+		if (isServer) {		
+
+			Homeable[] targets = Object.FindObjectsOfType<Homeable> ();
+			if (targets.Length == 0) {
 				return;
 			}
-		
+
 			float closest = float.MaxValue;
-			for (int i = 0; i < players.Length; i++) {
+			for (int i = 0; i < targets.Length; i++) {
+				GameObject potentialTarget = targets [i].gameObject;
 
-				Ship potentialTarget = players [i].GetComponent<Ship> ();
-				if (potentialTarget == null) {
-					continue;
-				}
-			
-				//Don't chase yourself!
-				if (potentialTarget == ownerShip) {
+				if (potentialTarget == owner) {
 					continue;
 				}
 
-				if (potentialTarget != null) {
-					float distance = Vector2.Distance (potentialTarget.transform.position, transform.position);
-					if (distance < closest && distance < detectDistance) {
-						closest = distance;
-						target = potentialTarget;
-					}
+				float distance = Vector2.Distance (potentialTarget.transform.position, transform.position);
+				if (distance < closest && distance < detectDistance) {
+					closest = distance;
+					target = potentialTarget;
 				}
 			}
 		}
@@ -78,7 +65,7 @@ public class Homing : NetworkBehaviour {
 		}
 	}
 
-	public void setOwner(Player newOwner) {
+	public void setOwner(GameObject newOwner) {
 		owner = newOwner;
 	}
 

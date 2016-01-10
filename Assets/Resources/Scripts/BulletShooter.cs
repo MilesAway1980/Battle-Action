@@ -5,10 +5,12 @@ using System.Collections.Generic;
 
 public class BulletShooter : NetworkBehaviour {
 
-	Player owner;					//The Player that owns the bullet shooter
-	Ship ownerShip;					//The Player's ship that is shooting
+	/*Player owner;					//The Player that owns the bullet shooter
+	Ship ownerShip;					//The Player's ship that is shooting*/
 
-	int whichWeapon;				//Which weapon the ship is equipped with
+	GameObject owner;
+
+	[SyncVar] int currentWeapon;				//Which weapon the ship is equipped with
 	Vector2 startPos;				//The weapon's starting position
 	float angle;					//The weapon's starting angle
 
@@ -38,17 +40,21 @@ public class BulletShooter : NetworkBehaviour {
 			return;
 		}
 
-		if (ownerShip == null) {			//If the player has no ship, it was recently destroyed.  
+		/*if (ownerShip == null) {			//If the player has no ship, it was recently destroyed.  
 			ownerShip = owner.getShip();	//Get their new ship
 			if (ownerShip == null) {		//If they still don't have one, it hasn't respawned
 				return;						//Exit and check later
 			}
-		}
+		}*/
 
 		if (isFiring) {			
-			whichWeapon = ownerShip.getCurrentWeapon ();
+			/*whichWeapon = ownerShip.getCurrentWeapon ();
 			startPos = ownerShip.transform.position;
-			angle = ownerShip.getAngle ();
+			angle = ownerShip.getAngle ();*/
+
+			startPos = owner.transform.position;
+			angle = owner.transform.eulerAngles.z;
+
 			fireBullet ();
 			shootTimer += Time.deltaTime;
 		} else {
@@ -64,7 +70,7 @@ public class BulletShooter : NetworkBehaviour {
 		isFiring = newIsFiring;
 	}
 
-	public void setOwner(Player newOwner) {
+	public void setOwner(GameObject newOwner) {
 		owner = newOwner;
 	}
 
@@ -73,7 +79,7 @@ public class BulletShooter : NetworkBehaviour {
 	}*/
 
 	void release() {
-		switch (whichWeapon) {
+		switch (currentWeapon) {
 			case 4: //Blaster
 			{
 				if (blasterObject != null) {
@@ -101,27 +107,27 @@ public class BulletShooter : NetworkBehaviour {
 
 	public void fireBullet() {
 
-		if (shotTimer [whichWeapon] == null) {
-			shotTimer [whichWeapon] = new ShotTimer ();
+		if (shotTimer [currentWeapon] == null) {
+			shotTimer [currentWeapon] = new ShotTimer ();
 		}
 
-		if (ammo [whichWeapon] == null) {
-			ammo [whichWeapon] = new Ammo (100, 100);
+		if (ammo [currentWeapon] == null) {
+			ammo [currentWeapon] = new Ammo (100, 100);
 
 		}
 
 
 
-		switch (whichWeapon) {
+		switch (currentWeapon) {
 
 			case 1:		//Machine gun
 			{
-				if (MachineGun.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (MachineGun.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 
@@ -138,12 +144,12 @@ public class BulletShooter : NetworkBehaviour {
 			case 2:		//Rockets
 			{
 				
-				if (Rocket.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (Rocket.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 				
@@ -160,12 +166,12 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 3:		//Missile
 			{
-				if (Missile.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (Missile.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 				
@@ -185,9 +191,8 @@ public class BulletShooter : NetworkBehaviour {
 			{
 				//No refire rate.  It's ON / OFF
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					release ();
-
 					return;
 				} 
 
@@ -204,12 +209,12 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 5:		//Crush / Flak
 			{
-				if (Crush.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (Crush.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 				
@@ -226,12 +231,12 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 6:		//Nuke
 			{
-				if (Nuke.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (Nuke.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 				
@@ -246,12 +251,12 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 7:		//Warp
 			{
-				if (Warp.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (Warp.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 
@@ -309,12 +314,12 @@ public class BulletShooter : NetworkBehaviour {
 					return;
 				}
 
-				if (Plasma.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (Plasma.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 
@@ -358,12 +363,12 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 9:		//Mines
 			{
-				if (MineField.getRefireRate() > (Time.fixedTime - shotTimer[whichWeapon].getLastShot())) {
+				if (MineField.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
 					return;
 				}
-				shotTimer [whichWeapon].updateLastShot ();
+				shotTimer [currentWeapon].updateLastShot ();
 
-				if (ammo [whichWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].useAmmo() == false) {
 					return;
 				} 
 
@@ -376,8 +381,26 @@ public class BulletShooter : NetworkBehaviour {
 				break;
 			}
 
-			case 10:	//Turrets
+			case 10:	//Decoy
 			{
+				/*if (Decoy.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+					return;
+				}
+
+				shotTimer [currentWeapon].updateLastShot ();
+
+				if (ammo [currentWeapon].useAmmo () == false) {
+					return;
+				}
+
+				GameObject newDecoy = (GameObject)Instantiate (Decoy.getDecoy ());
+				Decoy d = newDecoy.GetComponent<Decoy> ();
+
+				d.init (owner, ownerShip);
+
+				NetworkServer.Spawn (newDecoy);
+				*/
+
 				break;
 			}
 
@@ -386,11 +409,21 @@ public class BulletShooter : NetworkBehaviour {
 				break;
 			}
 
-			case 12:	//Decoy
+			case 12:	//Turrets
 			{
 				break;
 			}
 		}
+	}
+
+	public void setCurrentWeapon(int whichWeapon) {
+		if (currentWeapon >= 0) {
+			currentWeapon = whichWeapon;
+		}
+	}
+
+	public int getCurrentWeapon() {
+		return currentWeapon;
 	}
 
 	public float getLastShot(int which) {

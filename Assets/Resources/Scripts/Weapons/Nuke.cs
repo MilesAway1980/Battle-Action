@@ -21,8 +21,12 @@ public class Nuke : NetworkBehaviour {
 	[SyncVar] public Vector3 fireballSize;
 
 	float angle;
-	Player owner;
-	Ship ownerShip;
+	/*Player owner;
+	Ship ownerShip;*/
+
+	GameObject owner;
+
+
 	[SyncVar] bool exploded;
 
 	// Use this for initialization
@@ -35,26 +39,14 @@ public class Nuke : NetworkBehaviour {
 
 	void FixedUpdate () {
 
-		//print (this.transform.parent);
-		//print (this.transform.position);
-
-		if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-				if (ownerShip == null) {
-					return;
-				}
-			}
-		}
-
 		if (exploded == false) {
 			currentTime += Time.deltaTime;
 
-			if (ownerShip != null) {
-				angle = ownerShip.getAngle () / Mathf.Rad2Deg;
+			if (owner) {
+				angle = owner.transform.eulerAngles.z / Mathf.Rad2Deg;
 				pos = new Vector2 (
-					ownerShip.transform.position.x - Mathf.Sin (angle) * -2,
-					ownerShip.transform.position.y + Mathf.Cos (angle) * -2
+					owner.transform.position.x - Mathf.Sin (angle) * -2,
+					owner.transform.position.y + Mathf.Cos (angle) * -2
 				);
 			}
 
@@ -100,30 +92,38 @@ public class Nuke : NetworkBehaviour {
 		transform.position = pos;
 	}
 
-	[Server]
+
 	void checkDamage() {
-		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
-		if (players == null) {
+		if (!isServer) {
 			return;
 		}
 
-		for (int i = 0; i < players.Length; i++) {
+		Damageable[] damageableObjects = Object.FindObjectsOfType<Damageable> ();
+		if (damageableObjects == null) {
+			return;
+		}
 
-			Ship whichShip = players[i].GetComponent<Ship>();
-			if (whichShip == ownerShip) {
-				continue;
+		for (int i = 0; i < damageableObjects.Length; i++) {
+			GameObject target = damageableObjects [i].gameObject;
+			//Ship whichShip = target.GetComponent<Ship> ();
+			if (target) {
+				if (target == owner) {
+					continue;
+				}
 			}
 
-			if (Vector2.Distance(
+			float targetDist = Vector2.Distance (
 				pos,
-				whichShip.transform.position
-			) <= (currentRadius / 2) ) {
-				whichShip.damage(damage);
+				target.transform.position
+			);
+
+			if (targetDist <= (currentRadius / 2.0f)) {
+				damageableObjects [i].damage (damage);
 			}
 		}
 	}
 
-	public void init(Player newOwner) {
+	public void init(GameObject newOwner) {
 		owner = newOwner;
 	}
 

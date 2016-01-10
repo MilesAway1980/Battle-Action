@@ -4,12 +4,12 @@ using System.Collections;
 
 public class Ship : NetworkBehaviour {
 
-	static ObjectList shipList;					//A static list of all the ships in the game.
+	static public ObjectList shipList;					//A static list of all the ships in the game.
 
 	public float maxSpeed;						//The fastest the shop can travel
 	public float maxThrust;						//The maximum thrust output
 	public float acceleration;					//How much thrust the ship can increase/decrease in one frame
-	public float maxArmor;						//The ship's maximum armor
+	//public float maxArmor;						//The ship's maximum armor
 	public float turnRate;						//How quickly the ship can turn
 	public int slots;							//How many weapons the ship can use (not implemented)
 
@@ -17,17 +17,17 @@ public class Ship : NetworkBehaviour {
 
 	public GameObject explosion;				//The explosion that plays when the ship is destroyed
 
-	[SyncVar] private float armor;				//How much armor the ship currently has.
+	//[SyncVar] private float armor;				//How much armor the ship currently has.
 	[SyncVar] private float currentSpeed;		//The ship's current speed
 	[SyncVar] private float thrust;				//How much thrust the ship currently has
-	[SyncVar] private int ownerNum;				//The number of the player that owns the ship.
-	[SyncVar] private int currentWeapon;		//The ship's currently selected weapon
+	//[SyncVar] private int ownerNum;				//The number of the player that owns the ship.
+	//[SyncVar] private int currentWeapon;		//The ship's currently selected weapon
 
-	private bool freshKill;						//Signals to the player that their ship just earned a kill
+	//private bool freshKill;						//Signals to the player that their ship just earned a kill
 	private bool accelerating;					//The player is accelerating the ship
 	private bool decelerating;					//The player is decelerating the ship
 
-	private int lastHitBy;						//The number of the player the ship was last hit by
+	//private int lastHitBy;						//The number of the player the ship was last hit by
 
 	private Vector2 currentPos;					//The ship's current position
 	private Vector2 oldPos;						//The ship's previous position
@@ -39,6 +39,9 @@ public class Ship : NetworkBehaviour {
 
 	private Rigidbody2D rb;						//The ship's rigid body component
 
+	private float beaconPointerSize;
+	private float playerPointerSize;
+
 	void Awake() {
 
 		if (shipList == null) {
@@ -49,9 +52,13 @@ public class Ship : NetworkBehaviour {
 		opponentDistance = -1;
 	}
 
+	void OnDestroy() {
+		shipList.removeObject (this.gameObject);
+	}
+
 	// Use this for initialization
 	void Start () {
-		armor = maxArmor;
+		//armor = maxArmor;
 		transform.Rotate (new Vector3 (0, 0, Random.Range (0, 360)));
 
 		rb = GetComponent<Rigidbody2D> ();
@@ -61,7 +68,10 @@ public class Ship : NetworkBehaviour {
 		currentPos = transform.position;
 		oldPos = currentPos;
 
-		currentWeapon = 1;
+		beaconPointerSize = 1.8f;
+		playerPointerSize = 2.5f;
+
+		//currentWeapon = 1;
 	}
 
 	void Update() {
@@ -103,17 +113,25 @@ public class Ship : NetworkBehaviour {
 		if (!isServer) {
 			return;
 		}
-		if (armor <= 0) {
-			explode();
-			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
-			for (int i = 0; i < players.Length; i++) {
-				Player p = players[i].GetComponent<Player>();
-				if (p.getPlayerNum() == lastHitBy) {
-					p.addKill();
-					break;
+
+		Damageable dm = GetComponent<Damageable> ();
+
+		if (dm) {
+			if (dm.getArmor() <= 0) {
+				explode();
+				GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
+				for (int i = 0; i < players.Length; i++) {
+					Player p = players[i].GetComponent<Player>();
+
+					HitInfo hi = GetComponent<HitInfo> ();
+
+					if (p.getPlayerNum() == hi.getLastHitBy()) {
+						p.addKill();
+						break;
+					}
 				}
-			}
-			Destroy (gameObject);
+				Destroy (gameObject);
+			}	
 		}
 	}
 
@@ -125,15 +143,15 @@ public class Ship : NetworkBehaviour {
 		NetworkServer.Spawn (boom);
 	}
 
-	public void setOwner(int newOwner) {
+	/*public void setOwner(int newOwner) {
 		ownerNum = newOwner;
-	}
+	}*/
 
-	public int getOwnerNum() {
+	/*public int getOwnerNum() {
 		return ownerNum;
-	}
+	}*/
 
-	public int getCurrentWeapon() {
+	/*public int getCurrentWeapon() {
 		return currentWeapon ;
 	}
 
@@ -141,7 +159,7 @@ public class Ship : NetworkBehaviour {
 		if (currentWeapon > 0 && currentWeapon <= 12) {
 			currentWeapon = whichWeapon;
 		}
-	}
+	}*/
 	
 	public void updateForLocal() {
 		//Updates for local network player only 
@@ -154,8 +172,8 @@ public class Ship : NetworkBehaviour {
 		}
 
 		beaconPointer.transform.position = new Vector3 (
-			transform.position.x + Mathf.Sin (beaconAngle / Mathf.Rad2Deg) * 1.8f,
-			transform.position.y + Mathf.Cos (beaconAngle / Mathf.Rad2Deg) * 1.8f,
+			transform.position.x + Mathf.Sin (beaconAngle / Mathf.Rad2Deg) * beaconPointerSize,
+			transform.position.y + Mathf.Cos (beaconAngle / Mathf.Rad2Deg) * beaconPointerSize,
 			-5
 		);
 
@@ -173,8 +191,8 @@ public class Ship : NetworkBehaviour {
 			opponentDistance = closestShip.distance;
 			shipPointer.GetComponent<SpriteRenderer> ().enabled = true;
 			shipPointer.transform.position = new Vector3 (
-				transform.position.x + Mathf.Sin (shipAngle / Mathf.Rad2Deg) * 2.5f,
-				transform.position.y + Mathf.Cos (shipAngle / Mathf.Rad2Deg) * 2.5f,
+				transform.position.x + Mathf.Sin (shipAngle / Mathf.Rad2Deg) * playerPointerSize,
+				transform.position.y + Mathf.Cos (shipAngle / Mathf.Rad2Deg) * playerPointerSize,
 				-5
 			);
 
@@ -254,18 +272,18 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
-	[Server]
+	/*[Server]
 	public void damage(float amount) {
 		if (amount > 0) {
 			Shield shield = GetComponent<Shield>();
 			if (shield.getActive()) {
-				armor -= amount / 10;
+				armor -= amount / shield.getDamageReduction();
 				shield.damageShield(amount); 
 			} else {
 				armor -= amount;
 			}
 		}
-	}
+	}*/
 
 	public void setShield(bool setting) {
 		Shield shield = GetComponent<Shield> ();
@@ -281,22 +299,45 @@ public class Ship : NetworkBehaviour {
 
 		GameObject objectHit = col.gameObject;
 
-		if (objectHit.tag == "Player Ship") {
-			Ship shipHit = objectHit.GetComponent<Ship>();
+		Damageable dm = objectHit.GetComponent<Damageable> ();
+
+		if (dm) {
 			float damage = (currentSpeed * rb.mass);
-			shipHit.damage(damage);
-			shipHit.setLastHitBy(ownerNum);
-			this.damage (damage);
+
+			dm.damage (damage);
+
+			
 		}
 
+		/*if (objectHit.tag == "Player Ship") {
+			Ship shipHit = objectHit.GetComponent<Ship>();
+			Decoy decoyHit = objectHit.GetComponent<Decoy> ();
+			float damage = (currentSpeed * rb.mass);
+			if (shipHit) {
+				shipHit.damage (damage);
+				shipHit.setLastHitBy (ownerNum);
+			}
+
+			if (decoyHit) {
+				decoyHit.damage (damage);
+			}
+			this.damage (damage);
+		}*/
+
 	}
 
-	public void setLastHitBy(int who) {
+	/*public void setLastHitBy(int who) {
 		lastHitBy = who;
-	}
+	}*/
 
 	public float getArmor() {
-		return armor;
+		
+		Damageable dm = GetComponent<Damageable> ();
+		if (dm) {
+			return dm.getArmor ();
+		} else {
+			return 0;
+		}
 	}
 
 	public float getThrust() {

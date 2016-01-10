@@ -60,13 +60,30 @@ public class MachineGun : Bullet {
 	}
 
 	void checkHit() {
-		Ship shipHit = checkShipHit (true);
+		GameObject objectHit = checkObjectHit (true);
+
+		//print (objectHit);
+
+		if (objectHit) {
+			Damageable dm = objectHit.GetComponent<Damageable> ();
+			if (dm) {
+				dm.damage (damage);
+
+				HitInfo info = objectHit.GetComponent<HitInfo> ();
+				if (info) {
+					info.setLastHitBy (owner);
+				}
+			}
+			Destroy (gameObject);
+		}
+
+		/*Ship shipHit = checkShipHit (true);
 		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
 			shipHit.damage(damage);
 			shipHit.setLastHitBy(owner.getPlayerNum());
 			Destroy (gameObject);
-		}	
+		}*/	
 	}
 
 	public static GameObject getBullet() {

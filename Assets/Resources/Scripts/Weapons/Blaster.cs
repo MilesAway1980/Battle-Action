@@ -17,28 +17,19 @@ public class Blaster : NetworkBehaviour {
 	GameObject blasterObject;
 
 	public Material mat;
-	Player owner;
-	Ship ownerShip;
+	/*Player owner;
+	Ship ownerShip;*/
+
+	GameObject owner;
 
 	// Use this for initialization
 	void Start () {
-
-		//MeshFilter mf = GetComponent<MeshFilter>();
+		
 		MeshRenderer mr = GetComponent<MeshRenderer>();
 		mr.material = mat;
 	}
 
 	void FixedUpdate() {
-
-		if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-				if (ownerShip == null) {
-					return;
-				}
-			}
-		}
-
 		setShape ();
 		checkDamage ();
 	}
@@ -74,9 +65,7 @@ public class Blaster : NetworkBehaviour {
 			startPos,
 			rightCorner,
 			leftCorner
-		};		 
-
-
+		};
 
 		beamMesh.triangles = new int[] { 0, 1, 2 };
 	}
@@ -87,7 +76,54 @@ public class Blaster : NetworkBehaviour {
 			return;
 		}
 
-		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+		//Get a list of all damageable objects
+		Damageable[] allObjects = Object.FindObjectsOfType<Damageable> ();
+		if (allObjects == null) {
+			return;
+		}
+
+		for (int i = 0; i < allObjects.Length; i++) {
+			float dist = Vector2.Distance(startPos, allObjects[i].transform.position);
+			if (dist < range && dist > 1) {
+				Damageable target = allObjects [i];
+				GameObject targetOwner = target.gameObject;
+				Vector3 targetPos = targetOwner.transform.position;
+
+				bool damaged = false;
+
+				float angleToTarget = Angle.getAngle (startPos, targetPos);
+				float pointAngle = (360 - angle);
+
+				if (angleToTarget < (pointAngle + spread) && angleToTarget > (pointAngle - spread)) {
+					damaged = true;
+				}
+
+				if (damaged == false) {
+					CircleCollider2D collider = targetOwner.GetComponent<CircleCollider2D> ();
+					if (collider) {
+						if (Intersect.LineCircle (startPos, leftCorner, targetPos, collider.radius)) {
+							damaged = true;
+						}
+
+						if (damaged == false) {
+							if (Intersect.LineCircle (startPos, rightCorner, targetPos, collider.radius)) {
+								damaged = true;
+							}
+						}
+					}
+				}
+
+				if (damaged) {
+					target.damage (damage);
+					HitInfo info = targetOwner.GetComponent<HitInfo> ();
+					if (info) {						
+						info.setLastHitBy (owner);
+					}
+				}
+			}
+		}
+
+		/*GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 		if (players == null) {
 			return;
 		}
@@ -130,10 +166,10 @@ public class Blaster : NetworkBehaviour {
 					playerShip.setLastHitBy (owner.getPlayerNum ());
 				}
 			}
-		}
+		}*/
 	}
 
-	public void init(Vector2 newStartPos, float newAngle, Player newOwner) {
+	public void init(Vector2 newStartPos, float newAngle, GameObject newOwner) {
 		startPos = newStartPos;
 		angle = newAngle;
 		owner = newOwner;

@@ -37,12 +37,12 @@ public class Plasma : Bullet {
 
 	void setPosition() {
 
-		if (ownerShip == null) {
+		if (owner == null) {
 			return;
 		}
 
-		float forwardX = ownerShip.transform.position.x - Mathf.Sin (angleRad) * 2;
-		float forwardY = ownerShip.transform.position.y + Mathf.Cos (angleRad) * 2;
+		float forwardX = owner.transform.position.x - Mathf.Sin (angleRad) * 2;
+		float forwardY = owner.transform.position.y + Mathf.Cos (angleRad) * 2;
 
 		originPos = new Vector2 (forwardX, forwardY);
 
@@ -52,14 +52,19 @@ public class Plasma : Bullet {
 	
 	void FixedUpdate () {
 
-		if (owner != null) {
+		/*if (owner != null) {
 			if (ownerShip == null) {			
 				ownerShip = owner.getShip ();
 				if (ownerShip == null) {
 					return;
 				}
 			}
+		}*/
+
+		if (owner == null) {
+			return;
 		}
+
 		distance = Vector2.Distance (originPos, transform.position);
 		if (distance >= travelDist) {
 			Destroy (gameObject);
@@ -81,7 +86,7 @@ public class Plasma : Bullet {
 		transform.position = pos;	
 	}
 
-	void checkHit() {
+	/*void checkHit() {
 		Ship shipHit = checkShipHit (true);
 		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
@@ -93,6 +98,23 @@ public class Plasma : Bullet {
 			shipHit.setLastHitBy (owner.getPlayerNum ());
 			Destroy (gameObject);
 		}	
+	}*/
+
+	void checkHit() {
+		GameObject objectHit = checkObjectHit (true);
+
+		if (objectHit) {
+			float chargeDamage = (charge / (maxChargeTime + initialCharge)) * maxDamage;
+
+			Damageable dm = objectHit.GetComponent<Damageable> ();
+			if (dm) {
+				dm.damage (chargeDamage);
+				HitInfo info = objectHit.GetComponent<HitInfo> ();
+				if (info) {
+					info.setLastHitBy (owner);
+				}
+			}
+		}
 	}
 
 	public void incCharge(float amount) {

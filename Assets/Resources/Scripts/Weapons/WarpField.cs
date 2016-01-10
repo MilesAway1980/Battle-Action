@@ -13,13 +13,10 @@ public class WarpField : NetworkBehaviour {
 	[SyncVar] float rotation;	
 	[SyncVar] Vector2 pos;			
 	[SyncVar] Vector2 targetPos;	//Where the ship is warping to
-
-	Player owner;
-	Ship ownerShip;
-
 	[SyncVar] bool warped;
 
-	// Use this for initialization
+	GameObject owner;
+
 	void Start () {
 		currentTime = 0;
 		radius = transform.localScale.y;
@@ -29,42 +26,34 @@ public class WarpField : NetworkBehaviour {
 		warped = false;
 	}
 	
-	// Update is called once per frame
 	void Update () {
-		if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-				if (ownerShip == null) {
-					return;
-				}
-			}
-		}
 
-		if (ownerShip != null) {
+		if (owner) {
+			if ((Vector2)owner.transform.position == targetPos) {
+				warped = true;
+			}
+
 			if (warped == false) {
-				ownerShip.transform.position = targetPos;
+				owner.transform.position = targetPos;
 			}
-			warped = true;
 		}
 
-		if (warped == false) {
-			return;
-		}
-
-		currentTime += Time.deltaTime;
-		if (currentTime > lingerTime) {
-			Destroy (gameObject);
-		} else {
-			float currentRadius = radius * ((lingerTime - currentTime) / lingerTime);
-			transform.localScale = new Vector3(
-				currentRadius,
-				length,
-				0
-			);
+		if (warped) {
+			currentTime += Time.deltaTime;
+			if (currentTime > lingerTime) {
+				Destroy (gameObject);
+			} else {
+				float currentRadius = radius * ((lingerTime - currentTime) / lingerTime);
+				transform.localScale = new Vector3 (
+					currentRadius,
+					length,
+					0
+				);
+			}
 		}
 	}
 
-	public void init(Player newOwner, Vector2 newPos, float newLength, float newRotation, Vector2 destination) {
+	public void init(GameObject newOwner, Vector2 newPos, float newLength, float newRotation, Vector2 destination) {
 		owner = newOwner;
 		pos = newPos;
 		length = newLength;
@@ -79,15 +68,17 @@ public class WarpField : NetworkBehaviour {
 		
 		GameObject objectHit = col.gameObject;
 		
-		if (objectHit.tag == "Player Ship") {
-			Ship shipHit = objectHit.GetComponent<Ship>();
-			if (shipHit == ownerShip) {
-				return;
-			}
-
-			shipHit.damage(trailDamage);
-			shipHit.setLastHitBy (owner.getPlayerNum ());
+		if (objectHit == owner) {
+			return;
 		}
-		
+
+		Damageable dm = objectHit.GetComponent<Damageable> ();
+		if (dm) {
+			dm.damage (trailDamage);
+			HitInfo info = objectHit.GetComponent<HitInfo> ();
+			if (info) {
+				info.setLastHitBy (owner);
+			}
+		}		
 	}
 }

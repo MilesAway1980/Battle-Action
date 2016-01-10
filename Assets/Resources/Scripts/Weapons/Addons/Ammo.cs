@@ -18,7 +18,7 @@ public class Ammo  {
 
 	public bool useAmmo() {
 		if (currentAmmo > 0) {
-			currentAmmo--;
+			//currentAmmo--;
 			return true;
 		}
 		return false;

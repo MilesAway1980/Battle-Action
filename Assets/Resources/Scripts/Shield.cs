@@ -10,19 +10,22 @@ public class Shield : NetworkBehaviour {
 
 	public float maxCharge;
 	public float rechargeRate;
+	public float damageReduction;
 	float whenActivated;
 
 	float charge;
 	[SyncVar] bool active;
 
 	GameObject shieldObject;
-	Ship owner;
+	//Ship owner;
+	GameObject owner;
 
 	// Use this for initialization
 	void Start () {
 
 		shieldObject = (GameObject)Instantiate(Resources.Load ("Prefabs/Shield"));
-		owner = GetComponent<Ship> ();
+		//owner = GetComponent<Ship> ();
+		owner = this.gameObject;
 		
 		shieldObject.transform.parent = owner.transform;
 		shieldObject.transform.position = transform.position;
@@ -55,12 +58,38 @@ public class Shield : NetworkBehaviour {
 
 	void OnCollisionEnter2D(Collision2D col) {
 		GameObject objectHit = col.gameObject;
+
+		Damageable dm = objectHit.GetComponent<Damageable> ();
+		if (dm) {
+			dm.damage (shieldContactDamage);
+
+			HitInfo info = objectHit.GetComponent<HitInfo> ();
+			if (info) {
+
+				info.setLastHitBy (owner);					
+			}
+
+			/*Ship shipHit = objectHit.GetComponent<Ship> ();
+			if (shipHit) {
+				Owner thisOwner = owner.GetComponent<Owner> ();
+				if (thisOwner) {
+					shipHit.setLastHitBy (thisOwner.getOwnerNum ());
+				} else {
+					shipHit.setLastHitBy (-1);
+				}
+			}*/
+		}
+
+
 		
-		if (objectHit.tag == "Player Ship") {
+		/*if (objectHit.tag == "Player Ship") {
 			Ship shipHit = objectHit.GetComponent<Ship>();
-			shipHit.damage(shieldContactDamage);
-			shipHit.setLastHitBy(owner.getOwnerNum()); 
-		}		
+
+			if (shipHit) {
+				shipHit.damage (shieldContactDamage);
+				shipHit.setLastHitBy (owner.getOwnerNum ()); 
+			}
+		}*/		
 	}
 
 	public void damageShield(float amount) {
@@ -68,6 +97,10 @@ public class Shield : NetworkBehaviour {
 		if (charge <= 0) {
 			charge = 0;
 		}
+	}
+
+	public float getDamageReduction() {
+		return damageReduction;
 	}
 
 	public float getCharge() {

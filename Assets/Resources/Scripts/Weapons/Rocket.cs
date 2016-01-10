@@ -42,7 +42,7 @@ public class Rocket : Bullet {
 		transform.position = pos;
 	}
 
-	void checkHit() {
+	/*void checkHit() {
 		Ship shipHit = checkShipHit (true);
 		if (shipHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
@@ -50,6 +50,21 @@ public class Rocket : Bullet {
 			shipHit.setLastHitBy (owner.getPlayerNum ());
 			Destroy (gameObject);
 		}	
+	}*/
+
+	void checkHit() {
+		GameObject objectHit = checkObjectHit (true);
+		if (objectHit) {
+			Damageable dm = objectHit.GetComponent<Damageable> ();
+			if (dm) {
+				dm.damage (damage);
+				HitInfo info = objectHit.GetComponent<HitInfo> ();
+				if (info) {
+					info.setLastHitBy (owner);
+				}
+				Destroy (gameObject);
+			}
+		}
 	}
 
 	public static GameObject getBullet() {

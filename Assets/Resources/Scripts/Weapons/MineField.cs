@@ -14,8 +14,10 @@ public class MineField : NetworkBehaviour {
 
 	[SyncVar] Vector2 pos;
 
-	Player owner;
-	Ship ownerShip;
+	/*Player owner;
+	Ship ownerShip;*/
+
+	GameObject owner;
 
 	// Use this for initialization
 	void Start () {
@@ -52,16 +54,18 @@ public class MineField : NetworkBehaviour {
 			return;
 		}
 
-		if (owner != null) {
+		/*if (owner != null) {
 			if (ownerShip == null) {			
 				ownerShip = owner.getShip ();
 			}
-		}
+		}*/
 
-		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
+		/*GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 		if (players == null) {
 			return;
-		}
+		}*/
+
+		Ship[] ships = Object.FindObjectsOfType<Ship> ();
 
 		bool minesLeft = false;
 		for (int i = 0; i < mines.Length; i++) {
@@ -75,8 +79,17 @@ public class MineField : NetworkBehaviour {
 			Destroy (this.gameObject);
 		}
 
-		for (int i = 0; i < players.Length; i++) {
+		/*for (int i = 0; i < players.Length; i++) {
 			Ship ship = players [i].GetComponent<Ship> ();
+			if (ship == ownerShip) {
+				continue;
+			}*/
+
+		for (int i = 0; i < ships.Length; i++) {
+
+			Ship ship = ships [i];
+			Ship ownerShip = owner.GetComponent<Ship> ();
+
 			if (ship == ownerShip) {
 				continue;
 			}
@@ -100,7 +113,13 @@ public class MineField : NetworkBehaviour {
 
 						NetworkServer.Spawn (explosion);
 
-						ship.damage (mine.damage);
+						//ship.damage (mine.damage);
+
+						Damageable dm = ship.GetComponent<Damageable> ();
+						if (dm) {
+							dm.damage (mine.damage);
+						}
+
 						Destroy (mines[m].gameObject);
 						//mines [m] = null;
 					}
@@ -109,7 +128,7 @@ public class MineField : NetworkBehaviour {
 		}
 	}
 
-	public void init (Player newOwner, Vector2 newPos) {
+	public void init (GameObject newOwner, Vector2 newPos) {
 		owner = newOwner;
 		pos = newPos;
 	}

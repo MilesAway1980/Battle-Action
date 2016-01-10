@@ -9,11 +9,15 @@ GameObject:
   m_Component:
   - 4: {fileID: 494724}
   - 114: {fileID: 11422626}
+  - 114: {fileID: 11481544}
+  - 114: {fileID: 11476022}
   - 50: {fileID: 5046916}
   - 58: {fileID: 5859712}
   - 114: {fileID: 11447162}
   - 114: {fileID: 11471706}
-  - 114: {fileID: 11481544}
+  - 114: {fileID: 11465030}
+  - 114: {fileID: 11402204}
+  - 114: {fileID: 11489198}
   m_Layer: 0
   m_Name: Ship_10
   m_TagString: Untagged
@@ -155,6 +159,17 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.75
+--- !u!114 &11402204
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42d834541c47a2242bf0528e1d0d559c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11422626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -169,13 +184,8 @@ MonoBehaviour:
   maxSpeed: 6
   maxThrust: 11
   acceleration: 0.1
-  maxArmor: 750
   turnRate: 1
   slots: 0
-  currentSpeed: 0
-  angle: 0
-  thrust: 0
-  turnDir: 0
   explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
 --- !u!114 &11447162
 MonoBehaviour:
@@ -209,6 +219,17 @@ MonoBehaviour:
     i15: 249
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &11465030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae3aee3604a9e0148b7f776edab4a5ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11471706
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -229,6 +250,18 @@ MonoBehaviour:
   m_SnapThreshold: 5
   m_InterpolateRotation: 1
   m_InterpolateMovement: 1
+--- !u!114 &11476022
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 906d01d13d9a1194c94f9d766bc20276, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxArmor: 750
 --- !u!114 &11481544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -243,6 +276,18 @@ MonoBehaviour:
   shieldContactDamage: 15
   maxCharge: 400
   rechargeRate: 2
+  damageReduction: 12
+--- !u!114 &11489198
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 115606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d8b3f881667ead4bbff1d734f43e48c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -266,6 +311,14 @@ Prefab:
       propertyPath: explosion
       value: 
       objectReference: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 2}
+    - target: {fileID: 0}
+      propertyPath: damageReduction
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: maxArmor
+      value: 750
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 115606}

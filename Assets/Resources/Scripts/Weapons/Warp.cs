@@ -11,8 +11,7 @@ public class Warp : NetworkBehaviour {
 	[Range (0, 100)]
 	public float maxPercentageOfArenaToWarp;
 
-	Player owner;
-	Ship ownerShip;
+	GameObject owner;
 
 	[SyncVar] float currentTime;
 
@@ -28,12 +27,6 @@ public class Warp : NetworkBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-			}
-		}
-
 		currentTime += Time.deltaTime;
 		if (currentTime > warpTimer) {
 			warpShip();
@@ -51,22 +44,22 @@ public class Warp : NetworkBehaviour {
 			distance = minimumWarpDistance;
 		}
 
-		float angleRad = ownerShip.getAngle () / Mathf.Rad2Deg;
+		float angleRad = owner.transform.eulerAngles.z / Mathf.Rad2Deg;
 
 		Vector2 halfWay = new Vector2 (
-			ownerShip.transform.position.x - Mathf.Sin (angleRad) * (distance * 0.5f),
-			ownerShip.transform.position.y + Mathf.Cos (angleRad) * (distance * 0.5f)
+			owner.transform.position.x - Mathf.Sin (angleRad) * (distance * 0.5f),
+			owner.transform.position.y + Mathf.Cos (angleRad) * (distance * 0.5f)
 		);
 
 		Vector2 destination = new Vector3 (
-			ownerShip.transform.position.x - Mathf.Sin (angleRad) * distance,
-			ownerShip.transform.position.y + Mathf.Cos (angleRad) * distance
+			owner.transform.position.x - Mathf.Sin (angleRad) * distance,
+			owner.transform.position.y + Mathf.Cos (angleRad) * distance
 		);
 
 		GameObject warpField = (GameObject)Instantiate (getWarpField (), halfWay, Quaternion.identity);
 
 		WarpField wf = warpField.GetComponent<WarpField> ();
-		wf.init (owner, halfWay, distance * 0.5f, ownerShip.getAngle (), destination);
+		wf.init (owner, halfWay, distance * 0.5f, owner.transform.eulerAngles.z, destination);
 
 		NetworkServer.Spawn (warpField);
 		
@@ -88,7 +81,7 @@ public class Warp : NetworkBehaviour {
 		return warpRefireRate;
 	}
 
-	public void setOwner(Player newOwner) {
+	public void setOwner(GameObject newOwner) {
 		owner = newOwner;
 	}
 }
