@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Beacon : NetworkBehaviour {
 
-	static ObjectList beacons;
+	public static ObjectList beacons;
 
 	void Awake() {
 
@@ -13,23 +13,5 @@ public class Beacon : NetworkBehaviour {
 		}
 
 		beacons.addObject (this.gameObject);
-	}
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	public static ObjectInfo getNearestBeacon(GameObject which) {
-		if (beacons != null) {
-			return beacons.getClosest (which);
-		} else {
-			return new ObjectInfo();
-		}
 	}
 }

@@ -68,10 +68,13 @@ public class Player : NetworkBehaviour {
 	void Update() {
 		
 		if (isLocalPlayer) {
-			if (ship != null) {
-				Ship myShip = ship.GetComponent<Ship> ();
-				myShip.updateForLocal ();
-				checkControls ();					
+			if (ship != null) {				
+				checkControls ();
+
+				Pointer[] pointers = ship.GetComponents<Pointer> ();
+				for (int i = 0; i < pointers.Length; i++) {
+					pointers [i].setActive (true);
+				}
 			}					
 		}
 
@@ -114,7 +117,6 @@ public class Player : NetworkBehaviour {
 			if (clickAngle < 0) {
 				clickAngle += 360;
 			}
-			Ship thisShip = ship.GetComponent<Ship> ();
 		}
 
 

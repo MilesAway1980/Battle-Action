@@ -9,7 +9,7 @@ public class Ship : NetworkBehaviour {
 	public float maxSpeed;						//The fastest the shop can travel
 	public float maxThrust;						//The maximum thrust output
 	public float acceleration;					//How much thrust the ship can increase/decrease in one frame
-	//public float maxArmor;						//The ship's maximum armor
+
 	public float turnRate;						//How quickly the ship can turn
 	public int slots;							//How many weapons the ship can use (not implemented)
 
@@ -17,30 +17,17 @@ public class Ship : NetworkBehaviour {
 
 	public GameObject explosion;				//The explosion that plays when the ship is destroyed
 
-	//[SyncVar] private float armor;				//How much armor the ship currently has.
 	[SyncVar] private float currentSpeed;		//The ship's current speed
 	[SyncVar] private float thrust;				//How much thrust the ship currently has
-	//[SyncVar] private int ownerNum;				//The number of the player that owns the ship.
-	//[SyncVar] private int currentWeapon;		//The ship's currently selected weapon
 
-	//private bool freshKill;						//Signals to the player that their ship just earned a kill
 	private bool accelerating;					//The player is accelerating the ship
 	private bool decelerating;					//The player is decelerating the ship
-
-	//private int lastHitBy;						//The number of the player the ship was last hit by
 
 	private Vector2 currentPos;					//The ship's current position
 	private Vector2 oldPos;						//The ship's previous position
 
-	private GameObject beaconPointer;			//The object that points to the closest beacon
-	private GameObject shipPointer;				//The object that points to the closest ship
-
 	private float opponentDistance;				//The distance to the closest opponent
-
 	private Rigidbody2D rb;						//The ship's rigid body component
-
-	private float beaconPointerSize;
-	private float playerPointerSize;
 
 	void Awake() {
 
@@ -67,11 +54,6 @@ public class Ship : NetworkBehaviour {
 
 		currentPos = transform.position;
 		oldPos = currentPos;
-
-		beaconPointerSize = 1.8f;
-		playerPointerSize = 2.5f;
-
-		//currentWeapon = 1;
 	}
 
 	void Update() {
@@ -88,25 +70,6 @@ public class Ship : NetworkBehaviour {
 		}
 
 		currentPos = transform.position;
-	}
-
-	public void makePointers() {	
-
-		beaconPointer = (GameObject)Instantiate(Resources.Load ("Prefabs/BeaconPointer"));
-		beaconPointer.name = "Beacon Pointer";
-		beaconPointer.transform.parent = transform;
-		
-		shipPointer = (GameObject)Instantiate(Resources.Load ("Prefabs/PlayerPointer"));
-		shipPointer.name = "Player Pointer";
-		shipPointer.transform.parent = transform;
-
-		SpriteRenderer sr;
-
-		sr = beaconPointer.GetComponent<SpriteRenderer> ();
-		sr.transform.localScale = new Vector2 (0.15f, 0.15f);
-
-		sr = shipPointer.GetComponent<SpriteRenderer> ();
-		sr.transform.localScale = new Vector2 (0.1f, 0.1f);
 	}
 
 	void checkDamage() {
@@ -141,66 +104,6 @@ public class Ship : NetworkBehaviour {
 		exp.init (0.0f, 10);
 
 		NetworkServer.Spawn (boom);
-	}
-
-	/*public void setOwner(int newOwner) {
-		ownerNum = newOwner;
-	}*/
-
-	/*public int getOwnerNum() {
-		return ownerNum;
-	}*/
-
-	/*public int getCurrentWeapon() {
-		return currentWeapon ;
-	}
-
-	public void setCurrentWeapon(int whichWeapon) {
-		if (currentWeapon > 0 && currentWeapon <= 12) {
-			currentWeapon = whichWeapon;
-		}
-	}*/
-	
-	public void updateForLocal() {
-		//Updates for local network player only 
-
-		ObjectInfo closestBeacon = Beacon.getNearestBeacon (this.gameObject);
-		float beaconAngle = (int)Angle.getAngle (transform.position, closestBeacon.pos);
-
-		if (beaconPointer == null || shipPointer == null) {
-			makePointers();
-		}
-
-		beaconPointer.transform.position = new Vector3 (
-			transform.position.x + Mathf.Sin (beaconAngle / Mathf.Rad2Deg) * beaconPointerSize,
-			transform.position.y + Mathf.Cos (beaconAngle / Mathf.Rad2Deg) * beaconPointerSize,
-			-5
-		);
-
-		beaconPointer.transform.rotation = Quaternion.Euler (new Vector3 (0, 0, -beaconAngle));
-		
-		ObjectInfo closestShip = shipList.getClosest (this.gameObject);
-
-		if ( 
-		    ((closestBeacon.distance < ArenaInfo.getBeaconRange()) 	||
-		    (closestShip.distance < ArenaInfo.getShipRadarRange())) &&
-		    (closestShip.distance >= 0)
-		    )	
-		{
-			float shipAngle = (int)Angle.getAngle (transform.position, closestShip.pos);
-			opponentDistance = closestShip.distance;
-			shipPointer.GetComponent<SpriteRenderer> ().enabled = true;
-			shipPointer.transform.position = new Vector3 (
-				transform.position.x + Mathf.Sin (shipAngle / Mathf.Rad2Deg) * playerPointerSize,
-				transform.position.y + Mathf.Cos (shipAngle / Mathf.Rad2Deg) * playerPointerSize,
-				-5
-			);
-
-			shipPointer.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -shipAngle));
-		} else {
-			shipPointer.GetComponent<SpriteRenderer>().enabled = false;
-			opponentDistance = -1;
-		}
 	}
 
 	public void accelerate() {
@@ -272,19 +175,6 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
-	/*[Server]
-	public void damage(float amount) {
-		if (amount > 0) {
-			Shield shield = GetComponent<Shield>();
-			if (shield.getActive()) {
-				armor -= amount / shield.getDamageReduction();
-				shield.damageShield(amount); 
-			} else {
-				armor -= amount;
-			}
-		}
-	}*/
-
 	public void setShield(bool setting) {
 		Shield shield = GetComponent<Shield> ();
 		if (shield != null) {
@@ -303,32 +193,9 @@ public class Ship : NetworkBehaviour {
 
 		if (dm) {
 			float damage = (currentSpeed * rb.mass);
-
-			dm.damage (damage);
-
-			
+			dm.damage (damage);			
 		}
-
-		/*if (objectHit.tag == "Player Ship") {
-			Ship shipHit = objectHit.GetComponent<Ship>();
-			Decoy decoyHit = objectHit.GetComponent<Decoy> ();
-			float damage = (currentSpeed * rb.mass);
-			if (shipHit) {
-				shipHit.damage (damage);
-				shipHit.setLastHitBy (ownerNum);
-			}
-
-			if (decoyHit) {
-				decoyHit.damage (damage);
-			}
-			this.damage (damage);
-		}*/
-
 	}
-
-	/*public void setLastHitBy(int who) {
-		lastHitBy = who;
-	}*/
 
 	public float getArmor() {
 		

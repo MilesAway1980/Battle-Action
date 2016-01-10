@@ -18,6 +18,8 @@ GameObject:
   - 114: {fileID: 11468470}
   - 114: {fileID: 11468898}
   - 114: {fileID: 11482358}
+  - 114: {fileID: 11429716}
+  - 114: {fileID: 11496622}
   m_Layer: 0
   m_Name: Ship_2
   m_TagString: Untagged
@@ -335,6 +337,21 @@ MonoBehaviour:
     i15: 117
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &11429716
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 131096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerSize: 0.1
+  pointerDistance: 2.5
+  pointerObject: {fileID: 155328, guid: fd898f781130b0f42bc64b2b7417f3ba, type: 2}
+  pointerType: 0
 --- !u!114 &11443310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -432,6 +449,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8b3f881667ead4bbff1d734f43e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11496622
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 131096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pointerSize: 0.15
+  pointerDistance: 1.8
+  pointerObject: {fileID: 158622, guid: 9b1298e268e0f6242a085eea0c77dd48, type: 2}
+  pointerType: 1
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -462,6 +494,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: maxArmor
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: pointerType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: pointerObject
+      value: 
+      objectReference: {fileID: 155328, guid: fd898f781130b0f42bc64b2b7417f3ba, type: 2}
+    - target: {fileID: 0}
+      propertyPath: pointerSize
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: pointerDistance
+      value: 1.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
