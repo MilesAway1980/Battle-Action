@@ -21,12 +21,15 @@ public class Pointer : MonoBehaviour {
 
 	SpriteRenderer sr;
 
-	// Use this for initialization
 	void Start () {
+		
 		active = false;
 	}
 
-	// Update is called once per frame
+	void OnDestroy() {
+		Destroy (pointer);
+	}
+
 	void Update () {
 
 		if (active == false) {
@@ -94,18 +97,26 @@ public class Pointer : MonoBehaviour {
 		pointer = (GameObject)Instantiate (pointerObject);
 
 		switch (pointerType) {
-		case PointerType.player: pointer.name = "Player Pointer"; break;
-		case PointerType.beacon: pointer.name = "Beacon Pointer"; break;
-		case PointerType.powerUp: break;
+			case PointerType.player: pointer.name = "Player Pointer"; break;
+			case PointerType.beacon: pointer.name = "Beacon Pointer"; break;
+			case PointerType.powerUp: break;
 		}
+
+		pointer.tag = "Pointer";
+
 
 		pointer.transform.parent = transform;
 
 		sr = pointer.GetComponent<SpriteRenderer> ();
 		sr.transform.localScale = new Vector2 (pointerSize, pointerSize);
+
 	}
 
 	public void setActive(bool activeSetting) {
 		active = activeSetting;
+	}
+
+	public GameObject getPointer() {
+		return pointer;
 	}
 }

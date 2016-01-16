@@ -54,21 +54,42 @@ public class ObjectList {
 		GameObject closest = null;
 		
 		float distance = float.MaxValue;
-		//Rigidbody2D lookingRB = looking.GetComponent<Rigidbody2D>();
-		//Rigidbody2D targetRB;
 
 		Vector2 lookingPos = looking.transform.position;
 		Vector2 targetPos;
-		
+
+		Owner lookingOwner = looking.GetComponent<Owner> ();
+
+
 		if (objectList != null) {
 			for (int i = 0; i < objectList.Count; i++) {
-				if (objectList[i] != looking && objectList[i] != null) {
-					targetPos = objectList[i].transform.position;
+
+				if (objectList [i] == null) {
+					continue;
+				}
+
+				//Do not check objects that have a decoy
+				Owner owner = objectList[i].GetComponent<Owner> ();
+				if (owner) {
+
+					//Debug.Log ("  Object " + i + " " + objectList [i] + " owner: " + owner.getOwnerNum ());
+					if (
+							(owner.getNumDecoy () > 0) ||
+							(owner.getOwnerNum() == lookingOwner.getOwnerNum())
+						)
+					{
+						continue;
+					}
+				}
+
+				if (objectList[i] != looking && objectList[i] != null) {				
+
+					targetPos = objectList[i].transform.position;			
 					
 					float objectDist = Vector2.Distance(
-							lookingPos, 
-							targetPos
-						);
+						lookingPos, 
+						targetPos
+					);				
 					
 					if (objectDist < distance) {
 						distance = objectDist;
@@ -88,5 +109,11 @@ public class ObjectList {
 		}
 		
 		return info;
+	}
+
+	public void print() {
+		for (int i = 0; i < objectList.Count; i++) {
+			Debug.Log (objectList[i]);
+		}
 	}
 }

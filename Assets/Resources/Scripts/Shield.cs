@@ -31,11 +31,16 @@ public class Shield : NetworkBehaviour {
 		shieldObject.transform.position = transform.position;
 		
 		shieldObject.name = "my shield";
+		shieldObject.tag = "Shield";
 
 		setActive (false);
 
 		charge = maxCharge;
 
+	}
+
+	void OnDestroy() {
+		Destroy (shieldObject);
 	}
 	
 	// Update is called once per frame

@@ -11,108 +11,112 @@ public class Decoy : NetworkBehaviour {
 	public float turnRate;
 	public float turnChange;
 
-	public GameObject explosion;
+	public float decoyArmor;
 
-	static Decoy thisDecoy;
+	[SyncVar] int ownerNum;
 
-	[SyncVar] public float armor;
 
-	int ownerNum;
-	Rigidbody2D rb;
-
-	GameObject decoyShip;
-
-	Player owner;
-	Ship ownerShip;
+	Ship ship;
+	GameObject owner;
 
 	float turnCount;
 
-	ObjectList ships;
-
-	void Awake() {
-		ships = Ship.shipList;
-		ships.addObject (gameObject);
+	void Awake() {		
 	}
 
 	void OnDestroy() {
-		ships.removeObject (gameObject);
+		Owner[] owners = Object.FindObjectsOfType<Owner> ();
+		for (int i = 0; i < owners.Length; i++) {
+			if (owners [i].getOwnerNum () == ownerNum) {
+				owners [i].removeDecoy ();
+			}
+		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		if (ownerShip == null) {
+		if (owner == null) {
 			return;
 		}
 
-		Vector3 pos = ownerShip.transform.position;
-		float angle = ownerShip.getAngle ();
+		GameObject shipObject = (GameObject)Instantiate (owner.GetComponent<Ship> ().gameObject);
+		ship = shipObject.GetComponent<Ship> ();
 
-		transform.position = new Vector3 (
+		Ship ownerShip = owner.GetComponent<Ship> ();
+
+		Vector3 pos = ownerShip.transform.position;
+		float angle = ownerShip.transform.eulerAngles.z;
+
+		ship.transform.position = new Vector3 (
 			pos.x - Mathf.Sin(angle / Mathf.Rad2Deg) * -2,
 			pos.y + Mathf.Cos(angle / Mathf.Rad2Deg) * -2,
 			0
 		);
 
-		this.name = "decoy" + owner.getPlayerNum();
-		gameObject.tag = "Player Ship";
+		Owner info = owner.GetComponent<Owner> ();
+		ownerNum = info.getOwnerNum ();
+		info.emptyDecoy ();
+		if (info) {
+			this.name = "decoy" + ownerNum;
+		} else {
+			this.name = "decoy";
+		}
 
-		ownerNum = owner.getPlayerNum ();
-		rb = GetComponent<Rigidbody2D> ();
+		Owner[] owners = Object.FindObjectsOfType<Owner> ();
+		for (int i = 0; i < owners.Length; i++) {
+			if (owners [i].getOwnerNum () == ownerNum) {
+				owners [i].addDecoy ();
+			}
+		}
+
+		Owner decoyOwner = shipObject.GetComponent<Owner> ();
+		decoyOwner.setOwnerNum (info.getOwnerNum ());
+		print (decoyOwner.getOwnerNum());
+
+		ship.transform.parent = this.transform;
+
+		int num = ship.transform.childCount;
+		for (int i = 0; i < num; i++) {
+
+			GameObject child = ship.transform.GetChild (i).gameObject;
+
+			if (child.tag == "Pointer" || child.tag == "Shield") {
+				Destroy (child);
+			}
+		}
+
+		Damageable dm = ship.GetComponent<Damageable> ();
+		dm.setArmor (decoyArmor);
+
+		NetworkServer.Spawn (shipObject);
 
 		turnCount = 0;
 	}
-	
+
 	// Update is called once per frame
 	void FixedUpdate () {
-		transform.position = new Vector3 (
-			transform.position.x - Mathf.Sin(getAngle() / Mathf.Rad2Deg) * speed,
-			transform.position.y + Mathf.Cos(getAngle() / Mathf.Rad2Deg) * speed,
-			0
-		);
+		if (ship == null) {
+			return;
+		}
 
-		transform.Rotate (new Vector3 (0, 0, turnRate));
+		float angle = ship.transform.eulerAngles.z;
+		/*ship.transform.position = new Vector3 (
+			ship.transform.position.x - Mathf.Sin(angle / Mathf.Rad2Deg) * speed,
+			ship.transform.position.y + Mathf.Cos(angle / Mathf.Rad2Deg) * speed,
+			0
+		);*/
+
+		ship.transform.Rotate (new Vector3 (0, 0, turnRate));
 		turnCount += Mathf.Abs (turnRate);
 
 		if (turnCount >= turnChange) {
 			turnCount = 0;
 			turnRate = -turnRate;
 		}
-
-		checkDamage ();
 	}
 
-	float getAngle() {
-		return transform.eulerAngles.z;
-	}
-
-	public void init(Player newOwner, Ship newOwnerShip) {
+	public void init(GameObject newOwner) {
 		owner = newOwner;
-		ownerShip = newOwnerShip;
-	}
-
-	[Server]
-	public void damage(float amount) {
-		if (amount > 0) {
-			armor -= amount;
-		}
-	}
-
-	void checkDamage() {
-		if (!isServer) {
-			return;
-		}
-		if (armor <= 0) {
-			explode();
-			Destroy (gameObject);
-		}
-	}
-
-	void explode() {
-		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
-		Exploder exp = boom.GetComponent<Exploder> ();
-		exp.init (0.0f, 10);
-
-		NetworkServer.Spawn (boom);
 	}
 
 	public static GameObject getDecoy() {
@@ -126,29 +130,4 @@ public class Decoy : NetworkBehaviour {
 
 		return decoyRefireRate;
 	}
-
-	/*void OnCollisionEnter2D(Collision2D col) {
-		if (!isServer) {
-			return;
-		}
-
-		GameObject objectHit = col.gameObject;
-
-		if (objectHit.tag == "Player Ship") {
-			Ship shipHit = objectHit.GetComponent<Ship> ();
-			Decoy decoyHit = objectHit.GetComponent<Decoy> ();
-			float damage = (speed * rb.mass);
-			if (shipHit) {
-				shipHit.damage (damage);
-				shipHit.setLastHitBy (ownerNum);
-			}
-
-			if (decoyHit) {
-				decoyHit.damage (damage);
-			}
-
-			this.damage (damage);
-		}
-
-	}*/
 }

@@ -27,6 +27,8 @@ public class Player : NetworkBehaviour {
 
 	public float spawnDelay;
 
+	bool pointersActive;
+
 	//Use these as flags for holding down buttons so that commands aren't repeatedly sent.
 
 	CurrentInfo current;
@@ -63,6 +65,7 @@ public class Player : NetworkBehaviour {
 		}
 		deadTimer = spawnDelay;
 		mouseControl = gameObject.AddComponent<MouseControl> ();
+		pointersActive = false;
 	}
 
 	void Update() {
@@ -71,9 +74,12 @@ public class Player : NetworkBehaviour {
 			if (ship != null) {				
 				checkControls ();
 
-				Pointer[] pointers = ship.GetComponents<Pointer> ();
-				for (int i = 0; i < pointers.Length; i++) {
-					pointers [i].setActive (true);
+				if (pointersActive == false) {
+					Pointer[] pointers = ship.GetComponents<Pointer> ();
+					for (int i = 0; i < pointers.Length; i++) {
+						pointers [i].setActive (true);
+					}
+					pointersActive = true;
 				}
 			}					
 		}
@@ -430,6 +436,8 @@ public class Player : NetworkBehaviour {
 				Ship thisShip = ship.GetComponent<Ship>();
 				BulletShooter shooter = GetComponent<BulletShooter> ();
 
+				Owner info = thisShip.GetComponent<Owner> ();
+
 				float timeUntilReady = 0;
 				float lastShot = 0; 
 				int currentWeapon = shooter.getCurrentWeapon ();
@@ -462,7 +470,7 @@ public class Player : NetworkBehaviour {
 				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
 				overlay += "\nThrust: " + (int)(thisShip.getThrust() * 100) + " \\ " + (thisShip.maxThrust * 100);
 				overlay += "\nSpeed: " + (int)(thisShip.getCurrentSpeed() * 100) + " \\ " + (thisShip.maxSpeed * 100);
-				overlay += "\nWeapon: " + WeaponInfo.getWeaponName(shooter.getCurrentWeapon())  + " " + timeUntilReady;
+				overlay += "\nWeapon: " + WeaponInfo.getWeaponName (shooter.getCurrentWeapon ()) + " " + timeUntilReady + "  " + info.getNumDecoy ();;
 
 				Shield shield = thisShip.GetComponent<Shield>();
 				overlay += "\n" + (int)shield.getCharge() + " \\ " + (int)shield.getMaxCharge();

@@ -383,7 +383,7 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 10:	//Decoy
 			{
-				/*if (Decoy.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+				if (Decoy.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
 					return;
 				}
 
@@ -396,10 +396,9 @@ public class BulletShooter : NetworkBehaviour {
 				GameObject newDecoy = (GameObject)Instantiate (Decoy.getDecoy ());
 				Decoy d = newDecoy.GetComponent<Decoy> ();
 
-				d.init (owner, ownerShip);
+				d.init (owner);
 
 				NetworkServer.Spawn (newDecoy);
-				*/
 
 				break;
 			}
