@@ -12,6 +12,8 @@ public class Turret : MonoBehaviour {
 
 	GameObject owner;
 
+
+
 	// Use this for initialization
 	void Start () {
 		if (owner == null) {
