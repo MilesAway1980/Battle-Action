@@ -403,12 +403,15 @@ public class BulletShooter : NetworkBehaviour {
 				break;
 			}
 
-			case 11:	//Deactivator
+			case 11:	//Turret
 			{
+				/*if (Turret.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+					return;
+				}*/
 				break;
 			}
 
-			case 12:	//Turrets
+			case 12:	//Deactivator
 			{
 				break;
 			}

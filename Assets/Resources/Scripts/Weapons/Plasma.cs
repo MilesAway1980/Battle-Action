@@ -16,8 +16,6 @@ public class Plasma : Bullet {
 	[SyncVar] float radius;
 	bool released;
 
-	//Vector2 pivot;
-
 	// Use this for initialization
 	void Start () {
 
@@ -29,8 +27,6 @@ public class Plasma : Bullet {
 		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
 			travelDist = ArenaInfo.getMinBulletTravelDist();
 		}
-
-		//pivot = originPos;
 
 		setPosition ();
 	}
@@ -51,15 +47,6 @@ public class Plasma : Bullet {
 	}
 	
 	void FixedUpdate () {
-
-		/*if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-				if (ownerShip == null) {
-					return;
-				}
-			}
-		}*/
 
 		if (owner == null) {
 			return;
@@ -85,20 +72,6 @@ public class Plasma : Bullet {
 
 		transform.position = pos;	
 	}
-
-	/*void checkHit() {
-		Ship shipHit = checkShipHit (true);
-		if (shipHit != null) {
-			//SoundPlayer.PlayClip(hitSound);
-
-			float chargeDamage = (charge / (maxChargeTime + initialCharge)) * maxDamage;
-			//print (chargeDamage);
-
-			shipHit.damage(chargeDamage);
-			shipHit.setLastHitBy (owner.getPlayerNum ());
-			Destroy (gameObject);
-		}	
-	}*/
 
 	void checkHit() {
 		GameObject objectHit = checkObjectHit (true);

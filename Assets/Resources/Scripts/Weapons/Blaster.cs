@@ -17,8 +17,6 @@ public class Blaster : NetworkBehaviour {
 	GameObject blasterObject;
 
 	public Material mat;
-	/*Player owner;
-	Ship ownerShip;*/
 
 	GameObject owner;
 
@@ -122,51 +120,6 @@ public class Blaster : NetworkBehaviour {
 				}
 			}
 		}
-
-		/*GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
-		if (players == null) {
-			return;
-		}
-
-		for (int i = 0; i < players.Length; i++) {
-
-			Ship playerShip = players[i].GetComponent<Ship>();
-
-			float dist = Vector2.Distance(startPos, playerShip.transform.position);
-
-			if (dist < range ) {
-				bool damaged = false;
-
-				float angleToTarget = Angle.getAngle(startPos, playerShip.transform.position);
-
-				if (dist > 1) {
-					float pointAngle = (360 - angle);
-					if (angleToTarget < (pointAngle + 1) && angleToTarget > (pointAngle - 1)) {
-						damaged = true;
-					}
-
-					if (damaged == false) {
-
-						CircleCollider2D shipCollider = playerShip.GetComponent<CircleCollider2D>();
-
-						if (Intersect.LineCircle(startPos, leftCorner, playerShip.transform.position, shipCollider.radius)) {
-							damaged = true;
-						}
-
-						if (damaged == false) {
-							if (Intersect.LineCircle(startPos, rightCorner, playerShip.transform.position, shipCollider.radius)) {
-								damaged = true;
-							}
-						}
-					}
-				}
-
-				if (damaged) {
-					playerShip.damage (damage);
-					playerShip.setLastHitBy (owner.getPlayerNum ());
-				}
-			}
-		}*/
 	}
 
 	public void init(Vector2 newStartPos, float newAngle, GameObject newOwner) {

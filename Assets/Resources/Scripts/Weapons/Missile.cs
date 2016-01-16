@@ -36,12 +36,6 @@ public class Missile : Bullet {
 	
 	void FixedUpdate() {
 
-		/*if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-			}
-		}*/
-
 		distance = Vector2.Distance (originPos, transform.position);
 		if (distance >= travelDist) {
 			Destroy (gameObject);
@@ -68,16 +62,6 @@ public class Missile : Bullet {
 		transform.position = pos;
 	}
 
-	/*void checkHit() {
-		Ship shipHit = checkShipHit (true);
-		if (shipHit != null) {
-			//SoundPlayer.PlayClip(hitSound);
-			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getPlayerNum());
-			Destroy (gameObject);
-		}	
-	}*/
-
 	void checkHit() {
 		GameObject objectHit = checkObjectHit (true);
 		if (objectHit) {
@@ -95,46 +79,6 @@ public class Missile : Bullet {
 			Destroy (gameObject);
 		}	
 	}
-
-	/*void OnCollisionEnter2D(Collision2D col) {
-		if (!isServer) {
-			return;
-		}
-		
-		GameObject objectHit = col.gameObject;
-
-		Damageable dm = objectHit.GetComponent<Damageable> ();
-		if (dm) {*/
-
-			/*Ship shipHit = objectHit.GetComponent<Ship> ();
-			if (shipHit == ownerShip) {
-				return;
-			}*/
-
-			/*if (objectHit = owner) {
-				return;
-			}
-
-			dm.damage (damage);
-			HitInfo info = objectHit.GetComponent<HitInfo> ();
-			if (info) {
-				info.setLastHitBy (owner.getPlayerNum ());
-			}
-
-			Destroy (gameObject);
-		}*/
-		
-		/*if (objectHit.tag == "Player Ship") {
-			Ship shipHit = objectHit.GetComponent<Ship>();
-			if (shipHit == ownerShip) {
-				return;
-			}
-
-			shipHit.damage(damage);
-			shipHit.setLastHitBy(owner.getPlayerNum());
-			Destroy (gameObject);
-		}*/
-	//}
 
 	public static GameObject getBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Missile");

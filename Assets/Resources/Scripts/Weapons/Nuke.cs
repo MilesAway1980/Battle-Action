@@ -21,8 +21,6 @@ public class Nuke : NetworkBehaviour {
 	[SyncVar] public Vector3 fireballSize;
 
 	float angle;
-	/*Player owner;
-	Ship ownerShip;*/
 
 	GameObject owner;
 
@@ -105,7 +103,7 @@ public class Nuke : NetworkBehaviour {
 
 		for (int i = 0; i < damageableObjects.Length; i++) {
 			GameObject target = damageableObjects [i].gameObject;
-			//Ship whichShip = target.GetComponent<Ship> ();
+
 			if (target) {
 				if (target == owner) {
 					continue;

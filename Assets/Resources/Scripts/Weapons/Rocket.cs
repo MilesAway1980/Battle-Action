@@ -42,16 +42,6 @@ public class Rocket : Bullet {
 		transform.position = pos;
 	}
 
-	/*void checkHit() {
-		Ship shipHit = checkShipHit (true);
-		if (shipHit != null) {
-			//SoundPlayer.PlayClip(hitSound);
-			shipHit.damage(damage);
-			shipHit.setLastHitBy (owner.getPlayerNum ());
-			Destroy (gameObject);
-		}	
-	}*/
-
 	void checkHit() {
 		GameObject objectHit = checkObjectHit (true);
 		if (objectHit) {

@@ -587,7 +587,6 @@ public class Player : NetworkBehaviour {
 			owner.setOwnerNum (playerNum);
 		}
 
-
 		ship.tag = "Player Ship";
 		ship.name = "playership" + playerNum;
 

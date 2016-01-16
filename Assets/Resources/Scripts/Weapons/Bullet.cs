@@ -14,9 +14,6 @@ public class Bullet : NetworkBehaviour {
 	public float refireRate;
 	public float bulletsPerShot;
 
-	/*protected Player owner;
-	protected Ship ownerShip;*/
-
 	protected GameObject owner;
 
 	[SyncVar] protected Vector2 originPos;
@@ -50,11 +47,7 @@ public class Bullet : NetworkBehaviour {
 	}
 
 	void Update() {
-		/*if (owner != null) {
-			if (ownerShip == null) {
-				ownerShip = owner.getShip ();
-			}
-		}*/
+		
 	}
 
 	protected GameObject checkObjectHit(bool ignoreOwner) {
@@ -68,15 +61,9 @@ public class Bullet : NetworkBehaviour {
 
 			int ownerNum = -1;
 
-			//Owner shipOwner = owner.GetComponent<Owner> ();
-			//print (ownerNum + "   " + shipOwner.getOwnerNum ());
-
-			//print (shipOwner);
-
 			if (owner) {
 				Owner ownerInfo = owner.GetComponent<Owner> ();
 				if (ownerInfo) {
-					//ownerNum = owner.getPlayerNum ();
 					ownerNum = ownerInfo.getOwnerNum();
 				}
 			}
@@ -98,30 +85,6 @@ public class Bullet : NetworkBehaviour {
 					}
 				}
 			}
-
-			/*GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
-		
-			if (players == null) {
-				return null;
-			}
-
-			int ownerNum = owner.getPlayerNum ();
-		
-			for (int i = 0; i < players.Length; i++) {
-				Ship playerShip = players [i].GetComponent<Ship> ();
-
-				if (ignoreOwner) {
-					if (ownerNum == playerShip.getOwnerNum()) {
-						continue;
-					}
-				}
-			
-				if (Vector2.Distance (playerShip.transform.position, pos) <= (speed * 2)) {
-					if (Intersect.LineCircle (prevPos, pos, playerShip.transform.position, speed)) {
-						return playerShip;
-					}
-				}
-			}*/
 		}
 
 		return null;

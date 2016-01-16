@@ -10,14 +10,9 @@ public class Mine : NetworkBehaviour {
 	public float ownerScale;
 	public float nonOwnerScale;
 
-	//public GameObject exploder;
-
 	[SyncVar] Vector3 pos;
 	[SyncVar] Vector3 size;
 	[SyncVar] int ownerNum;
-
-	/*Player owner;
-	Ship ownerShip;*/
 
 	GameObject owner;
 
@@ -32,17 +27,10 @@ public class Mine : NetworkBehaviour {
 			} else {
 				ownerNum = -1;
 			}
-			//ownerNum = owner.getPlayerNum ();
 		}
 	}
 
 	void Update() {
-
-		/*if (owner != null) {
-			if (ownerShip == null) {			
-				ownerShip = owner.getShip ();
-			}
-		}*/
 
 		Player thisPlayer = Player.getLocalPlayer ();
 		if (thisPlayer == null) {

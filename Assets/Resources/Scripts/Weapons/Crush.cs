@@ -72,9 +72,7 @@ public class Crush : Bullet {
 	}
 
 	void checkHit() {
-		//Ship shipHit = checkShipHit (true);
 		GameObject objectHit = checkObjectHit(true);
-		//Ship shipHit = objectHit.GetComponent<Ship> ();
 		if (objectHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
 			target = objectHit;
@@ -94,7 +92,7 @@ public class Crush : Bullet {
 		if (dm) {
 			dm.damage (damage);
 		}
-		//target.damage (damage);
+
 		if (crushLevel < minCrushLevel) {
 			Destroy (gameObject);
 		}
