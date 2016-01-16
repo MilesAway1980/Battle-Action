@@ -92,6 +92,8 @@ public class Blaster : NetworkBehaviour {
 				float angleToTarget = Angle.getAngle (startPos, targetPos);
 				float pointAngle = (360 - angle);
 
+
+
 				if (angleToTarget < (pointAngle + spread) && angleToTarget > (pointAngle - spread)) {
 					damaged = true;
 				}
@@ -99,12 +101,12 @@ public class Blaster : NetworkBehaviour {
 				if (damaged == false) {
 					CircleCollider2D collider = targetOwner.GetComponent<CircleCollider2D> ();
 					if (collider) {
-						if (Intersect.LineCircle (startPos, leftCorner, targetPos, collider.radius)) {
+						if (Intersect.LineCircle (startPos, leftCorner, targetPos, collider.radius, false)) {
 							damaged = true;
 						}
 
 						if (damaged == false) {
-							if (Intersect.LineCircle (startPos, rightCorner, targetPos, collider.radius)) {
+							if (Intersect.LineCircle (startPos, rightCorner, targetPos, collider.radius, false)) {
 								damaged = true;
 							}
 						}
