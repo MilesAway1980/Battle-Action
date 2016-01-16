@@ -4,14 +4,14 @@ using System.Collections;
 
 public class Beacon : NetworkBehaviour {
 
-	public static ObjectList beacons;
+	public static ObjectList beaconList;
 
 	void Awake() {
 
-		if (beacons == null) {
-			beacons = new ObjectList();
+		if (beaconList == null) {
+			beaconList = new ObjectList();
 		}
 
-		beacons.addObject (this.gameObject);
+		beaconList.addObject (this.gameObject);
 	}
 }

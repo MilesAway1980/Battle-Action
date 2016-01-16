@@ -71,8 +71,7 @@ public class ObjectList {
 				//Do not check objects that have a decoy
 				Owner owner = objectList[i].GetComponent<Owner> ();
 				if (owner) {
-
-					//Debug.Log ("  Object " + i + " " + objectList [i] + " owner: " + owner.getOwnerNum ());
+					
 					if (
 							(owner.getNumDecoy () > 0) ||
 							(owner.getOwnerNum() == lookingOwner.getOwnerNum())

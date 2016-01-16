@@ -41,25 +41,32 @@ public class Pointer : MonoBehaviour {
 		}
 
 		ObjectInfo closestObject = new ObjectInfo();
+		ObjectInfo closestBeacon = new ObjectInfo (); 		//Beacons are used for all pointer types.
 
 		visible = true;
 
 		float angle = 0;
 
+		ObjectList beaconList = Beacon.beaconList;
+		ObjectList shipList = Ship.shipList;
+		//ObjectList powerupList = Powerup.powerupList;
+
+		closestBeacon  = beaconList.getClosest (gameObject);
+
 		switch (pointerType) {
-			case PointerType.player:
-					
-				ObjectList shipList = Ship.shipList;
+			case PointerType.player:				
 				closestObject = shipList.getClosest (gameObject);
 
 				visible = false;
-				
+
+				//print (closestObject + "  " + closestObject.distance + " " + ArenaInfo.getBeaconRange () + " " + ArenaInfo.getShipRadarRange ());
+					
 				if ( 
-						(
-							closestObject.distance < ArenaInfo.getBeaconRange () ||
-							closestObject.distance < ArenaInfo.getShipRadarRange ()
-						) &&
-						closestObject.distance >= 0
+					(
+						closestBeacon.distance < ArenaInfo.getBeaconRange () ||			//A beacon is within range
+						closestObject.distance < ArenaInfo.getShipRadarRange ()			//Or the player is within range
+					) &&
+						closestObject.distance > 0										//Redundancy check not to see yourself
 					) 
 				{
 					visible = true;
@@ -69,8 +76,7 @@ public class Pointer : MonoBehaviour {
 		
 			case PointerType.beacon:
 
-				ObjectList beaconList = Beacon.beacons;
-				closestObject = beaconList.getClosest (gameObject);
+				closestObject = closestBeacon;
 
 				break;
 			case PointerType.powerUp:

@@ -71,7 +71,6 @@ public class Decoy : NetworkBehaviour {
 
 		Owner decoyOwner = shipObject.GetComponent<Owner> ();
 		decoyOwner.setOwnerNum (info.getOwnerNum ());
-		print (decoyOwner.getOwnerNum());
 
 		ship.transform.parent = this.transform;
 
@@ -100,11 +99,11 @@ public class Decoy : NetworkBehaviour {
 		}
 
 		float angle = ship.transform.eulerAngles.z;
-		/*ship.transform.position = new Vector3 (
+		ship.transform.position = new Vector3 (
 			ship.transform.position.x - Mathf.Sin(angle / Mathf.Rad2Deg) * speed,
 			ship.transform.position.y + Mathf.Cos(angle / Mathf.Rad2Deg) * speed,
 			0
-		);*/
+		);
 
 		ship.transform.Rotate (new Vector3 (0, 0, turnRate));
 		turnCount += Mathf.Abs (turnRate);
