@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Homing : NetworkBehaviour {
 
@@ -24,14 +25,14 @@ public class Homing : NetworkBehaviour {
 
 	void getTarget() {
 		if (isServer) {		
+			List<GameObject> targets = Damageable.damageableList.getObjectList();
 
-			Homeable[] targets = Object.FindObjectsOfType<Homeable> ();
-			if (targets.Length == 0) {
+			if (targets.Count == 0) {
 				return;
 			}
 
 			float closest = float.MaxValue;
-			for (int i = 0; i < targets.Length; i++) {
+			for (int i = 0; i < targets.Count; i++) {
 				GameObject potentialTarget = targets [i].gameObject;
 
 				if (potentialTarget == owner) {

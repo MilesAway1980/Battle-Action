@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Blaster : NetworkBehaviour {
 
@@ -75,15 +76,15 @@ public class Blaster : NetworkBehaviour {
 		}
 
 		//Get a list of all damageable objects
-		Damageable[] allObjects = Object.FindObjectsOfType<Damageable> ();
-		if (allObjects == null) {
+		List<GameObject> allObjects = Damageable.damageableList.getObjectList();
+		if (allObjects.Count == 0) {
 			return;
 		}
 
-		for (int i = 0; i < allObjects.Length; i++) {
+		for (int i = 0; i < allObjects.Count; i++) {
 			float dist = Vector2.Distance(startPos, allObjects[i].transform.position);
 			if (dist < range && dist > 1) {
-				Damageable target = allObjects [i];
+				Damageable target = allObjects [i].GetComponent<Damageable> ();
 				GameObject targetOwner = target.gameObject;
 				Vector3 targetPos = targetOwner.transform.position;
 

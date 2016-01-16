@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ShootingInfo {
 	public float refireRate = -1;
@@ -53,9 +54,9 @@ public class Bullet : NetworkBehaviour {
 	protected GameObject checkObjectHit(bool ignoreOwner) {
 		if (isServer) {		
 
-			Damageable[] targets = Object.FindObjectsOfType<Damageable> ();
+			List<GameObject> targets = Damageable.damageableList.getObjectList();
 
-			if (targets.Length == 0) {
+			if (targets.Count == 0) {
 				return null;
 			}
 
@@ -68,7 +69,7 @@ public class Bullet : NetworkBehaviour {
 				}
 			}
 
-			for (int i = 0; i < targets.Length; i++) {
+			for (int i = 0; i < targets.Count; i++) {
 				GameObject target = targets [i].gameObject;
 				if (ignoreOwner) {
 					Owner targetOwner = target.GetComponent<Owner> ();

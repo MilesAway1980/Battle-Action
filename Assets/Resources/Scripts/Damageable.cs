@@ -4,11 +4,21 @@ using System.Collections;
 
 public class Damageable : NetworkBehaviour {
 
+	public static ObjectList damageableList;
+
 	public float maxArmor;
 	[SyncVar] float armor;
 
 	void Start() {
 		armor = maxArmor;
+		if (damageableList == null) {
+			damageableList = new ObjectList();
+		}
+		damageableList.addObject (gameObject);
+	}
+
+	void OnDestroy() {
+		damageableList.removeObject (gameObject);
 	}
 
 	[Server]

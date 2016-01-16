@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MineField : NetworkBehaviour {
 
@@ -50,7 +51,7 @@ public class MineField : NetworkBehaviour {
 			return;
 		}
 
-		Ship[] ships = Object.FindObjectsOfType<Ship> ();
+		List<GameObject> ships = Damageable.damageableList.getObjectList();
 
 		bool minesLeft = false;
 		for (int i = 0; i < mines.Length; i++) {
@@ -64,9 +65,9 @@ public class MineField : NetworkBehaviour {
 			Destroy (this.gameObject);
 		}
 
-		for (int i = 0; i < ships.Length; i++) {
+		for (int i = 0; i < ships.Count; i++) {
 
-			Ship ship = ships [i];
+			Ship ship = ships [i].GetComponent<Ship>();
 			Ship ownerShip = owner.GetComponent<Ship> ();
 
 			if (ship == ownerShip) {

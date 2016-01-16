@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Nuke : NetworkBehaviour {
 
@@ -96,12 +97,12 @@ public class Nuke : NetworkBehaviour {
 			return;
 		}
 
-		Damageable[] damageableObjects = Object.FindObjectsOfType<Damageable> ();
-		if (damageableObjects == null) {
+		List<GameObject> damageableObjects = Damageable.damageableList.getObjectList();
+		if (damageableObjects.Count == 0) {
 			return;
 		}
 
-		for (int i = 0; i < damageableObjects.Length; i++) {
+		for (int i = 0; i < damageableObjects.Count; i++) {
 			GameObject target = damageableObjects [i].gameObject;
 
 			if (target) {
@@ -116,7 +117,7 @@ public class Nuke : NetworkBehaviour {
 			);
 
 			if (targetDist <= (currentRadius / 2.0f)) {
-				damageableObjects [i].damage (damage);
+				damageableObjects [i].GetComponent<Damageable>().damage (damage);
 			}
 		}
 	}
