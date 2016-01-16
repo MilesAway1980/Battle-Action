@@ -40,8 +40,8 @@ public class Pointer : MonoBehaviour {
 			makePointer ();
 		}
 
-		ObjectInfo closestObject = new ObjectInfo();
-		ObjectInfo closestBeacon = new ObjectInfo (); 		//Beacons are used for all pointer types.
+		GameObject closestObject = null;
+		GameObject closestBeacon = null; 		//Beacons are used for all pointer types.
 
 		visible = true;
 
@@ -56,20 +56,24 @@ public class Pointer : MonoBehaviour {
 		switch (pointerType) {
 			case PointerType.player:				
 				closestObject = shipList.getClosest (gameObject);
+				if (closestObject) {
 
 				visible = false;
 
 				//print (closestObject + "  " + closestObject.distance + " " + ArenaInfo.getBeaconRange () + " " + ArenaInfo.getShipRadarRange ());
+
+				float beaconDist = Vector2.Distance (closestBeacon.transform.position, transform.position);
+				float objectDist = Vector2.Distance (closestObject.transform.position, transform.position);
 					
 				if ( 
-					(
-						closestBeacon.distance < ArenaInfo.getBeaconRange () ||			//A beacon is within range
-						closestObject.distance < ArenaInfo.getShipRadarRange ()			//Or the player is within range
-					) &&
-						closestObject.distance > 0										//Redundancy check not to see yourself
+						(
+						    beaconDist < ArenaInfo.getBeaconRange () || //A beacon is within range
+						    objectDist < ArenaInfo.getShipRadarRange ()			//Or the player is within range
+						) && objectDist > 0										//Distance 0 == self.  Distance -1 == no object found.
 					) 
-				{
-					visible = true;
+					{
+						visible = true;
+					}
 				}
 
 				break;
@@ -83,8 +87,8 @@ public class Pointer : MonoBehaviour {
 				break;
 		}
 
-		if (visible) {
-			angle = Angle.getAngle (transform.position, closestObject.pos);
+		if (visible && closestObject) {
+			angle = Angle.getAngle (transform.position, closestObject.transform.position);
 
 			pointer.transform.position = new Vector3 (
 				transform.position.x + Mathf.Sin (angle / Mathf.Rad2Deg) * pointerDistance,

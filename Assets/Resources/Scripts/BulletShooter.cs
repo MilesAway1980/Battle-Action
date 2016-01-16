@@ -405,9 +405,23 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 11:	//Turret
 			{
-				/*if (Turret.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+				if (Turret.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
 					return;
-				}*/
+				}
+
+				shotTimer [currentWeapon].updateLastShot ();
+
+				if (ammo [currentWeapon].useAmmo () == false) {
+					return;
+				}
+
+				GameObject newTurret = (GameObject)Instantiate (Turret.getTurret ());
+				Turret t = newTurret.GetComponent<Turret> ();
+
+				t.init (owner);
+
+				NetworkServer.Spawn (newTurret);
+
 				break;
 			}
 

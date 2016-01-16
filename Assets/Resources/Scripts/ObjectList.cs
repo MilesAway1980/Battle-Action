@@ -2,11 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public struct ObjectInfo {
-	public Vector2 pos;
-	public float distance;
-}
-
 public class ObjectList {
 	
 	List<GameObject> objectList;
@@ -50,7 +45,7 @@ public class ObjectList {
 		}
 	}
 	
-	public ObjectInfo getClosest(GameObject looking) {
+	public GameObject getClosest(GameObject looking) {
 		GameObject closest = null;
 		
 		float distance = float.MaxValue;
@@ -59,7 +54,6 @@ public class ObjectList {
 		Vector2 targetPos;
 
 		Owner lookingOwner = looking.GetComponent<Owner> ();
-
 
 		if (objectList != null) {
 			for (int i = 0; i < objectList.Count; i++) {
@@ -98,16 +92,19 @@ public class ObjectList {
 			}
 		}
 		
-		ObjectInfo info = new ObjectInfo();
-		if (closest != null) {
-			info.pos = closest.transform.position;
-			info.distance = distance;
-		} else {
-			info.pos = Vector3.zero;
-			info.distance = -1;
+		return closest;
+	}
+
+	public GameObject getObjectByOwner(int ownerNum) {
+		for (int i = 0; i < objectList.Count; i++) {
+			Owner owner = objectList [i].GetComponent<Owner> ();
+			if (owner) {
+				if (owner.getOwnerNum () == ownerNum) {
+					return objectList [i];
+				}
+			}
 		}
-		
-		return info;
+		return null;
 	}
 
 	public void print() {
