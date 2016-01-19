@@ -20,6 +20,7 @@ GameObject:
   - 114: {fileID: 11432146}
   - 114: {fileID: 11460538}
   - 114: {fileID: 11421592}
+  - 114: {fileID: 11492230}
   m_Layer: 0
   m_Name: Ship_5
   m_TagString: Untagged
@@ -307,6 +308,17 @@ MonoBehaviour:
     i15: 208
   m_ServerOnly: 0
   m_LocalPlayerAuthority: 1
+--- !u!114 &11492230
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 126290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68f38dea8d7c4cb4aa0b05d69d5324b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -5,12 +5,10 @@ using System.Collections.Generic;
 
 public class BulletShooter : NetworkBehaviour {
 
-	/*Player owner;					//The Player that owns the bullet shooter
-	Ship ownerShip;					//The Player's ship that is shooting*/
-
 	GameObject owner;
 
-	[SyncVar] int currentWeapon;				//Which weapon the ship is equipped with
+	[SyncVar] bool active;			//If the BulletShooter can currently shoot
+	[SyncVar] int currentWeapon;	//Which weapon the ship is equipped with
 	Vector2 startPos;				//The weapon's starting position
 	float angle;					//The weapon's starting angle
 
@@ -20,6 +18,7 @@ public class BulletShooter : NetworkBehaviour {
 
 	GameObject blasterObject;		//The object used to fire the Blaster laser
 	ObjectList chargingPlasmas;		//A list used to contain all of the ship's Plasma balls
+	GameObject deactivatorBeam;
 
 	ShotTimer[] shotTimer;			//The ShotTimers for each weapon
 	Ammo[] ammo;
@@ -29,6 +28,7 @@ public class BulletShooter : NetworkBehaviour {
 	void Start() {
 		isFiring = false;
 		firstShot = true;
+		active = true;
 		shootTimer = 0;
 		shotTimer = new ShotTimer [WeaponInfo.getWeaponCount () + 1];
 		ammo = new Ammo[WeaponInfo.getWeaponCount () + 1];
@@ -40,23 +40,14 @@ public class BulletShooter : NetworkBehaviour {
 			return;
 		}
 
-		/*if (ownerShip == null) {			//If the player has no ship, it was recently destroyed.  
-			ownerShip = owner.getShip();	//Get their new ship
-			if (ownerShip == null) {		//If they still don't have one, it hasn't respawned
-				return;						//Exit and check later
+		if (isFiring) {
+			if (active) {
+				startPos = owner.transform.position;
+				angle = owner.transform.eulerAngles.z;
+
+				fireBullet ();
+				shootTimer += Time.deltaTime;
 			}
-		}*/
-
-		if (isFiring) {			
-			/*whichWeapon = ownerShip.getCurrentWeapon ();
-			startPos = ownerShip.transform.position;
-			angle = ownerShip.getAngle ();*/
-
-			startPos = owner.transform.position;
-			angle = owner.transform.eulerAngles.z;
-
-			fireBullet ();
-			shootTimer += Time.deltaTime;
 		} else {
 			firstShot = true;
 			if (shootTimer != 0) {
@@ -74,11 +65,8 @@ public class BulletShooter : NetworkBehaviour {
 		owner = newOwner;
 	}
 
-	/*public float getLastShot() {
-		return lastShot;
-	}*/
-
 	void release() {
+
 		switch (currentWeapon) {
 			case 4: //Blaster
 			{
@@ -113,10 +101,7 @@ public class BulletShooter : NetworkBehaviour {
 
 		if (ammo [currentWeapon] == null) {
 			ammo [currentWeapon] = new Ammo (100, 100);
-
 		}
-
-
 
 		switch (currentWeapon) {
 
@@ -427,9 +412,45 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 12:	//Deactivator
 			{
+				if (Deactivator.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+					return;
+				}
+
+				shotTimer [currentWeapon].updateLastShot ();
+
+				if (ammo [currentWeapon].useAmmo () == false) {
+					return;
+				}
+
+				GameObject newDeactivator = (GameObject)Instantiate (Deactivator.getTurret ());
+				Turret t = newDeactivator.GetComponent<Turret> ();
+
+				t.init (owner);
+
+				NetworkServer.Spawn (newDeactivator);
+
+				break;
+			}
+
+			case 13:	//Deactivator beam
+			{
+				if (deactivatorBeam == null) {
+					GameObject newBeam = (GameObject)Instantiate (DeactivatorBeam.getDeactivatorBeam ());
+					DeactivatorBeam db = newBeam.GetComponent<DeactivatorBeam> ();
+					db.init (owner);
+
+					deactivatorBeam = newBeam;
+
+					NetworkServer.Spawn (newBeam);
+				}
+
 				break;
 			}
 		}
+	}
+
+	public void setActive(bool which) {
+		active = which;
 	}
 
 	public void setCurrentWeapon(int whichWeapon) {
@@ -443,6 +464,9 @@ public class BulletShooter : NetworkBehaviour {
 	}
 
 	public float getLastShot(int which) {
+		if (shotTimer == null) {
+			return -1;
+		}
 
 		if (which < 0 || which > shotTimer.Length) {
 			return -1;

@@ -16,25 +16,16 @@ public class Turret : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		if (owner == null) {
-			return;
-		}
-
-		Ship ownerShip = owner.GetComponent<Ship> ();
-
-		Vector3 pos = ownerShip.transform.position;
-		float angle = ownerShip.transform.eulerAngles.z;
-
-		transform.position = new Vector3 (
-			pos.x - Mathf.Sin(angle / Mathf.Rad2Deg) * -2,
-			pos.y + Mathf.Cos(angle / Mathf.Rad2Deg) * -2,
-			0
-		);
+		
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		fireAtClosestTarget ();
+	}
+
+	protected void fireAtClosestTarget() {
 		ObjectList shipList = Ship.shipList;
 		GameObject closest = shipList.getClosest (gameObject);
 		BulletShooter bs = GetComponent<BulletShooter>();
@@ -108,6 +99,17 @@ public class Turret : MonoBehaviour {
 			bs.setOwner (gameObject);
 			bs.setCurrentWeapon (1);
 		}
+
+		Ship ownerShip = owner.GetComponent<Ship> ();
+
+		Vector3 pos = ownerShip.transform.position;
+		float angle = ownerShip.transform.eulerAngles.z;
+
+		transform.position = new Vector3 (
+			pos.x - Mathf.Sin(angle / Mathf.Rad2Deg) * -2,
+			pos.y + Mathf.Cos(angle / Mathf.Rad2Deg) * -2,
+			0
+		);
 	}
 
 	public static GameObject getTurret() {

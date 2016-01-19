@@ -86,7 +86,7 @@ public class Player : NetworkBehaviour {
 
 		if (ship == null) {		
 			//Dead!
-
+			pointersActive = false;
 			deadTimer += Time.deltaTime;
 			if (deadTimer >= spawnDelay) {					
 				createShip ();
@@ -124,8 +124,6 @@ public class Player : NetworkBehaviour {
 				clickAngle += 360;
 			}
 		}
-
-
 		
 		Controls ctr = GetComponent<Controls> ();
 		if (ctr == null) {
@@ -360,7 +358,7 @@ public class Player : NetworkBehaviour {
 
 	[Command]
 	void CmdChangeWeapon(int which) {		
-		BulletShooter shooter = GetComponent<BulletShooter> ();
+		BulletShooter shooter = ship.GetComponent<BulletShooter> ();
 		shooter.setCurrentWeapon (which);
 	}
 
@@ -395,7 +393,7 @@ public class Player : NetworkBehaviour {
 
 	[Command]
 	void CmdSetShipToShoot(bool isShooting) {
-		BulletShooter shooter = GetComponent<BulletShooter> ();
+		BulletShooter shooter = ship.GetComponent<BulletShooter> ();
 		shooter.setIsFiring (isShooting);
 	}
 
@@ -434,7 +432,7 @@ public class Player : NetworkBehaviour {
 			string overlay = "";
 			if (ship != null) {
 				Ship thisShip = ship.GetComponent<Ship>();
-				BulletShooter shooter = GetComponent<BulletShooter> ();
+				BulletShooter shooter = ship.GetComponent<BulletShooter> ();
 
 				Owner info = thisShip.GetComponent<Owner> ();
 
@@ -578,9 +576,9 @@ public class Player : NetworkBehaviour {
 		ship.transform.parent = this.transform;
 		Ship thisShip = ship.GetComponent<Ship> ();
 
-		BulletShooter shooter = GetComponent<BulletShooter> ();
+		BulletShooter shooter = ship.GetComponent<BulletShooter> ();
 		shooter.setOwner (ship);
-		shooter.setCurrentWeapon (1);
+		shooter.setCurrentWeapon (13);
 
 		Owner owner = thisShip.GetComponent<Owner> ();
 		if (owner) {

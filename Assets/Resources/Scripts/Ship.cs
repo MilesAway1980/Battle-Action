@@ -29,6 +29,8 @@ public class Ship : NetworkBehaviour {
 	private float opponentDistance;				//The distance to the closest opponent
 	private Rigidbody2D rb;						//The ship's rigid body component
 
+	[SyncVar] bool stopped;						//Whether or not the ship can move.
+
 	void Awake() {
 
 		if (shipList == null) {
@@ -54,6 +56,7 @@ public class Ship : NetworkBehaviour {
 
 		currentPos = transform.position;
 		oldPos = currentPos;
+		stopped = false;
 	}
 
 	void Update() {
@@ -61,6 +64,10 @@ public class Ship : NetworkBehaviour {
 	}
 
 	void FixedUpdate() {
+		if (stopped) {
+			thrust = 0;
+			return;
+		}
 
 		accelerate ();
 		turn ();
@@ -213,5 +220,13 @@ public class Ship : NetworkBehaviour {
 
 	public float getCurrentSpeed() {
 		return currentSpeed;
+	}
+
+	public void setStop (bool setting) {
+		stopped = setting;
+	}
+
+	public bool getStopped() {
+		return stopped;
 	}
 }

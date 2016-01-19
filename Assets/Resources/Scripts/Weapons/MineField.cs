@@ -15,18 +15,19 @@ public class MineField : NetworkBehaviour {
 
 	[SyncVar] Vector2 pos;
 	GameObject owner;
+	int ownerNum;
 
 	// Use this for initialization
-	void Start () {
-		
+	void Start () {		
 		mines = new GameObject[minesPerDrop];
-
 		placeMines ();
 	}
 
-	[Server]
 	void placeMines() {
-		
+		if (!isServer) {
+			return;
+		}
+
 		for (int i = 0; i < minesPerDrop; i++) {
 			float distance = Random.Range (0.0f, radius);
 			float angle = Random.Range (0.0f, 360.0f);
@@ -53,6 +54,11 @@ public class MineField : NetworkBehaviour {
 
 		List<GameObject> ships = Damageable.damageableList.getObjectList();
 
+		if (owner == null) {
+			owner = Ship.shipList.getObjectByOwner (ownerNum);
+		}
+
+		//See if the mine field has any mines left.
 		bool minesLeft = false;
 		for (int i = 0; i < mines.Length; i++) {
 			if (mines [i] != null) {
@@ -60,18 +66,24 @@ public class MineField : NetworkBehaviour {
 				break;
 			}
 		}
+
 		//Destroy the mine field if there are no mines left.
 		if (minesLeft == false) {
-			Destroy (this.gameObject);
+			Destroy (gameObject);
 		}
 
 		for (int i = 0; i < ships.Count; i++) {
 
 			Ship ship = ships [i].GetComponent<Ship>();
-			Ship ownerShip = owner.GetComponent<Ship> ();
-
-			if (ship == ownerShip) {
+			if (ship == null) {
 				continue;
+			}
+
+			Owner shipOwner = ship.GetComponent<Owner>();
+			if (shipOwner) {
+				if (ownerNum == shipOwner.getOwnerNum()) {
+					continue;
+				}
 			}
 
 			//Ship is within the mine field, check for mine hits
@@ -96,6 +108,10 @@ public class MineField : NetworkBehaviour {
 						Damageable dm = ship.GetComponent<Damageable> ();
 						if (dm) {
 							dm.damage (mine.damage);
+							HitInfo info = ship.GetComponent<HitInfo> ();
+							if (info) {
+								info.setLastHitBy (owner);
+							}
 						}
 
 						Destroy (mines[m].gameObject);
@@ -107,6 +123,12 @@ public class MineField : NetworkBehaviour {
 
 	public void init (GameObject newOwner, Vector2 newPos) {
 		owner = newOwner;
+		Owner thisOwner = newOwner.GetComponent<Owner> ();
+		if (thisOwner) {
+			ownerNum = thisOwner.getOwnerNum ();
+		} else {
+			ownerNum = -1;
+		}
 		pos = newPos;
 	}
 

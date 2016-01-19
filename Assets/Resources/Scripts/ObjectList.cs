@@ -62,20 +62,24 @@ public class ObjectList {
 					continue;
 				}
 
-				//Do not check objects that have a decoy
 				Owner owner = objectList[i].GetComponent<Owner> ();
 				if (owner) {
-					
-					if (
-							(owner.getNumDecoy () > 0) ||
-							(owner.getOwnerNum() == lookingOwner.getOwnerNum())
-						)
-					{
+					if (owner.getNumDecoy () > 0) {
 						continue;
 					}
 				}
 
-				if (objectList[i] != looking && objectList[i] != null) {				
+				if (owner && lookingOwner) {
+					if (owner.getOwnerNum() == lookingOwner.getOwnerNum()) {
+						continue;
+					}
+				} else {
+					if (looking == objectList[i]) {
+						continue;
+					}
+				}
+
+				if (objectList[i] != looking && objectList[i] != null) {
 
 					targetPos = objectList[i].transform.position;			
 					
