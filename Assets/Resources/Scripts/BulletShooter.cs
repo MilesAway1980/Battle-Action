@@ -20,7 +20,7 @@ public class BulletShooter : NetworkBehaviour {
 	ObjectList chargingPlasmas;		//A list used to contain all of the ship's Plasma balls
 	GameObject deactivatorBeam;
 
-	ShotTimer[] shotTimer;			//The ShotTimers for each weapon
+	public ShotTimer[] shotTimer;			//The ShotTimers for each weapon
 	Ammo[] ammo;
 
 	float prevShot;
@@ -32,6 +32,11 @@ public class BulletShooter : NetworkBehaviour {
 		shootTimer = 0;
 		shotTimer = new ShotTimer [WeaponInfo.getWeaponCount () + 1];
 		ammo = new Ammo[WeaponInfo.getWeaponCount () + 1];
+
+		for (int i = 0; i < WeaponInfo.getWeaponCount(); i++) {
+			shotTimer [i] = new ShotTimer ();
+			ammo [i] = new Ammo (100, 100);
+		}
 	}
 
 	void FixedUpdate() {
@@ -95,13 +100,13 @@ public class BulletShooter : NetworkBehaviour {
 
 	public void fireBullet() {
 
-		if (shotTimer [currentWeapon] == null) {
+		/*if (shotTimer [currentWeapon] == null) {
 			shotTimer [currentWeapon] = new ShotTimer ();
 		}
 
 		if (ammo [currentWeapon] == null) {
 			ammo [currentWeapon] = new Ammo (100, 100);
-		}
+		}*/
 
 		switch (currentWeapon) {
 
@@ -469,13 +474,13 @@ public class BulletShooter : NetworkBehaviour {
 		}
 
 		if (which < 0 || which > shotTimer.Length) {
-			return -1;
+			return -2;
 		}
 
 		if (shotTimer [which] != null) {
 			return shotTimer [which].getLastShot ();
 		} else {
-			return 0;
+			return -3;
 		}
 	}
 }

@@ -443,7 +443,7 @@ public class Player : NetworkBehaviour {
 				if (shooter != null) {
 					lastShot = shooter.getLastShot (currentWeapon);
 					//print (lastShot);
-				}
+				} 
 
 				switch (currentWeapon) {
 					case 1: timeUntilReady = MachineGun.getRefireRate (); break;
@@ -455,9 +455,9 @@ public class Player : NetworkBehaviour {
 					case 7: timeUntilReady = Warp.getRefireRate (); break;
 					case 8: timeUntilReady = Plasma.getRefireRate (); break;
 					case 9: timeUntilReady = MineField.getRefireRate (); break;
-					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
-					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
-					//case 1: timeUntilReady = MachineGun.getRefireRate (); break;
+					case 10: timeUntilReady = Decoy.getRefireRate (); break;
+					case 11: timeUntilReady = Turret.getRefireRate (); break;
+					case 12: timeUntilReady = Deactivator.getRefireRate (); break;
 				}
 
 				timeUntilReady = (int)((timeUntilReady - (Time.fixedTime - lastShot)) * 1000);
@@ -468,7 +468,7 @@ public class Player : NetworkBehaviour {
 				overlay += "Armor: " + (int)(thisShip.getArmor() * 10);
 				overlay += "\nThrust: " + (int)(thisShip.getThrust() * 100) + " \\ " + (thisShip.maxThrust * 100);
 				overlay += "\nSpeed: " + (int)(thisShip.getCurrentSpeed() * 100) + " \\ " + (thisShip.maxSpeed * 100);
-				overlay += "\nWeapon: " + WeaponInfo.getWeaponName (shooter.getCurrentWeapon ()) + " " + timeUntilReady + "  " + info.getNumDecoy ();;
+				overlay += "\nWeapon: " + WeaponInfo.getWeaponName (currentWeapon) + " " + timeUntilReady + "  " + lastShot;
 
 				Shield shield = thisShip.GetComponent<Shield>();
 				overlay += "\n" + (int)shield.getCharge() + " \\ " + (int)shield.getMaxCharge();
@@ -584,6 +584,9 @@ public class Player : NetworkBehaviour {
 		if (owner) {
 			owner.setOwnerNum (playerNum);
 		}
+
+		thisShip.shipController = ShipController.player;
+		print (thisShip.shipController);
 
 		ship.tag = "Player Ship";
 		ship.name = "playership" + playerNum;

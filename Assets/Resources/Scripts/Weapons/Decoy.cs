@@ -87,6 +87,8 @@ public class Decoy : NetworkBehaviour {
 		Damageable dm = ship.GetComponent<Damageable> ();
 		dm.setArmor (decoyArmor);
 
+		ship.shipController = ShipController.decoy;
+
 		NetworkServer.Spawn (shipObject);
 
 		turnCount = 0;

@@ -2,6 +2,13 @@
 using UnityEngine.Networking;
 using System.Collections;
 
+public enum ShipController {
+	none,
+	player,
+	decoy,
+	computer
+}
+
 public class Ship : NetworkBehaviour {
 
 	static public ObjectList shipList;					//A static list of all the ships in the game.
@@ -30,6 +37,8 @@ public class Ship : NetworkBehaviour {
 	private Rigidbody2D rb;						//The ship's rigid body component
 
 	[SyncVar] bool stopped;						//Whether or not the ship can move.
+
+	[SyncVar] public ShipController shipController;		//who owns and operates the ship
 
 	void Awake() {
 
@@ -91,12 +100,14 @@ public class Ship : NetworkBehaviour {
 				explode();
 				GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
 				for (int i = 0; i < players.Length; i++) {
-					Player p = players[i].GetComponent<Player>();
+					Player player = players[i].GetComponent<Player>();
 
-					HitInfo hi = GetComponent<HitInfo> ();
-
-					if (p.getPlayerNum() == hi.getLastHitBy()) {
-						p.addKill();
+					HitInfo thisHitInfo = GetComponent<HitInfo> ();
+					print (shipController);
+					if ((player.getPlayerNum() == thisHitInfo.getLastHitBy()) &&
+						(shipController == ShipController.player)) 
+					{
+						player.addKill ();
 						break;
 					}
 				}

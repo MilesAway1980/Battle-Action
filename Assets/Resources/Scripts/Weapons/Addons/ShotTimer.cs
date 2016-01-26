@@ -2,15 +2,15 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class ShotTimer  {
+public class ShotTimer {
 
 	[SyncVar] float lastShot;
 
-	public float getLastShot() {
+	public float getLastShot() { 
 		return lastShot;
 	}
 
-	public void updateLastShot() {
+	public void updateLastShot() {	
 		lastShot = Time.fixedTime;
 	}
 }
