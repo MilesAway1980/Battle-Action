@@ -14,9 +14,9 @@ public class MachineGun : Bullet {
 
 	void Start () {
 
-		travelDist = ArenaInfo.getArenaSize() * 1.25f;
-		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
-			travelDist = ArenaInfo.getMinBulletTravelDist();
+		travelDist = ArenaInfo.GetArenaSize() * 1.25f;
+		if (travelDist < ArenaInfo.GetMinBulletTravelDist()) {
+			travelDist = ArenaInfo.GetMinBulletTravelDist();
 		}
 
 		angleDeg += Random.Range (-shotSpread, shotSpread);
@@ -48,7 +48,7 @@ public class MachineGun : Bullet {
 			Destroy (gameObject);
 		}
 
-		checkHit ();
+		CheckHit ();
 		prevPos = pos;
 
 		pos = new Vector2 (
@@ -59,19 +59,19 @@ public class MachineGun : Bullet {
 		transform.position = pos;
 	}
 
-	void checkHit() {
-		GameObject objectHit = checkObjectHit (true);
+	void CheckHit() {
+		GameObject objectHit = CheckObjectHit (true);
 
 		//print (objectHit);
 
 		if (objectHit) {
 			Damageable dm = objectHit.GetComponent<Damageable> ();
 			if (dm) {
-				dm.damage (damage);
+				dm.Damage (damage);
 
 				HitInfo info = objectHit.GetComponent<HitInfo> ();
 				if (info) {
-					info.setLastHitBy (owner);
+					info.SetLastHitBy (owner);
 				}
 			}
 			Destroy (gameObject);
@@ -86,26 +86,26 @@ public class MachineGun : Bullet {
 		}*/	
 	}
 
-	public static GameObject getBullet() {
+	public static GameObject GetBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/MachineGunBullet");
 	}
 
-	public static new float getRefireRate() {
+	public static new float GetRefireRate() {
 		if (machinegunInfo == null) {
-			createMachineGunInfo();
+			CreateMachineGunInfo();
 		}
 		return machinegunInfo.refireRate;
 	}
 	
-	public static new float getBulletsPerShot() {
+	public static new float GetBulletsPerShot() {
 		if (machinegunInfo == null) {
-			createMachineGunInfo();
+			CreateMachineGunInfo();
 		}
 		return machinegunInfo.bulletsPerShot;
 	}
 	
-	static void createMachineGunInfo() {
-		MachineGun temp = MachineGun.getBullet ().GetComponent<MachineGun>();
+	static void CreateMachineGunInfo() {
+		MachineGun temp = GetBullet ().GetComponent<MachineGun>();
 		machinegunInfo = new ShootingInfo();
 		machinegunInfo.bulletsPerShot = temp.bulletsPerShot;
 		machinegunInfo.refireRate = temp.refireRate;

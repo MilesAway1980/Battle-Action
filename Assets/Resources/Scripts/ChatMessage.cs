@@ -12,14 +12,14 @@ public class ChatMessage {
 		expired = true;
 	}
 
-	public void update() {
+	public void Update() {
 		startTime += Time.fixedTime;
 		if (startTime >= endTime) {
 			expired = true;
 		}
 	}
 
-	public void setMessage(string newMessage) {
+	public void SetMessage(string newMessage) {
 		if (expired) {
 			message = newMessage;
 			startTime = Time.fixedTime;
@@ -27,89 +27,24 @@ public class ChatMessage {
 		}
 	}
 
-	public void setMessage(string newMessage, float lifeSpan) {
+	public void SetMessage(string newMessage, float lifeSpan) {
 		if (expired) {
 			message = newMessage;
 			startTime = Time.fixedTime;
 			expired = false;
-			setLifeSpan (lifeSpan);
+			SetLifeSpan (lifeSpan);
 		}
 	}
 
-	public void setLifeSpan(float lifeSpan) {
+	public void SetLifeSpan(float lifeSpan) {
 		endTime = startTime + lifeSpan;
 	}
 
-	public bool getExpired() {
+	public bool GetExpired() {
 		return expired;
 	}
 
-	public string getMessage() {
+	public string GetMessage() {
 		return message;
-	}
-}
-
-public class Chat  {
-	//int messageHistory;
-	float lifeSpan;
-
-	ChatMessage[] messages;
-
-	public void setMessageHistorySize(int newSize) {
-		//messageHistory = newSize;
-		messages = new ChatMessage[newSize];
-		for (int i = 0; i < messages.Length; i++) {
-			messages[i] = new ChatMessage();
-		}
-	}
-
-	public void newMessage(string newMessage) {
-		if (messages != null) {
-			for (int i = 0; i < messages.Length; i++) {
-				if (messages [i].getExpired ()) {
-					messages [i].setMessage (newMessage, lifeSpan);
-					break;
-				}
-			}
-		}
-	}
-
-	public void setMessageLifeSpan(float time) {
-		lifeSpan = time;
-	}
-
-	public string[] getMessages() {
-
-		if (messages == null) {
-			return null;
-		}
-
-		int count = 0;
-		for (int i = 0; i < messages.Length; i++) {
-			if (messages[i].getExpired() == false) {
-				count++;
-			}
-		}
-
-		string[] allMessages = new string[count];
-
-		count = 0;
-		for (int i = 0; i < messages.Length; i++) {
-			if (messages[i].getExpired() == false) {
-				allMessages[count++] = messages[i].getMessage();
-			}
-		}
-
-		return allMessages;
-	}
-
-	public void updateTimers() {
-		if (messages == null) {
-			return;
-		}
-
-		for (int i = 0; i < messages.Length; i++) {
-			messages[i].update();
-		}
 	}
 }

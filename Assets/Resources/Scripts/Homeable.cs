@@ -10,11 +10,11 @@ public class Homeable : MonoBehaviour {
 		isHomeable = true;
 	}
 	
-	public bool getIsHomeable() {
+	public bool GetIsHomeable() {
 		return isHomeable;
 	}
 
-	public void setIsHomeable(bool value) {
+	public void SetIsHomeable(bool value) {
 		isHomeable = value;
 	}
 }

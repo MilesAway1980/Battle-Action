@@ -23,7 +23,7 @@ public class Mine : NetworkBehaviour {
 		if (isServer) {
 			Owner ownerInfo = owner.GetComponent<Owner> ();
 			if (ownerInfo) {
-				ownerNum = ownerInfo.getOwnerNum ();
+				ownerNum = ownerInfo.GetOwnerNum ();
 			} else {
 				ownerNum = -1;
 			}
@@ -32,12 +32,12 @@ public class Mine : NetworkBehaviour {
 
 	void Update() {
 
-		Player thisPlayer = Player.getLocalPlayer ();
+		Player thisPlayer = Player.GetLocalPlayer ();
 		if (thisPlayer == null) {
 			return;
 		}
 
-		if (ownerNum == thisPlayer.getPlayerNum()) {
+		if (ownerNum == thisPlayer.GetPlayerNum()) {
 			size = new Vector3 (ownerScale, ownerScale, ownerScale);
 		} else {
 			size = new Vector3 (nonOwnerScale, nonOwnerScale, nonOwnerScale);
@@ -46,7 +46,7 @@ public class Mine : NetworkBehaviour {
 		transform.localScale = size;
 	}
 
-	public static GameObject getMine() {
+	public static GameObject GetMine() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Mine");
 	}
 
@@ -55,15 +55,15 @@ public class Mine : NetworkBehaviour {
 		owner = newOwner;
 	}
 
-	public float getDetectionRadius() {
+	public float GetDetectionRadius() {
 		return detectionRadius;
 	}
 
-	public GameObject getExplosion() {		
+	public GameObject GetExplosion() {		
 		return (GameObject)Resources.Load ("Prefabs/Exploder");
 	}
 
-	public Vector2 getPos() {
+	public Vector2 GetPos() {
 		return pos;
 	}
 }

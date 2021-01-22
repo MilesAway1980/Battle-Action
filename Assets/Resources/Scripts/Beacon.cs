@@ -12,6 +12,6 @@ public class Beacon : NetworkBehaviour {
 			beaconList = new ObjectList();
 		}
 
-		beaconList.addObject (this.gameObject);
+		beaconList.AddObject(gameObject);
 	}
 }

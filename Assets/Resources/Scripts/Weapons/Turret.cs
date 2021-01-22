@@ -22,12 +22,12 @@ public class Turret : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		fireAtClosestTarget ();
+		FireAtClosestTarget ();
 	}
 
-	protected void fireAtClosestTarget() {
+	protected void FireAtClosestTarget() {
 		ObjectList shipList = Ship.shipList;
-		GameObject closest = shipList.getClosest (gameObject);
+		GameObject closest = shipList.GetClosest (gameObject);
 		BulletShooter bs = GetComponent<BulletShooter>();
 
 		if (closest == null) {
@@ -36,8 +36,8 @@ public class Turret : MonoBehaviour {
 
 		//Owner's ship has been destroyed
 		if (owner == null) {
-			int turretOwner = GetComponent<Owner> ().getOwnerNum ();
-			owner = Ship.shipList.getObjectByOwner (turretOwner);
+			int turretOwner = GetComponent<Owner> ().GetOwnerNum ();
+			owner = Ship.shipList.GetObjectByOwner (turretOwner);
 		}
 
 		if (owner != null) {
@@ -48,10 +48,10 @@ public class Turret : MonoBehaviour {
 			}
 		}
 
-		float angleToTarget = Angle.getAngle (transform.position, closest.transform.position);
+		float angleToTarget = Angle.GetAngle (transform.position, closest.transform.position);
 		float fixedAngle = 360 - transform.eulerAngles.z;
 		float angleDist = Mathf.Abs (angleToTarget - fixedAngle);
-		float turnDir = Angle.getDirection (fixedAngle, angleToTarget, angleDist);
+		float turnDir = Angle.GetDirection (fixedAngle, angleToTarget, angleDist);
 
 		bool pointingAt = true;
 
@@ -73,31 +73,31 @@ public class Turret : MonoBehaviour {
 			float closestDist = Vector2.Distance (transform.position, closest.transform.position);
 			if ((closestDist > 0) && (closestDist <= detectDistance)) {  //Found the SOB!  SHOOT HIM!			
 				if (bs) {
-					bs.setIsFiring (true);
+					bs.SetIsFiring (true);
 				} 
 			} else {
 				if (bs) {
-					bs.setIsFiring (false);
+					bs.SetIsFiring (false);
 				}
 			}
 		}
 	}
 
-	public void init(GameObject newOwner) {
+	public void Init(GameObject newOwner) {
 		owner = newOwner;
 
 		Owner turretOwner = GetComponent<Owner> ();
 		if (turretOwner) {
 			Owner info = owner.GetComponent<Owner> ();
 			if (info) {
-				turretOwner.setOwnerNum (info.getOwnerNum ());
+				turretOwner.SetOwnerNum (info.GetOwnerNum ());
 			}
 		}
 
 		BulletShooter bs = GetComponent<BulletShooter>();
 		if (bs) {
-			bs.setOwner (gameObject);
-			bs.setCurrentWeapon (1);
+			bs.SetOwner (gameObject);
+			bs.SetCurrentWeapon (1);
 		}
 
 		Ship ownerShip = owner.GetComponent<Ship> ();
@@ -112,13 +112,13 @@ public class Turret : MonoBehaviour {
 		);
 	}
 
-	public static GameObject getTurret() {
+	public static GameObject GetTurret() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Turret");
 	}
 
-	public static float getRefireRate() {
+	public static float GetRefireRate() {
 		if (turretRefireRate == -1) {
-			turretRefireRate = getTurret ().GetComponent<Turret> ().refireRate;
+			turretRefireRate = GetTurret ().GetComponent<Turret> ().refireRate;
 		}
 
 		return turretRefireRate;

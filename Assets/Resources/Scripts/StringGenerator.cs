@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class StringGenerator {
 
-	public static string randomString(int length) {
+	public static string RandomString(int length) {
 		string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		char[] stringChars = new char[length];
 		

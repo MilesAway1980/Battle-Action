@@ -37,26 +37,26 @@ public class ShipCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (followTarget) {
-			if (target != null)
+		if (followTarget && target != null) {
+			if (target.transform.position != currentPos)
 			{
-				if (target.transform.position != currentPos)
-				{
-					oldPos = currentPos;
-					Camera.main.transform.position = new Vector3 (
-							target.transform.position.x,
-							target.transform.position.y,
-							-height
-						);
-					currentPos = Camera.main.transform.position;				
-				}
-
-				moveStars();
+				oldPos = currentPos;
+				Camera.main.transform.position = new Vector3 (
+						target.transform.position.x,
+						target.transform.position.y,
+						-height
+					);
+				currentPos = Camera.main.transform.position;
 			}
+
+			angle = Angle.GetAngle(oldPos, currentPos);
+			speed = Vector3.Distance(oldPos, currentPos);
+
+			MoveStars();			
 		}
 	}
 
-	/*void createCamera() {
+	/*void CreateCamera() {
 		GameObject temp = new GameObject ();
 		cameraObject = (GameObject)Instantiate (temp, new Vector3 (0, 0, 0), Quaternion.identity);
 		//cameraObject.AddComponent<NetworkIdentity> ();
@@ -67,7 +67,7 @@ public class ShipCamera : MonoBehaviour {
 		Destroy (temp);
 	}*/
 
-	/*void createTextCanvas() {
+	/*void CreateTextCanvas() {
 		GameObject newCanvas = new GameObject ();
 		
 		GameObject canvasObject = (GameObject)Instantiate (newCanvas, new Vector3 (0, 0, 0), Quaternion.identity);
@@ -88,28 +88,28 @@ public class ShipCamera : MonoBehaviour {
 		Destroy (newCanvas);
 	}*/
 
-	public void setTarget(GameObject newTarget) {
+	public void SetTarget(GameObject newTarget) {
 		target = newTarget;
 	}
 
-	public void setHeight(float newHeight) {
+	public void SetHeight(float newHeight) {
 		if (newHeight >= 0) {
 			height = newHeight;
 		}
 	}
 
-	public void changeHeight(float change) {
+	public void ChangeHeight(float change) {
 		height += change;
 		if (height < 0) {
 			height = 0;
 		}
 	}
 
-	public void follow(bool toFollow) {
+	public void Follow(bool toFollow) {
 		followTarget = toFollow;
 	}
 
-	public void toggleFollow() {
+	public void ToggleFollow() {
 		followTarget = !followTarget;
 	}
 
@@ -121,11 +121,11 @@ public class ShipCamera : MonoBehaviour {
 		text.text = overlayText;
 	}*/
 
-	public void setSpeed(float newSpeed) {
+	public void SetSpeed(float newSpeed) {
 		speed = newSpeed;
 	}
 
-	public void setAngle(float newAngle) {
+	public void SetAngle(float newAngle) {
 		angle = newAngle;
 	}
 
@@ -134,16 +134,15 @@ public class ShipCamera : MonoBehaviour {
 	}*/
 
 	void FixedUpdate() {
-		angle = Angle.getAngle(oldPos, currentPos);
-		speed = Vector3.Distance (oldPos, currentPos);
-		moveStars ();
+
+		
 	}
 
-	void moveStars() {
+	void MoveStars() {
 
 		if (starField != null && target != null) {
 			//print (angle + "  " + speed);
-			starField.moveStars(target.transform.position, angle, speed);
+			starField.MoveStars(target.transform.position, angle, speed);
 		}
 	}
 }

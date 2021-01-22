@@ -15,7 +15,7 @@ public class Controls : MonoBehaviour {
 
 	void OnGUI()
 	{
-		if (Debugging.debugMode()) {
+		if (Debugging.DebugMode()) {
 			GUI.Label (new Rect (10, 10, 200, 300), overlay);
 		}
 	}
@@ -32,7 +32,7 @@ public class Controls : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		Rigidbody2D rb = this.GetComponent<Rigidbody2D> ();
+		Rigidbody2D rb = GetComponent<Rigidbody2D> ();
 		if (rb == null) {
 			return;
 		}
@@ -45,37 +45,37 @@ public class Controls : MonoBehaviour {
 		for (int i = 0; i < 12; i++) {
 			if (Input.GetButtonDown ("Joy" + whichJoystick + "_Button" + (i + 1)))
 			{
-				buttons[i].setHeld(true);
+				buttons[i].SetHeld(true);
 			}
 
 			if (Input.GetButtonUp ("Joy" + whichJoystick + "_Button" + (i + 1)))
 			{
-				buttons[i].setHeld(false);
+				buttons[i].SetHeld(false);
 			}
 		}
 
-		printButtons ();
+		PrintButtons ();
 	}
 
-	public void setJoystick(int which) {
+	public void SetJoystick(int which) {
 		whichJoystick = which;
 	}
 
-	public int getJoystick() {
+	public int GetJoystick() {
 		return whichJoystick;
 	}
 
-	public JoystickButtons[] getButtons() {
+	public JoystickButtons[] GetButtons() {
 		return buttons;
 	}
 
-	public float[,] getAxis() {
+	public float[,] GetAxis() {
 		return axis;
 	}
 
-	public void printButtons()
+	public void PrintButtons()
 	{
-		if (Debugging.debugMode()) {
+		if (Debugging.DebugMode()) {
 			
 			overlay = "";
 			
@@ -90,9 +90,9 @@ public class Controls : MonoBehaviour {
 			}
 			
 			for (int i = 0; i < 12; i++) {
-				overlay += "\n" + i + ": " + buttons[i].getHeld ();
-				overlay += " - " + buttons[i].getChecked();
-				overlay += " - " + buttons[i].getTime ();
+				overlay += "\n" + i + ": " + buttons[i].GetHeld ();
+				overlay += " - " + buttons[i].GetChecked();
+				overlay += " - " + buttons[i].GetTime ();
 			}		
 		}
 	}

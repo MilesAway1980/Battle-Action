@@ -25,10 +25,15 @@ public class Decoy : NetworkBehaviour {
 	}
 
 	void OnDestroy() {
-		Owner[] owners = Object.FindObjectsOfType<Owner> ();
-		for (int i = 0; i < owners.Length; i++) {
-			if (owners [i].getOwnerNum () == ownerNum) {
-				owners [i].removeDecoy ();
+		print ("on destroy " + ownerNum);
+		if (isServer) {
+			print ("Remove Decoy " + ownerNum);
+			Owner[] owners = Object.FindObjectsOfType<Owner> ();
+			for (int i = 0; i < owners.Length; i++) {
+				if (owners [i].GetOwnerNum () == ownerNum) {
+					owners [i].RemoveDecoy ();
+					print ("Remove Decoy from: " + owners [i].GetOwnerNum ());
+				}
 			}
 		}
 	}
@@ -39,7 +44,7 @@ public class Decoy : NetworkBehaviour {
 			return;
 		}
 
-		GameObject shipObject = (GameObject)Instantiate (owner.GetComponent<Ship> ().gameObject);
+		GameObject shipObject = Instantiate (owner.GetComponent<Ship> ().gameObject);
 		ship = shipObject.GetComponent<Ship> ();
 
 		Ship ownerShip = owner.GetComponent<Ship> ();
@@ -54,23 +59,24 @@ public class Decoy : NetworkBehaviour {
 		);
 
 		Owner info = owner.GetComponent<Owner> ();
-		ownerNum = info.getOwnerNum ();
-		info.emptyDecoy ();
+		ownerNum = info.GetOwnerNum ();
+		info.EmptyDecoy ();
 		if (info) {
 			this.name = "decoy" + ownerNum;
 		} else {
 			this.name = "decoy";
 		}
-
+		print ("Add Decoy");
 		Owner[] owners = Object.FindObjectsOfType<Owner> ();
 		for (int i = 0; i < owners.Length; i++) {
-			if (owners [i].getOwnerNum () == ownerNum) {
-				owners [i].addDecoy ();
+			if (owners [i].GetOwnerNum () == ownerNum) {
+				owners [i].AddDecoy ();
+				print ("Add Decoy to: " + owners [i].GetOwnerNum ());
 			}
 		}
 
 		Owner decoyOwner = shipObject.GetComponent<Owner> ();
-		decoyOwner.setOwnerNum (info.getOwnerNum ());
+		decoyOwner.SetOwnerNum (info.GetOwnerNum ());
 
 		ship.transform.parent = this.transform;
 
@@ -85,7 +91,7 @@ public class Decoy : NetworkBehaviour {
 		}
 
 		Damageable dm = ship.GetComponent<Damageable> ();
-		dm.setArmor (decoyArmor);
+		dm.SetArmor(decoyArmor);
 
 		ship.shipController = ShipController.decoy;
 
@@ -116,17 +122,17 @@ public class Decoy : NetworkBehaviour {
 		}
 	}
 
-	public void init(GameObject newOwner) {
+	public void Init(GameObject newOwner) {
 		owner = newOwner;
 	}
 
-	public static GameObject getDecoy() {
+	public static GameObject GetDecoy() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Decoy");
 	}
 
-	public static float getRefireRate() {
+	public static float GetRefireRate() {
 		if (decoyRefireRate == -1) {
-			decoyRefireRate = getDecoy ().GetComponent<Decoy> ().refireRate;
+			decoyRefireRate = GetDecoy ().GetComponent<Decoy> ().refireRate;
 		}
 
 		return decoyRefireRate;

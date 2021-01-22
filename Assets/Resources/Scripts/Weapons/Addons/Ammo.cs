@@ -16,7 +16,7 @@ public class Ammo  {
 		currentAmmo = newCurrentAmmo;
 	}
 
-	public bool useAmmo() {
+	public bool UseAmmo() {
 		if (currentAmmo > 0) {
 			//currentAmmo--;
 			return true;
@@ -24,14 +24,14 @@ public class Ammo  {
 		return false;
 	}
 
-	public bool checkAmmo() {
+	public bool CheckAmmo() {
 		if (currentAmmo > 0) {
 			return true;
 		}
 		return false;
 	}
 
-	public void incAmmo(int amount) {
+	public void IncreaseAmmo(int amount) {
 		if (amount > 0) {
 			currentAmmo += amount;
 			if (currentAmmo > maxAmmo) {
@@ -40,7 +40,7 @@ public class Ammo  {
 		}
 	}
 
-	public void fillAmmo() {
+	public void FillAmmo() {
 		currentAmmo = maxAmmo;
 	}
 }

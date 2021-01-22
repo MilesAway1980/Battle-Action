@@ -16,9 +16,9 @@ public class Missile : Bullet {
 
 		currentSpeed = initialSpeed;
 
-		travelDist = ArenaInfo.getArenaSize () * 1.0f;
-		if (travelDist < ArenaInfo.getMinBulletTravelDist ()) {
-			travelDist = ArenaInfo.getMinBulletTravelDist ();
+		travelDist = ArenaInfo.GetArenaSize () * 1.0f;
+		if (travelDist < ArenaInfo.GetMinBulletTravelDist ()) {
+			travelDist = ArenaInfo.GetMinBulletTravelDist ();
 		}
 						
 		float forwardX = originPos.x - Mathf.Sin (angleRad) * 2;
@@ -31,7 +31,7 @@ public class Missile : Bullet {
 
 		transform.Rotate( new Vector3 (0, 0, angleDeg));
 
-		maxTurnRate = GetComponent<Homing> ().getTurnRate ();
+		maxTurnRate = GetComponent<Homing>().GetTurnRate ();
 	}
 	
 	void FixedUpdate() {
@@ -41,7 +41,7 @@ public class Missile : Bullet {
 			Destroy (gameObject);
 		}
 
-		checkHit ();
+		CheckHit ();
 		prevPos = pos;
 
 		if (currentSpeed < speed) {
@@ -52,7 +52,7 @@ public class Missile : Bullet {
 		}
 
 		float turnRate = (currentSpeed / speed) * maxTurnRate;
-		GetComponent<Homing> ().setTurnRate (turnRate);
+		GetComponent<Homing>().SetTurnRate (turnRate);
 		
 		pos = new Vector2 (
 			pos.x - Mathf.Sin (angleRad) * currentSpeed,
@@ -62,17 +62,17 @@ public class Missile : Bullet {
 		transform.position = pos;
 	}
 
-	void checkHit() {
-		GameObject objectHit = checkObjectHit (true);
+	void CheckHit() {
+		GameObject objectHit = CheckObjectHit(true);
 		if (objectHit) {
 			//SoundPlayer.PlayClip(hitSound);
 			Damageable dm = objectHit.GetComponent<Damageable>();
 
 			if (dm) {
-				dm.damage (damage);
+				dm.Damage (damage);
 				HitInfo info = objectHit.GetComponent<HitInfo> ();
 				if (info) {
-					info.setLastHitBy (owner);
+					info.SetLastHitBy (owner);
 				}
 			}
 
@@ -80,26 +80,26 @@ public class Missile : Bullet {
 		}	
 	}
 
-	public static GameObject getBullet() {
+	public static GameObject GetBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Missile");
 	}
 	
-	public new static float getRefireRate() {
+	public new static float GetRefireRate() {
 		if (missileInfo == null) {
-			createMissileInfo();
+			CreateMissileInfo();
 		}
 		return missileInfo.refireRate;
 	}
 	
-	public new static float getBulletsPerShot() {
+	public new static float GetBulletsPerShot() {
 		if (missileInfo == null) {
-			createMissileInfo();
+			CreateMissileInfo();
 		}
 		return missileInfo.bulletsPerShot;
 	}
 	
-	static void createMissileInfo() {
-		Missile temp = Missile.getBullet ().GetComponent<Missile>();
+	static void CreateMissileInfo() {
+		Missile temp = GetBullet ().GetComponent<Missile>();
 		missileInfo = new ShootingInfo();
 		missileInfo.bulletsPerShot = temp.bulletsPerShot;
 		missileInfo.refireRate = temp.refireRate;

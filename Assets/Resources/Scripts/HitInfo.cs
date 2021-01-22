@@ -6,27 +6,27 @@ public class HitInfo : MonoBehaviour {
 	bool freshKill;
 	int lastHitBy;
 
-	public void setFreshKill() {
+	public void SetFreshKill() {
 		freshKill = true;
 	}
 
-	public bool getFreshKill() {
+	public bool GetFreshKill() {
 		bool value = freshKill;
 		freshKill = false;
 		return value;
 	}
 
-	public void setLastHitBy(GameObject who) {
+	public void SetLastHitBy(GameObject who) {
 
 		Owner whoOwner = who.GetComponent<Owner> ();
 		if (whoOwner) {
-			lastHitBy = whoOwner.getOwnerNum ();
+			lastHitBy = whoOwner.GetOwnerNum ();
 		} else {
 			lastHitBy = -1;
 		}
 	}
 
-	public int getLastHitBy() {
+	public int GetLastHitBy() {
 		return lastHitBy;
 	}
 }

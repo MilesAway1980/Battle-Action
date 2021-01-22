@@ -30,10 +30,10 @@ public class BulletShooter : NetworkBehaviour {
 		firstShot = true;
 		active = true;
 		shootTimer = 0;
-		shotTimer = new ShotTimer [WeaponInfo.getWeaponCount () + 1];
-		ammo = new Ammo[WeaponInfo.getWeaponCount () + 1];
+		shotTimer = new ShotTimer [WeaponInfo.GetWeaponCount () + 1];
+		ammo = new Ammo[WeaponInfo.GetWeaponCount () + 1];
 
-		for (int i = 0; i < WeaponInfo.getWeaponCount(); i++) {
+		for (int i = 0; i < WeaponInfo.GetWeaponCount(); i++) {
 			shotTimer [i] = new ShotTimer ();
 			ammo [i] = new Ammo (100, 100);
 		}
@@ -50,27 +50,27 @@ public class BulletShooter : NetworkBehaviour {
 				startPos = owner.transform.position;
 				angle = owner.transform.eulerAngles.z;
 
-				fireBullet ();
+				FireBullet ();
 				shootTimer += Time.deltaTime;
 			}
 		} else {
 			firstShot = true;
 			if (shootTimer != 0) {
-				release ();	
+				Release ();	
 				shootTimer = 0;
 			}
 		}
 	}
 
-	public void setIsFiring(bool newIsFiring) {
+	public void SetIsFiring(bool newIsFiring) {
 		isFiring = newIsFiring;
 	}
 
-	public void setOwner(GameObject newOwner) {
+	public void SetOwner(GameObject newOwner) {
 		owner = newOwner;
 	}
 
-	void release() {
+	void Release() {
 
 		switch (currentWeapon) {
 			case 4: //Blaster
@@ -83,14 +83,14 @@ public class BulletShooter : NetworkBehaviour {
 			case 8:	//Plasma
 			{
 				if (chargingPlasmas != null) {
-					GameObject[] plasmas = chargingPlasmas.getObjects ();
+					GameObject[] plasmas = chargingPlasmas.GetObjects ();
 					for (int i = 0; i < plasmas.Length; i++) {
 						//The plasma ball has hit something or been destroyed.
 						if (plasmas [i] == null) {
 							continue;
 						}
 						Plasma plasma = plasmas [i].GetComponent<Plasma> ();
-						plasma.release ();
+						plasma.Release ();
 					}
 				}
 				break;
@@ -98,7 +98,7 @@ public class BulletShooter : NetworkBehaviour {
 		}
 	}
 
-	public void fireBullet() {
+	public void FireBullet() {
 
 		/*if (shotTimer [currentWeapon] == null) {
 			shotTimer [currentWeapon] = new ShotTimer ();
@@ -112,19 +112,19 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 1:		//Machine gun
 			{
-				if (MachineGun.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (MachineGun.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 
 				
-				GameObject newBullet = (GameObject)Instantiate(MachineGun.getBullet());
+				GameObject newBullet = Instantiate(MachineGun.GetBullet());
 				MachineGun mg = newBullet.GetComponent<MachineGun>();				
-				mg.init(owner, startPos, angle);				
+				mg.Init(owner, startPos, angle);				
 
 				NetworkServer.Spawn(newBullet);			
 
@@ -134,21 +134,21 @@ public class BulletShooter : NetworkBehaviour {
 			case 2:		//Rockets
 			{
 				
-				if (Rocket.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (Rocket.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 				
 				float newAngle = angle;
-				for (int i = 0; i < Rocket.getBulletsPerShot(); i++) {
-					newAngle += (360.0f / (float)Rocket.getBulletsPerShot());
-					GameObject newBullet = (GameObject)Instantiate(Rocket.getBullet());
+				for (int i = 0; i < Rocket.GetBulletsPerShot(); i++) {
+					newAngle += (360.0f / (float)Rocket.GetBulletsPerShot());
+					GameObject newBullet = Instantiate(Rocket.GetBullet());
 					Rocket rocket = newBullet.GetComponent<Rocket>();				
-					rocket.init(owner, startPos, newAngle);					
+					rocket.Init(owner, startPos, newAngle);					
 					NetworkServer.Spawn(newBullet);						
 				}
 				break;
@@ -156,21 +156,21 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 3:		//Missile
 			{
-				if (Missile.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (Missile.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 				
 				float newAngle = angle;
-				for (int i = 0; i < Missile.getBulletsPerShot(); i++) {
-					newAngle += (360.0f / (float)Missile.getBulletsPerShot());
-					GameObject newBullet = (GameObject)Instantiate(Missile.getBullet());
+				for (int i = 0; i < Missile.GetBulletsPerShot(); i++) {
+					newAngle += (360.0f / (float)Missile.GetBulletsPerShot());
+					GameObject newBullet = Instantiate(Missile.GetBullet());
 					Missile missile = newBullet.GetComponent<Missile>();				
-					missile.init(owner, startPos, newAngle);					
+					missile.Init(owner, startPos, newAngle);					
 					NetworkServer.Spawn(newBullet);						
 				}
 
@@ -181,38 +181,38 @@ public class BulletShooter : NetworkBehaviour {
 			{
 				//No refire rate.  It's ON / OFF
 
-				if (ammo [currentWeapon].useAmmo() == false) {
-					release ();
+				if (ammo [currentWeapon].UseAmmo() == false) {
+					Release ();
 					return;
 				} 
 
 				if (blasterObject == null) {
-					blasterObject = (GameObject)Instantiate(Blaster.getBlaster());
+					blasterObject = Instantiate(Blaster.getBlaster());
 					NetworkServer.Spawn(blasterObject);
 				}
 
 				Blaster blaster = blasterObject.GetComponent<Blaster>();
-				blaster.init(startPos, angle, owner);
+				blaster.Init(startPos, angle, owner);
 				
 				break;
 			}
 
 			case 5:		//Crush / Flak
 			{
-				if (Crush.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (Crush.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 				
 				float newAngle = angle;
-				GameObject newBullet = (GameObject)Instantiate(Crush.getBullet());
+				GameObject newBullet = Instantiate(Crush.GetBullet());
 				Crush crush = newBullet.GetComponent<Crush>();
 
-				crush.init(owner, startPos, newAngle);	
+				crush.Init(owner, startPos, newAngle);	
 
 				NetworkServer.Spawn(newBullet);						
 
@@ -221,18 +221,18 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 6:		//Nuke
 			{
-				if (Nuke.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (Nuke.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 				
-				GameObject newBomb = (GameObject)Instantiate(Nuke.getBomb());
+				GameObject newBomb = Instantiate(Nuke.GetBomb());
 				Nuke nuke = newBomb.GetComponent<Nuke>();
-				nuke.init(owner);
+				nuke.Init(owner);
 				
 				NetworkServer.Spawn(newBomb);
 				
@@ -241,19 +241,19 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 7:		//Warp
 			{
-				if (Warp.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (Warp.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 
-				GameObject newWarp = (GameObject)Instantiate(Warp.getWarp());
+				GameObject newWarp = Instantiate(Warp.GetWarp());
 				Warp warp = newWarp.GetComponent<Warp> ();
 
-				warp.setOwner (owner);
+				warp.SetOwner (owner);
 				break;
 			}
 
@@ -273,7 +273,7 @@ public class BulletShooter : NetworkBehaviour {
 						//Get the array of Plasmas
 						//GameObject[] plasmas = chargingPlasmas.getObjects ();
 
-						List<GameObject> plasmas = chargingPlasmas.getObjectList ();
+						List<GameObject> plasmas = chargingPlasmas.GetObjectList ();
 
 						for (int i = 0; i < plasmas.Count; i++) {
 							//The plasma ball has hit something or is destroyed
@@ -283,33 +283,33 @@ public class BulletShooter : NetworkBehaviour {
 
 							//Get the plasma and increase its charge
 							Plasma plasma = plasmas [i].GetComponent<Plasma> ();
-							plasma.incCharge (Time.deltaTime);
+							plasma.IncreaseCharge(Time.deltaTime);
 
 							//If it is the first plasma ball, figure out the angle to increase each shot by.
 							if (i == 0) {
-								arc = plasma.getArc ();
+								arc = plasma.GetArc ();
 								newAngle = angle - (arc / 2.0f);
-								if (Plasma.getBulletsPerShot () > 1) {
-									angleChange = (arc / (Plasma.getBulletsPerShot () - 1));
+								if (Plasma.GetBulletsPerShot () > 1) {
+									angleChange = (arc / (Plasma.GetBulletsPerShot () - 1));
 								} else {
 									angleChange = 0;
 									newAngle = angle;
 								}
 							}
 
-							plasma.setAngle (newAngle);
+							plasma.SetAngle (newAngle);
 							newAngle += angleChange;
 						}
 					}
 					return;
 				}
 
-				if (Plasma.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (Plasma.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 
@@ -322,28 +322,28 @@ public class BulletShooter : NetworkBehaviour {
 				}
 
 				//Clear the list so that plasmas that are already fired are not affected
-				chargingPlasmas.clearList ();		
+				chargingPlasmas.ClearList ();		
 
-				for (int i = 0; i < Plasma.getBulletsPerShot(); i++) {
+				for (int i = 0; i < Plasma.GetBulletsPerShot(); i++) {
 
-					GameObject newBullet = (GameObject)Instantiate (Plasma.getBullet ());
+					GameObject newBullet = Instantiate (Plasma.GetBullet ());
 					Plasma plasma = newBullet.GetComponent<Plasma> ();
-					plasma.setRadius (0);
+					plasma.SetRadius (0);
 
-					chargingPlasmas.addObject (newBullet);
+					chargingPlasmas.AddObject (newBullet);
 
 					if (i == 0) {
-						arc = plasma.getArc ();
+						arc = plasma.GetArc ();
 						newAngle = angle - (arc / 2.0f);
-						if (Plasma.getBulletsPerShot () > 1) {
-							angleChange = (arc / (Plasma.getBulletsPerShot () - 1));
+						if (Plasma.GetBulletsPerShot () > 1) {
+							angleChange = (arc / (Plasma.GetBulletsPerShot () - 1));
 						} else {
 							angleChange = 0;
 							newAngle = angle;
 						}
 					}
 
-					plasma.init(owner, startPos, newAngle);					
+					plasma.Init(owner, startPos, newAngle);					
 					NetworkServer.Spawn(newBullet);
 
 					newAngle += angleChange;
@@ -353,19 +353,19 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 9:		//Mines
 			{
-				if (MineField.getRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].getLastShot())) {
+				if (MineField.GetRefireRate() > (Time.fixedTime - shotTimer[currentWeapon].GetLastShot())) {
 					return;
 				}
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo() == false) {
+				if (ammo [currentWeapon].UseAmmo() == false) {
 					return;
 				} 
 
-				GameObject newMineField = (GameObject)Instantiate(MineField.getMineField());
+				GameObject newMineField = Instantiate(MineField.GetMineField());
 				MineField mf = newMineField.GetComponent<MineField>();
 
-				mf.init(owner, startPos);
+				mf.Init(owner, startPos);
 
 				NetworkServer.Spawn(newMineField);	
 				break;
@@ -373,20 +373,20 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 10:	//Decoy
 			{
-				if (Decoy.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+				if (Decoy.GetRefireRate() > (Time.fixedTime - shotTimer [currentWeapon].GetLastShot())) {
 					return;
 				}
 
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo () == false) {
+				if (ammo [currentWeapon].UseAmmo () == false) {
 					return;
 				}
 
-				GameObject newDecoy = (GameObject)Instantiate (Decoy.getDecoy ());
+				GameObject newDecoy = Instantiate (Decoy.GetDecoy ());
 				Decoy d = newDecoy.GetComponent<Decoy> ();
 
-				d.init (owner);
+				d.Init (owner);
 
 				NetworkServer.Spawn (newDecoy);
 
@@ -395,20 +395,20 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 11:	//Turret
 			{
-				if (Turret.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+				if (Turret.GetRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].GetLastShot())) {
 					return;
 				}
 
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer[currentWeapon].UpdateLastShot();
 
-				if (ammo [currentWeapon].useAmmo () == false) {
+				if (ammo[currentWeapon].UseAmmo() == false) {
 					return;
 				}
 
-				GameObject newTurret = (GameObject)Instantiate (Turret.getTurret ());
+				GameObject newTurret = Instantiate (Turret.GetTurret ());
 				Turret t = newTurret.GetComponent<Turret> ();
 
-				t.init (owner);
+				t.Init (owner);
 
 				NetworkServer.Spawn (newTurret);
 
@@ -417,20 +417,20 @@ public class BulletShooter : NetworkBehaviour {
 
 			case 12:	//Deactivator
 			{
-				if (Deactivator.getRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].getLastShot ())) {
+				if (Deactivator.GetRefireRate () > (Time.fixedTime - shotTimer [currentWeapon].GetLastShot ())) {
 					return;
 				}
 
-				shotTimer [currentWeapon].updateLastShot ();
+				shotTimer [currentWeapon].UpdateLastShot ();
 
-				if (ammo [currentWeapon].useAmmo () == false) {
+				if (ammo [currentWeapon].UseAmmo () == false) {
 					return;
 				}
 
-				GameObject newDeactivator = (GameObject)Instantiate (Deactivator.getTurret ());
+				GameObject newDeactivator = Instantiate (Deactivator.GetTurret ());
 				Turret t = newDeactivator.GetComponent<Turret> ();
 
-				t.init (owner);
+				t.Init (owner);
 
 				NetworkServer.Spawn (newDeactivator);
 
@@ -440,9 +440,9 @@ public class BulletShooter : NetworkBehaviour {
 			case 13:	//Deactivator beam
 			{
 				if (deactivatorBeam == null) {
-					GameObject newBeam = (GameObject)Instantiate (DeactivatorBeam.getDeactivatorBeam ());
+					GameObject newBeam = Instantiate (DeactivatorBeam.getDeactivatorBeam ());
 					DeactivatorBeam db = newBeam.GetComponent<DeactivatorBeam> ();
-					db.init (owner);
+					db.Init (owner);
 
 					deactivatorBeam = newBeam;
 
@@ -454,21 +454,21 @@ public class BulletShooter : NetworkBehaviour {
 		}
 	}
 
-	public void setActive(bool which) {
+	public void SetActive(bool which) {
 		active = which;
 	}
 
-	public void setCurrentWeapon(int whichWeapon) {
+	public void SetCurrentWeapon(int whichWeapon) {
 		if (currentWeapon >= 0) {
 			currentWeapon = whichWeapon;
 		}
 	}
 
-	public int getCurrentWeapon() {
+	public int GetCurrentWeapon() {
 		return currentWeapon;
 	}
 
-	public float getLastShot(int which) {
+	public float GetLastShot(int which) {
 		if (shotTimer == null) {
 			return -1;
 		}
@@ -478,7 +478,7 @@ public class BulletShooter : NetworkBehaviour {
 		}
 
 		if (shotTimer [which] != null) {
-			return shotTimer [which].getLastShot ();
+			return shotTimer[which].GetLastShot ();
 		} else {
 			return -3;
 		}

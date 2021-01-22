@@ -15,17 +15,17 @@ public class Homing : NetworkBehaviour {
 		
 		if (isServer) {
 			if (target == null) {
-				getTarget ();
+				GetTarget ();
 			} else {
-				chaseTarget ();
+				ChaseTarget ();
 			}
 		}
 	}
 
 
-	void getTarget() {
+	void GetTarget() {
 		if (isServer) {		
-			List<GameObject> targets = Damageable.damageableList.getObjectList();
+			List<GameObject> targets = Damageable.damageableList.GetObjectList();
 
 			if (targets.Count == 0) {
 				return;
@@ -48,16 +48,16 @@ public class Homing : NetworkBehaviour {
 		}
 	}
 
-	void chaseTarget() {
+	void ChaseTarget() {
 		if (isServer) {
 			Bullet thisBullet = GetComponent<Bullet> ();
 		
 			float currentAngle = transform.eulerAngles.z;
-			float angleToTarget = 360 - Angle.getAngle (transform.position, target.transform.position);
+			float angleToTarget = 360 - Angle.GetAngle (transform.position, target.transform.position);
 		
-			int turnDir = Angle.getDirection (currentAngle, angleToTarget);
+			int turnDir = Angle.GetDirection (currentAngle, angleToTarget);
 		
-			thisBullet.changeAngle (turnRate * turnDir);
+			thisBullet.ChangeAngle(turnRate * turnDir);
 		
 			//Lose target if it gets out of range.
 			if (Vector2.Distance (transform.position, target.transform.position) > detectDistance) {
@@ -66,15 +66,15 @@ public class Homing : NetworkBehaviour {
 		}
 	}
 
-	public void setOwner(GameObject newOwner) {
+	public void SetOwner(GameObject newOwner) {
 		owner = newOwner;
 	}
 
-	public float getTurnRate() {
+	public float GetTurnRate() {
 		return turnRate;
 	}
 
-	public void setTurnRate(float newTurnRate) {
+	public void SetTurnRate(float newTurnRate) {
 		if (newTurnRate >= 0) {
 			turnRate = newTurnRate;
 		}

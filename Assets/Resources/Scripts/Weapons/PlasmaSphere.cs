@@ -15,7 +15,7 @@ public class PlasmaSphere : NetworkBehaviour {
 	void Update () {
 
 		Plasma plasma = gameObject.GetComponentInParent<Plasma> ();
-		setRadius (plasma.getRadius ());
+		setRadius (plasma.GetRadius ());
 
 		transform.localScale = new Vector3 (radius, radius, radius);
 	}

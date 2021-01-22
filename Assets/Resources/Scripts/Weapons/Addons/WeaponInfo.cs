@@ -3,10 +3,10 @@ using System.Collections;
 
 public static class WeaponInfo {
 
-	static int weaponCount = 13;
+	static readonly int weaponCount = 13;
 
-	public static string getWeaponName(int whichWeapon) {
-		string weaponName = "";
+	public static string GetWeaponName(int whichWeapon) {
+		string weaponName;
 
 		switch (whichWeapon) {
 			case 1: weaponName = "Machine Gun"; break;
@@ -24,10 +24,11 @@ public static class WeaponInfo {
 			case 13: weaponName = "Deactivator Beam"; break;
 			default: weaponName = "---"; break;
 		}
+
 		return weaponName;
 	}
 
-	public static int getWeaponCount () {
+	public static int GetWeaponCount () {
 		return weaponCount;
 	}
 }

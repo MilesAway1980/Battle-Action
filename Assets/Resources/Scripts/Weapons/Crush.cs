@@ -18,9 +18,9 @@ public class Crush : Bullet {
 	// Use this for initialization
 	void Start () {
 		
-		travelDist = ArenaInfo.getArenaSize() * 1.25f;
-		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
-			travelDist = ArenaInfo.getMinBulletTravelDist();
+		travelDist = ArenaInfo.GetArenaSize() * 1.25f;
+		if (travelDist < ArenaInfo.GetMinBulletTravelDist()) {
+			travelDist = ArenaInfo.GetMinBulletTravelDist();
 		}
 
 		angleRad = angleDeg / Mathf.Rad2Deg;
@@ -59,11 +59,11 @@ public class Crush : Bullet {
 		if (isServer) {
 			if (target != null) {
 				hasTarget = true;
-				crushTarget ();
+				CrushTarget ();
 			} else {
 				hasTarget = false;
 				size = new Vector3 (0.2f, 0.2f, 0.2f);
-				checkHit ();
+				CheckHit ();
 			}
 		}
 
@@ -71,8 +71,8 @@ public class Crush : Bullet {
 		transform.localScale = size;
 	}
 
-	void checkHit() {
-		GameObject objectHit = checkObjectHit(true);
+	void CheckHit() {
+		GameObject objectHit = CheckObjectHit(true);
 		if (objectHit != null) {
 			//SoundPlayer.PlayClip(hitSound);
 			target = objectHit;
@@ -80,7 +80,7 @@ public class Crush : Bullet {
 		}	
 	}
 
-	void crushTarget() {
+	void CrushTarget() {
 		pos = target.transform.position;
 		size = new Vector3 (
 			crushLevel,
@@ -90,7 +90,7 @@ public class Crush : Bullet {
 		crushLevel -= crushSpeed;
 		Damageable dm = target.GetComponent<Damageable> ();
 		if (dm) {
-			dm.damage (damage);
+			dm.Damage (damage);
 		}
 
 		if (crushLevel < minCrushLevel) {
@@ -98,26 +98,26 @@ public class Crush : Bullet {
 		}
 	}
 
-	public static GameObject getBullet() {
+	public static GameObject GetBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Crush");
 	}
 	
-	public static new float getRefireRate() {
+	public static new float GetRefireRate() {
 		if (crushInfo == null) {
-			createCrushInfo();
+			CreateCrushInfo();
 		}
 		return crushInfo.refireRate;
 	}
 	
-	public static new float getBulletsPerShot() {
+	public static new float GetBulletsPerShot() {
 		if (crushInfo == null) {
-			createCrushInfo();
+			CreateCrushInfo();
 		}
 		return crushInfo.bulletsPerShot;
 	}
 	
-	static void createCrushInfo() {
-		Crush temp = Crush.getBullet ().GetComponent<Crush>();
+	static void CreateCrushInfo() {
+		Crush temp = GetBullet ().GetComponent<Crush>();
 		crushInfo = new ShootingInfo();
 		crushInfo.bulletsPerShot = temp.bulletsPerShot;
 		crushInfo.refireRate = temp.refireRate;

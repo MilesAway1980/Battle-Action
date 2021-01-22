@@ -13,45 +13,59 @@ public class Ship : NetworkBehaviour {
 
 	static public ObjectList shipList;					//A static list of all the ships in the game.
 
-	public float maxSpeed;						//The fastest the shop can travel
-	public float maxThrust;						//The maximum thrust output
-	public float acceleration;					//How much thrust the ship can increase/decrease in one frame
+	[Header("The fastest the ship can travel")]
+	public float maxSpeed;
+	[Header("The maxiumum thrust output")]
+	public float maxThrust;
+	[Header("How much thrust the ship can increase in one frame")]
+	public float acceleration;
+	[Header("How quickly the ship can slow down in one frame")]
+	public float deceleration;
+	[Header("The maximum speed that the ship can turn")]
+	public float maxTurnRate;
+	[Header("How quickly the ship's turn rate changes from user input")]
+	public float turnRateAcceleration;
+	[Header("How quickly the ship's turn rate decreases when no user input")]
+	public float turnRateDeceleration;
+	[Header("How many weapons the ship can hold (not implemented)")]
+	public int slots;
+	[Header("The object that the ship is replaced with when destroyed")]
+	public GameObject explosion;
+	[Header("The gameobject that represents the ship.")]
+	public GameObject shipModel;
 
-	public float turnRate;						//How quickly the ship can turn
-	public int slots;							//How many weapons the ship can use (not implemented)
-
-	private int turnDir;						//The direction the ship is turning (-1 - 0 - 1)
-
-	public GameObject explosion;				//The explosion that plays when the ship is destroyed
+	int turnDir;								//The direction the ship is turning (-1 - 0 - 1)
 
 	[SyncVar] private float currentSpeed;		//The ship's current speed
 	[SyncVar] private float thrust;				//How much thrust the ship currently has
 
-	private bool accelerating;					//The player is accelerating the ship
-	private bool decelerating;					//The player is decelerating the ship
+	bool accelerating;							//The player is accelerating the ship
+	bool decelerating;							//The player is decelerating the ship
 
-	private Vector2 currentPos;					//The ship's current position
-	private Vector2 oldPos;						//The ship's previous position
+	Vector2 currentPos;							//The ship's current position
+	Vector2 oldPos;								//The ship's previous position
 
-	private float opponentDistance;				//The distance to the closest opponent
-	private Rigidbody2D rb;						//The ship's rigid body component
+	float opponentDistance;						//The distance to the closest opponent
+	Rigidbody2D rb;								//The ship's rigid body component
 
 	[SyncVar] bool stopped;						//Whether or not the ship can move.
+	[SyncVar] public ShipController shipController;     //who owns and operates the ship
 
-	[SyncVar] public ShipController shipController;		//who owns and operates the ship
+	float turnTilt = 0;
+	float turnRate;	
 
 	void Awake() {
 
 		if (shipList == null) {
 			shipList = new ObjectList();
 		}
-		shipList.addObject (this.gameObject);
+		shipList.AddObject (gameObject);
 
 		opponentDistance = -1;
 	}
 
 	void OnDestroy() {
-		shipList.removeObject (this.gameObject);
+		shipList.RemoveObject (gameObject);
 	}
 
 	// Use this for initialization
@@ -69,7 +83,7 @@ public class Ship : NetworkBehaviour {
 	}
 
 	void Update() {
-		checkDamage ();
+		CheckDamage ();
 	}
 
 	void FixedUpdate() {
@@ -78,8 +92,8 @@ public class Ship : NetworkBehaviour {
 			return;
 		}
 
-		accelerate ();
-		turn ();
+		Accelerate ();
+		Turn ();
 
 		if (currentPos != oldPos) {
 			oldPos = currentPos;
@@ -88,7 +102,7 @@ public class Ship : NetworkBehaviour {
 		currentPos = transform.position;
 	}
 
-	void checkDamage() {
+	void CheckDamage() {
 		if (!isServer) {
 			return;
 		}
@@ -96,42 +110,43 @@ public class Ship : NetworkBehaviour {
 		Damageable dm = GetComponent<Damageable> ();
 
 		if (dm) {
-			if (dm.getArmor() <= 0) {
-				explode();
+			if (dm.GetArmor() <= 0) {
+				Explode();
 				GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
 				for (int i = 0; i < players.Length; i++) {
 					Player player = players[i].GetComponent<Player>();
 
 					HitInfo thisHitInfo = GetComponent<HitInfo> ();
 					print (shipController);
-					if ((player.getPlayerNum() == thisHitInfo.getLastHitBy()) &&
+					if ((player.GetPlayerNum() == thisHitInfo.GetLastHitBy()) &&
 						(shipController == ShipController.player)) 
 					{
-						player.addKill ();
+						player.AddKill ();
 						break;
 					}
 				}
+
 				Destroy (gameObject);
 			}	
 		}
 	}
 
-	void explode() {
-		GameObject boom = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+	void Explode() {
+		GameObject boom = Instantiate (explosion, transform.position, Quaternion.identity);
 		Exploder exp = boom.GetComponent<Exploder> ();
-		exp.init (0.0f, 10);
+		exp.Init (0.0f, 10);
 
 		NetworkServer.Spawn (boom);
 	}
 
-	public void accelerate() {
+	public void Accelerate() {
 
 		if (accelerating) {
-			incThrust();
+			IncreaseThrust();
 		}
 
 		if (decelerating) {
-			decThrust();
+			DecreaseThrust();
 		}
 
 		rb.AddRelativeForce (new Vector2 (0, thrust));
@@ -143,21 +158,112 @@ public class Ship : NetworkBehaviour {
 		currentSpeed = rb.velocity.magnitude;
 	}
 
-	public void turn() {
+	public void Turn() {
 		rb.angularVelocity = 0;
-		transform.Rotate (new Vector3 (0, 0, turnRate * turnDir));
+		
+		if (turnDir == 0)
+		{
+			if (turnRate != 0)
+			{
+				if (turnRate > 0)
+                {
+					turnRate -= turnRateDeceleration;
+					if (turnRate < 0)
+                    {
+						turnRate = 0;
+                    }
+                }
+				else
+                {
+					turnRate += turnRateAcceleration;
+					if (turnRate > 0)
+                    {
+						turnRate = 0;
+                    }
+                }
+			}
+		}
+		else
+		{
+			turnRate += turnRateAcceleration * turnDir;
+
+			if (Mathf.Abs(turnRate) > maxTurnRate)
+            {
+				turnRate = maxTurnRate * turnDir;
+            }
+		}
+			
+        
+
+		print(turnRate);
+
+
+		float spinChange = turnRate;
+		/*float tiltChange = spinChange;
+		float currentTilt = transform.rotation.eulerAngles.y;
+		float maxTilt = 50;
+
+		if (turnDir == 0)   //Not turning
+		{
+			if (currentTilt > 0)
+			{
+				if (currentTilt > turnRate)
+				{
+					tiltChange = -turnRate;
+				}
+				else
+                {
+					tiltChange = -currentTilt;
+                }
+				
+			}
+			else if (currentTilt > 0)
+			{
+				if (currentTilt < -turnRate)
+				{
+					tiltChange = turnRate;
+				} else
+                {
+					tiltChange = currentTilt;
+                }
+			}
+			else
+            {
+				tiltChange = 0;
+            }
+		}
+		else if (Mathf.Abs(currentTilt) >= maxTilt)
+		{
+			tiltChange = 0;
+		}
+
+		print(currentTilt + "   " + spinChange + "   " + tiltChange);
+		*/
+
+		if (spinChange != 0)
+		{
+			transform.Rotate(new Vector3(0, 0, spinChange));
+		}
+
+		/*if (tiltChange != 0)
+		{
+			transform.Rotate(new Vector3(
+				0, tiltChange, 0
+			));
+		}
+		*/
 	}
 
-	public float getOpponentDistance() {
+	public float GetOpponentDistance() {
 		return opponentDistance;
 
 	}
 
-	public float getAngle() {
+	public float GetAngle() {
 		return transform.eulerAngles.z;
 	}
 
-	public float getSpeed() {
+	public float GetSpeed() {
 		return currentSpeed;
 	}
 
@@ -169,7 +275,7 @@ public class Ship : NetworkBehaviour {
 		decelerating = isDecelerating;
 	}
 
-	public void setTurnDir(int direction) {
+	public void SetTurnDir(int direction) {
 		if (direction < 0) {
 			turnDir = -1;
 		} else if (direction > 0) {
@@ -179,24 +285,24 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
-	public void decThrust() {
-		thrust -= acceleration;
+	public void DecreaseThrust() {
+		thrust -= deceleration;
 		if (thrust < 0) {
 			thrust = 0;
 		}
 	}
 
-	public void incThrust() {
+	public void IncreaseThrust() {
 		thrust += acceleration;
 		if (thrust > maxThrust) {
 			thrust = maxThrust;
 		}
 	}
 
-	public void setShield(bool setting) {
+	public void SetShield(bool setting) {
 		Shield shield = GetComponent<Shield> ();
 		if (shield != null) {
-			shield.setActive(setting);
+			shield.SetActive(setting);
 		}
 	}
 
@@ -211,33 +317,33 @@ public class Ship : NetworkBehaviour {
 
 		if (dm) {
 			float damage = (currentSpeed * rb.mass);
-			dm.damage (damage);			
+			dm.Damage (damage);			
 		}
 	}
 
-	public float getArmor() {
+	public float GetArmor() {
 		
 		Damageable dm = GetComponent<Damageable> ();
 		if (dm) {
-			return dm.getArmor ();
+			return dm.GetArmor ();
 		} else {
 			return 0;
 		}
 	}
 
-	public float getThrust() {
+	public float GetThrust() {
 		return thrust;
 	}
 
-	public float getCurrentSpeed() {
+	public float GetCurrentSpeed() {
 		return currentSpeed;
 	}
 
-	public void setStop (bool setting) {
+	public void SetStop (bool setting) {
 		stopped = setting;
 	}
 
-	public bool getStopped() {
+	public bool GetStopped() {
 		return stopped;
 	}
 }

@@ -6,10 +6,10 @@ public class Deactivator : Turret {
 	// Use this for initialization
 	void Start () {
 		BulletShooter bs = GetComponent<BulletShooter> ();
-		bs.setCurrentWeapon (13);
+		bs.SetCurrentWeapon (13);
 	}
 
-	public new static GameObject getTurret() {
+	public new static GameObject GetTurret() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Deactivator");
 	}
 }

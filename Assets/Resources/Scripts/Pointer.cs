@@ -37,7 +37,7 @@ public class Pointer : MonoBehaviour {
 		}
 
 		if (pointer == null) {
-			makePointer ();
+			MakePointer ();
 		}
 
 		GameObject closestObject = null;
@@ -51,24 +51,25 @@ public class Pointer : MonoBehaviour {
 		ObjectList shipList = Ship.shipList;
 		//ObjectList powerupList = Powerup.powerupList;
 
-		closestBeacon  = beaconList.getClosest (gameObject);
+		closestBeacon  = beaconList.GetClosest(gameObject);
 
 		switch (pointerType) {
 			case PointerType.player:				
-				closestObject = shipList.getClosest (gameObject);
+				closestObject = shipList.GetClosest(gameObject);
+				
 				if (closestObject) {
 
-				visible = false;
+					visible = false;
 
-				//print (closestObject + "  " + closestObject.distance + " " + ArenaInfo.getBeaconRange () + " " + ArenaInfo.getShipRadarRange ());
+					//print (closestObject + "  " + closestObject.distance + " " + ArenaInfo.getBeaconRange () + " " + ArenaInfo.getShipRadarRange ());
 
-				float beaconDist = Vector2.Distance (closestBeacon.transform.position, transform.position);
-				float objectDist = Vector2.Distance (closestObject.transform.position, transform.position);
+					float beaconDist = Vector2.Distance (closestBeacon.transform.position, transform.position);
+					float objectDist = Vector2.Distance (closestObject.transform.position, transform.position);
 					
-				if ( 
+					if ( 
 						(
-						    beaconDist < ArenaInfo.getBeaconRange () || //A beacon is within range
-						    objectDist < ArenaInfo.getShipRadarRange ()			//Or the player is within range
+						    beaconDist < ArenaInfo.GetBeaconRange () || //A beacon is within range
+						    objectDist < ArenaInfo.GetShipRadarRange ()			//Or the player is within range
 						) && objectDist > 0										//Distance 0 == self.  Distance -1 == no object found.
 					) 
 					{
@@ -88,7 +89,7 @@ public class Pointer : MonoBehaviour {
 		}
 
 		if (visible && closestObject) {
-			angle = Angle.getAngle (transform.position, closestObject.transform.position);
+			angle = Angle.GetAngle (transform.position, closestObject.transform.position);
 
 			pointer.transform.position = new Vector3 (
 				transform.position.x + Mathf.Sin (angle / Mathf.Rad2Deg) * pointerDistance,
@@ -103,8 +104,8 @@ public class Pointer : MonoBehaviour {
 		}
 	}
 
-	void makePointer() {
-		pointer = (GameObject)Instantiate (pointerObject);
+	void MakePointer() {
+		pointer = Instantiate (pointerObject);
 
 		switch (pointerType) {
 			case PointerType.player: pointer.name = "Player Pointer"; break;
@@ -114,7 +115,6 @@ public class Pointer : MonoBehaviour {
 
 		pointer.tag = "Pointer";
 
-
 		pointer.transform.parent = transform;
 
 		sr = pointer.GetComponent<SpriteRenderer> ();
@@ -122,11 +122,11 @@ public class Pointer : MonoBehaviour {
 
 	}
 
-	public void setActive(bool activeSetting) {
+	public void SetActive(bool activeSetting) {
 		active = activeSetting;
 	}
 
-	public GameObject getPointer() {
+	public GameObject GetPointer() {
 		return pointer;
 	}
 }

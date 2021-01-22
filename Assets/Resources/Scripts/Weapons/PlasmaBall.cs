@@ -23,7 +23,7 @@ public class PlasmaBall : NetworkBehaviour {
 	void Update () {
 
 		Plasma plasma = gameObject.GetComponentInParent<Plasma> ();
-		setRadius (plasma.getRadius ());
+		SetRadius (plasma.GetRadius ());
 
 		float posX = pos.x;
 		float posY = pos.y;
@@ -63,29 +63,29 @@ public class PlasmaBall : NetworkBehaviour {
 		transform.localPosition= pos;
 
 		if ((pos.x == dest.x) && (pos.y == dest.y) && (pos.z == dest.z)) {
-			newDest ();
+			NewDest ();
 		}
 	}
 
-	public void incRadius (float amount) {
+	public void IncreaseRadius (float amount) {
 		if (amount > 0) {
 			radius += amount;
 		}
 	}
 
-	public void decRadius (float amount) {
+	public void DecreaseRadius (float amount) {
 		if (amount > 0) {
 			radius -= amount;
 		}
 	}
 
-	public void setRadius (float newRadius) {
+	public void SetRadius (float newRadius) {
 		if (newRadius > 0) {
 			radius = newRadius;
 		}
 	}
 
-	void newDest() {
+	void NewDest() {
 
 		float newX, newY, newZ;
 

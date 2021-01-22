@@ -7,7 +7,7 @@ public class JoystickButtons {
 	bool isChecked = false;		//Has it's condition been checked?
 	float timePressed = 0;	//When was it pressed?
 
-	public void setHeld(bool held) {
+	public void SetHeld(bool held) {
 		isHeld = held;
 		
 		if (isHeld == false) {
@@ -18,19 +18,19 @@ public class JoystickButtons {
 		}
 	}
 
-	public void check() {
+	public void Check() {
 		isChecked = true;
 	}
 
-	public bool getChecked () {
+	public bool GetChecked () {
 		return isChecked;
 	}
 
-	public bool getHeld() {
+	public bool GetHeld() {
 		return isHeld;
 	}
 
-	public float getTime() {
+	public float GetTime() {
 		if (isHeld) {
 			return (Time.fixedTime - timePressed);
 		} else {

@@ -30,7 +30,7 @@ public class Rocket : Bullet {
 			Destroy (gameObject);
 		}
 
-		checkHit ();
+		CheckHit ();
 
 		prevPos = pos;
 		
@@ -42,41 +42,41 @@ public class Rocket : Bullet {
 		transform.position = pos;
 	}
 
-	void checkHit() {
-		GameObject objectHit = checkObjectHit (true);
+	void CheckHit() {
+		GameObject objectHit = CheckObjectHit(true);
 		if (objectHit) {
 			Damageable dm = objectHit.GetComponent<Damageable> ();
 			if (dm) {
-				dm.damage (damage);
+				dm.Damage (damage);
 				HitInfo info = objectHit.GetComponent<HitInfo> ();
 				if (info) {
-					info.setLastHitBy (owner);
+					info.SetLastHitBy (owner);
 				}
 				Destroy (gameObject);
 			}
 		}
 	}
 
-	public static GameObject getBullet() {
+	public static GameObject GetBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/RocketBullet");
 	}
 
-	public new static float getRefireRate() {
+	public new static float GetRefireRate() {
 		if (rocketInfo == null) {
-			createRocketInfo();
+			CreateRocketInfo();
 		}
 		return rocketInfo.refireRate;
 	}
 
-	public new static float getBulletsPerShot() {
+	public new static float GetBulletsPerShot() {
 		if (rocketInfo == null) {
-			createRocketInfo();
+			CreateRocketInfo();
 		}
 		return rocketInfo.bulletsPerShot;
 	}
 
-	static void createRocketInfo() {
-		Rocket temp = Rocket.getBullet ().GetComponent<Rocket>();
+	static void CreateRocketInfo() {
+		Rocket temp = GetBullet ().GetComponent<Rocket>();
 		rocketInfo = new ShootingInfo();
 		rocketInfo.bulletsPerShot = temp.bulletsPerShot;
 		rocketInfo.refireRate = temp.refireRate;

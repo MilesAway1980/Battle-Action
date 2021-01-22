@@ -1,60 +1,74 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public static class ArenaInfo  {
+public class ArenaInfo : MonoBehaviour
+{
 
-	static int arenaSize = 10;//400;
-	static int numBeacons = 1;//50;
-	static int numPowerups = 100;
-	static float powerupRespawnRate = 2.0f;
-	static float beaconRange = 10;
-	static float shipRadarRange = 25;
+	public int arenaSize = 400;
+	public int numBeacons = 50;
+	public int numPowerups = 100;
+	public float powerupRespawnRate = 2.0f;
+	public float beaconRange = 10;
+	public float shipRadarRange = 25;
+	public int minBulletTravelDist = 1000;
+
+	static ArenaInfo self;
+
 	static GameObject[] shipList;
 	static int numControllers = 1;
-	static int minBulletTravelDist = 1000;
 
-	public static int getArenaSize() {
-		return arenaSize;
+    void Start()
+    {
+		self = this;
+    }
+
+
+    public static int GetArenaSize()
+	{
+		return self.arenaSize;
 	}
 
-	public static int getNumBeacons() {
-		return numBeacons;
+	public static int GetNumBeacons()
+	{
+		return self.numBeacons;
 	}
 
-	public static int getNumPowerups() {
-		return numPowerups;
+	public static int GetNumPowerups()
+	{
+		return self.numPowerups;
 	}
 
-	public static float getPowerupRespawnRate() {
-		return powerupRespawnRate;
+	public static float GetPowerupRespawnRate()
+	{
+		return self.powerupRespawnRate;
 	}
 
-	public static float getBeaconRange() {
-		return beaconRange;
+	public static float GetBeaconRange()
+	{
+		return self.beaconRange;
 	}
 
-	public static float getShipRadarRange() {
-		return shipRadarRange;
+	public static float GetShipRadarRange()
+	{
+		return self.shipRadarRange;
 	}
 
-	public static int getNumControllers() {
+	public static int GetNumControllers()
+	{
 		return numControllers;
 	}
 
-	public static int getMinBulletTravelDist() {
-		return minBulletTravelDist;
+	public static int GetMinBulletTravelDist()
+	{
+		return self.minBulletTravelDist;
 	}
 
-	public static GameObject[] getShipList() {
-
-		if (shipList == null) {
-			shipList = new GameObject[10];
-
-			for (int i = 0; i < 10; i++) {
-				shipList[i] = (GameObject)Resources.Load("Prefabs/Ships/Ship_" + (i + 1), typeof(GameObject));
-			}
-		}
-
-		return shipList;
-	}
+	public static Vector2 GetRandomArenaLocation()
+    {
+		int size = self.arenaSize / 2;
+		return new Vector2(
+			Random.Range(-size, size),
+			Random.Range(-size, size)
+		);
+    }
 }

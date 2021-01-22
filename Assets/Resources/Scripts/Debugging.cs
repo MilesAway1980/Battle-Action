@@ -4,7 +4,7 @@ using System.Collections;
 public static class Debugging {
 	static bool debug = false;
 
-	static public bool debugMode() {
+	static public bool DebugMode() {
 		return debug;
 	}
 }

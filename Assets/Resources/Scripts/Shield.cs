@@ -33,7 +33,7 @@ public class Shield : NetworkBehaviour {
 		shieldObject.name = "my shield";
 		shieldObject.tag = "Shield";
 
-		setActive (false);
+		SetActive (false);
 
 		charge = maxCharge;
 
@@ -66,12 +66,12 @@ public class Shield : NetworkBehaviour {
 
 		Damageable dm = objectHit.GetComponent<Damageable> ();
 		if (dm) {
-			dm.damage (shieldContactDamage);
+			dm.Damage (shieldContactDamage);
 
 			HitInfo info = objectHit.GetComponent<HitInfo> ();
 			if (info) {
 
-				info.setLastHitBy (owner);					
+				info.SetLastHitBy (owner);					
 			}
 
 			/*Ship shipHit = objectHit.GetComponent<Ship> ();
@@ -97,30 +97,30 @@ public class Shield : NetworkBehaviour {
 		}*/		
 	}
 
-	public void damageShield(float amount) {
+	public void DamageShield(float amount) {
 		charge -= amount;
 		if (charge <= 0) {
 			charge = 0;
 		}
 	}
 
-	public float getDamageReduction() {
+	public float GetDamageReduction() {
 		return damageReduction;
 	}
 
-	public float getCharge() {
+	public float GetCharge() {
 		return charge;
 	}
 
-	public float getMaxCharge() {
+	public float GetMaxCharge() {
 		return maxCharge;
 	}
 
-	public void setActive(bool setting) {
+	public void SetActive(bool setting) {
 		active = setting;
 	}
 
-	public bool getActive() {
+	public bool GetActive() {
 		return active;
 	}
 }

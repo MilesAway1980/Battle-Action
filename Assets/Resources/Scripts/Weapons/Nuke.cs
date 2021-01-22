@@ -55,7 +55,7 @@ public class Nuke : NetworkBehaviour {
 				nukeSize = new Vector3 (0, 0, 0);
 				fireballSize = new Vector3 (0, 0, 0);
 
-				thisFireball = (GameObject)Instantiate (fireball);
+				thisFireball = Instantiate (fireball);
 				thisFireball.transform.position = pos;
 				thisFireball.transform.localScale = fireballSize;
 			} 
@@ -72,7 +72,7 @@ public class Nuke : NetworkBehaviour {
 			if (thisFireball != null) {
 				thisFireball.transform.localScale = fireballSize;
 			}
-			checkDamage();
+			CheckDamage();
 
 			if (currentRadius >= maxRadius) {
 				
@@ -92,12 +92,12 @@ public class Nuke : NetworkBehaviour {
 	}
 
 
-	void checkDamage() {
+	void CheckDamage() {
 		if (!isServer) {
 			return;
 		}
 
-		List<GameObject> damageableObjects = Damageable.damageableList.getObjectList();
+		List<GameObject> damageableObjects = Damageable.damageableList.GetObjectList();
 		if (damageableObjects.Count == 0) {
 			return;
 		}
@@ -117,22 +117,22 @@ public class Nuke : NetworkBehaviour {
 			);
 
 			if (targetDist <= (currentRadius / 2.0f)) {
-				damageableObjects [i].GetComponent<Damageable>().damage (damage);
+				damageableObjects [i].GetComponent<Damageable>().Damage (damage);
 			}
 		}
 	}
 
-	public void init(GameObject newOwner) {
+	public void Init(GameObject newOwner) {
 		owner = newOwner;
 	}
 
-	public static GameObject getBomb() {
+	public static GameObject GetBomb() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Nuke");
 	}
 	
-	public static float getRefireRate() {
+	public static float GetRefireRate() {
 		if (nukeRefireRate == -1) {
-			Nuke nuke = Nuke.getBomb().GetComponent<Nuke>();
+			Nuke nuke = GetBomb().GetComponent<Nuke>();
 			nukeRefireRate = nuke.refireRate;
 		}
 

@@ -14,7 +14,7 @@ public class Exploder : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {	
 
-		/*spawnedExplosion = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+		/*spawnedExplosion = Instantiate (explosion, transform.position, Quaternion.identity);
 		det = spawnedExplosion.GetComponent<Detonator> ();
 
 		if (isServer) {
@@ -31,7 +31,7 @@ public class Exploder : NetworkBehaviour {
 		//det.size = explosionSize;
 		if (timer >= explosionDelay) {
 
-			spawnedExplosion = (GameObject)Instantiate (explosion, transform.position, Quaternion.identity);
+			spawnedExplosion = Instantiate (explosion, transform.position, Quaternion.identity);
 			det = spawnedExplosion.GetComponent<Detonator> ();
 			det.size = explosionSize;			
 			det.Explode ();
@@ -39,7 +39,7 @@ public class Exploder : NetworkBehaviour {
 		}
 	}
 
-	public void init(float delay, float size) {
+	public void Init(float delay, float size) {
 		explosionDelay = delay;
 		explosionSize = size;
 	}

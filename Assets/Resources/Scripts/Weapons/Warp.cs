@@ -36,8 +36,8 @@ public class Warp : NetworkBehaviour {
 	[Server]
 	void warpShip() {
 		
-		float min = (ArenaInfo.getArenaSize () * (minPercentageOfArenaToWarp / 100.0f));
-		float max = (ArenaInfo.getArenaSize () * (maxPercentageOfArenaToWarp / 100.0f));		
+		float min = (ArenaInfo.GetArenaSize () * (minPercentageOfArenaToWarp / 100.0f));
+		float max = (ArenaInfo.GetArenaSize () * (maxPercentageOfArenaToWarp / 100.0f));		
 		float distance = Random.Range (min, max);
 
 		if (distance < minimumWarpDistance) {
@@ -56,32 +56,32 @@ public class Warp : NetworkBehaviour {
 			owner.transform.position.y + Mathf.Cos (angleRad) * distance
 		);
 
-		GameObject warpField = (GameObject)Instantiate (getWarpField (), halfWay, Quaternion.identity);
+		GameObject warpField = Instantiate (GetWarpField (), halfWay, Quaternion.identity);
 
 		WarpField wf = warpField.GetComponent<WarpField> ();
-		wf.init (owner, halfWay, distance * 0.5f, owner.transform.eulerAngles.z, destination);
+		wf.Init (owner, halfWay, distance * 0.5f, owner.transform.eulerAngles.z, destination);
 
 		NetworkServer.Spawn (warpField);
 		
 		Destroy (gameObject);
 	}
 
-	public static GameObject getWarp() {
+	public static GameObject GetWarp() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Warp");
 	}
 
-	public static GameObject getWarpField() {
+	public static GameObject GetWarpField() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Warp Field");
 	}
 
-	public static float getRefireRate() {
+	public static float GetRefireRate() {
 		if (warpRefireRate == -1) {
-			warpRefireRate = getWarp ().GetComponent<Warp> ().refireRate;
+			warpRefireRate = GetWarp ().GetComponent<Warp> ().refireRate;
 		}
 		return warpRefireRate;
 	}
 
-	public void setOwner(GameObject newOwner) {
+	public void SetOwner(GameObject newOwner) {
 		owner = newOwner;
 	}
 }

@@ -12,14 +12,14 @@ public class SoundPlayer : MonoBehaviour {
 		for (int i = 0; i < maxSounds; i++) {
 			audioSource[i] = gameObject.AddComponent<AudioSource> ();
 		}
-		setAudioSource (audioSource);
+		SetAudioSource (audioSource);
 	}
 
-	static void setAudioSource(AudioSource[] newAudioSource) {
+	static void SetAudioSource(AudioSource[] newAudioSource) {
 		mainAudioSource = newAudioSource;
 	}
 
-	public static AudioSource[] getAudioSource() {
+	public static AudioSource[] GetAudioSource() {
 		return mainAudioSource;
 	}
 

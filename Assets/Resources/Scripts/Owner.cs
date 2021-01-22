@@ -7,27 +7,27 @@ public class Owner : NetworkBehaviour {
 	[SyncVar] int ownerNum;
 	[SyncVar] int numDecoy;
 
-	public void setOwnerNum(int newOwnerNum) {
+	public void SetOwnerNum(int newOwnerNum) {
 		ownerNum = newOwnerNum;
 	}
 
-	public int getOwnerNum() {
+	public int GetOwnerNum() {
 		return ownerNum;
 	}
 
-	public void addDecoy() {		
+	public void AddDecoy() {		
 		numDecoy++;
 	}
 
-	public void removeDecoy() {		
+	public void RemoveDecoy() {		
 		numDecoy--;
 	}
 
-	public int getNumDecoy() {
+	public int GetNumDecoy() {
 		return numDecoy;
 	}
 
-	public void emptyDecoy() {
+	public void EmptyDecoy() {
 		numDecoy = 0;
 	}
 }

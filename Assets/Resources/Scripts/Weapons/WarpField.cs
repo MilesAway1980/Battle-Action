@@ -53,7 +53,7 @@ public class WarpField : NetworkBehaviour {
 		}
 	}
 
-	public void init(GameObject newOwner, Vector2 newPos, float newLength, float newRotation, Vector2 destination) {
+	public void Init(GameObject newOwner, Vector2 newPos, float newLength, float newRotation, Vector2 destination) {
 		owner = newOwner;
 		pos = newPos;
 		length = newLength;
@@ -74,10 +74,10 @@ public class WarpField : NetworkBehaviour {
 
 		Damageable dm = objectHit.GetComponent<Damageable> ();
 		if (dm) {
-			dm.damage (trailDamage);
+			dm.Damage (trailDamage);
 			HitInfo info = objectHit.GetComponent<HitInfo> ();
 			if (info) {
-				info.setLastHitBy (owner);
+				info.SetLastHitBy (owner);
 			}
 		}		
 	}

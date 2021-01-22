@@ -23,15 +23,15 @@ public class Plasma : Bullet {
 		charge = initialCharge;
 		radius = 0;
 
-		travelDist = ArenaInfo.getArenaSize() * 1.25f;
-		if (travelDist < ArenaInfo.getMinBulletTravelDist()) {
-			travelDist = ArenaInfo.getMinBulletTravelDist();
+		travelDist = ArenaInfo.GetArenaSize() * 1.25f;
+		if (travelDist < ArenaInfo.GetMinBulletTravelDist()) {
+			travelDist = ArenaInfo.GetMinBulletTravelDist();
 		}
 
-		setPosition ();
+		SetPosition ();
 	}
 
-	void setPosition() {
+	void SetPosition() {
 
 		if (owner == null) {
 			return;
@@ -57,9 +57,9 @@ public class Plasma : Bullet {
 			Destroy (gameObject);
 		}
 
-		setRadius (charge / 5.0f);
+		SetRadius (charge / 5.0f);
 
-		checkHit ();
+		CheckHit ();
 
 		prevPos = pos;
 
@@ -73,24 +73,24 @@ public class Plasma : Bullet {
 		transform.position = pos;	
 	}
 
-	void checkHit() {
-		GameObject objectHit = checkObjectHit (true);
+	void CheckHit() {
+		GameObject objectHit = CheckObjectHit(true);
 
 		if (objectHit) {
 			float chargeDamage = (charge / (maxChargeTime + initialCharge)) * maxDamage;
 
 			Damageable dm = objectHit.GetComponent<Damageable> ();
 			if (dm) {
-				dm.damage (chargeDamage);
+				dm.Damage (chargeDamage);
 				HitInfo info = objectHit.GetComponent<HitInfo> ();
 				if (info) {
-					info.setLastHitBy (owner);
+					info.SetLastHitBy (owner);
 				}
 			}
 		}
 	}
 
-	public void incCharge(float amount) {
+	public void IncreaseCharge(float amount) {
 		if (amount > 0) {
 			charge += amount;
 			if (charge > (maxChargeTime + initialCharge)) {
@@ -99,62 +99,62 @@ public class Plasma : Bullet {
 		}
 	}
 
-	public void incRadius (float amount) {
+	public void IncreaseRadius (float amount) {
 		if (amount > 0) {
 			radius += amount;
 		}
 	}
 
-	public void decRadius (float amount) {
+	public void DecreaseRadius (float amount) {
 		if (amount > 0) {
 			radius -= amount;
 		}
 	}
 
-	public void setRadius (float newRadius) {
+	public void SetRadius (float newRadius) {
 		if (newRadius > 0) {
 			radius = newRadius;
 		}
 	}
 
-	public float getRadius() {
+	public float GetRadius() {
 		return radius;
 	}
 
-	public void setAngle(float newAngle) {
+	public void SetAngle(float newAngle) {
 		angleDeg = newAngle;
 		angleRad = angleDeg / Mathf.Rad2Deg;
-		setPosition ();
+		SetPosition ();
 	}
 
-	public void release() {
+	public void Release() {
 		released = true;
 	}
 
-	public float getArc() {
+	public float GetArc() {
 		return arc;
 	}
 
-	public static GameObject getBullet() {
+	public static GameObject GetBullet() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Plasma");
 	}
 
-	public new static float getRefireRate() {
+	public new static float GetRefireRate() {
 		if (plasmaInfo == null) {
-			createPlasmaInfo();
+			CreatePlasmaInfo();
 		}
 		return plasmaInfo.refireRate;
 	}
 
-	public new static float getBulletsPerShot() {
+	public new static float GetBulletsPerShot() {
 		if (plasmaInfo == null) {
-			createPlasmaInfo();
+			CreatePlasmaInfo();
 		}
 		return plasmaInfo.bulletsPerShot;
 	}
 
-	static void createPlasmaInfo() {
-		Plasma temp = Plasma.getBullet ().GetComponent<Plasma>();
+	static void CreatePlasmaInfo() {
+		Plasma temp = GetBullet().GetComponent<Plasma>();
 		plasmaInfo = new ShootingInfo();
 		plasmaInfo.bulletsPerShot = temp.bulletsPerShot;
 		plasmaInfo.refireRate = temp.refireRate;

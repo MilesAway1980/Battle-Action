@@ -6,11 +6,11 @@ public class ShotTimer {
 
 	[SyncVar] float lastShot;
 
-	public float getLastShot() { 
+	public float GetLastShot() { 
 		return lastShot;
 	}
 
-	public void updateLastShot() {	
+	public void UpdateLastShot() {	
 		lastShot = Time.fixedTime;
 	}
 }

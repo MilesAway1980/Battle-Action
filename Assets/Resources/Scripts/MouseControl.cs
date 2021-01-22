@@ -44,7 +44,7 @@ public class MouseControl : MonoBehaviour {
 		}
 	}
 
-	public int getWheel(bool reset) {		
+	public int GetWheel(bool reset) {		
 		if (reset) {
 			int val = wheelState;
 			wheelState = 0;
@@ -54,7 +54,7 @@ public class MouseControl : MonoBehaviour {
 		return wheelState;
 	}
 
-	public void wheelReset() {
+	public void WheelReset() {
 		wheelState = 0;
 	}
 }

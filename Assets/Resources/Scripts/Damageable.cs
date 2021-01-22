@@ -14,23 +14,23 @@ public class Damageable : NetworkBehaviour {
 		if (damageableList == null) {
 			damageableList = new ObjectList();
 		}
-		damageableList.addObject (gameObject);
+		damageableList.AddObject (gameObject);
 	}
 
 	void OnDestroy() {
-		damageableList.removeObject (gameObject);
+		damageableList.RemoveObject (gameObject);
 	}
 
 	[Server]
-	public void damage(float amount) {
+	public void Damage(float amount) {
 		if (amount > 0) {
 
 			//Check if the object has a shield
 			Shield shield = GetComponent<Shield>();
 			if (shield) {
-				if (shield.getActive ()) {
-					armor -= amount / shield.getDamageReduction ();
-					shield.damageShield(amount);
+				if (shield.GetActive ()) {
+					armor -= amount / shield.GetDamageReduction ();
+					shield.DamageShield(amount);
 				} else {
 					armor -= amount;
 				}
@@ -41,28 +41,28 @@ public class Damageable : NetworkBehaviour {
 	}
 
 	[Server]
-	public void heal(float amount) {
+	public void Heal(float amount) {
 		if (amount > 0) {
 			armor += amount;
-			check();
+			Check();
 		}
 	}
 
-	public void setArmor(float value) {
+	public void SetArmor(float value) {
 		if (value > 0) {
 			armor = value;
-			check ();
+			Check ();
 		}
 	}
 
-	public void setMaxArmor(float value) {
+	public void SetMaxArmor(float value) {
 		if (value > 0) {
 			maxArmor = value;
-			check ();
+			Check ();
 		}
 	}
 
-	void check() {
+	void Check() {
 		if (armor < 0) {
 			armor = 0;
 		}
@@ -72,11 +72,11 @@ public class Damageable : NetworkBehaviour {
 		}
 	}
 
-	public float getArmor() {
+	public float GetArmor() {
 		return armor;
 	}
 
-	public float getMaxArmor() {
+	public float GetMaxArmor() {
 		return maxArmor;
 	}
 }

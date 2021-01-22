@@ -30,9 +30,9 @@ public class Bullet : NetworkBehaviour {
 	protected CircleCollider2D circleCollider;
 
 	[Server]
-	public void init(GameObject newOwner, Vector2 startPos, float newAngle) {
+	public void Init(GameObject newOwner, Vector2 startPos, float newAngle) {
 
-		angleDeg = Angle.fixAngle(newAngle);
+		angleDeg = Angle.FixAngle(newAngle);
 
 		angleRad = angleDeg / Mathf.Rad2Deg;
 
@@ -43,7 +43,7 @@ public class Bullet : NetworkBehaviour {
 		//Check if the object is homing
 		Homing homing = gameObject.GetComponent<Homing> ();
 		if (homing != null) {
-			homing.setOwner(owner);
+			homing.SetOwner(owner);
 		}
 	}
 
@@ -51,10 +51,10 @@ public class Bullet : NetworkBehaviour {
 		
 	}
 
-	protected GameObject checkObjectHit(bool ignoreOwner) {
+	protected GameObject CheckObjectHit(bool ignoreOwner) {
 		if (isServer) {		
 
-			List<GameObject> targets = Damageable.damageableList.getObjectList();
+			List<GameObject> targets = Damageable.damageableList.GetObjectList();
 
 			if (targets.Count == 0) {
 				return null;
@@ -65,7 +65,7 @@ public class Bullet : NetworkBehaviour {
 			if (owner) {
 				Owner ownerInfo = owner.GetComponent<Owner> ();
 				if (ownerInfo) {
-					ownerNum = ownerInfo.getOwnerNum();
+					ownerNum = ownerInfo.GetOwnerNum();
 				}
 			}
 
@@ -74,7 +74,7 @@ public class Bullet : NetworkBehaviour {
 				if (ignoreOwner) {
 					Owner targetOwner = target.GetComponent<Owner> ();
 					if (targetOwner) {
-						if (targetOwner.getOwnerNum () == ownerNum) {
+						if (targetOwner.GetOwnerNum () == ownerNum) {
 							continue;
 						}
 					}
@@ -91,21 +91,21 @@ public class Bullet : NetworkBehaviour {
 		return null;
 	}
 
-	public void changeAngle(float angleChange) {
-		angleDeg = Angle.fixAngle(angleDeg + angleChange);
+	public void ChangeAngle(float angleChange) {
+		angleDeg = Angle.FixAngle(angleDeg + angleChange);
 		angleRad = angleDeg / Mathf.Rad2Deg;
 		transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angleDeg));
 	}
 
-	public float getAngle() {
+	public float GetAngle() {
 		return angleDeg;
 	}
 
-	public static float getRefireRate() {
+	public static float GetRefireRate() {
 		return float.MaxValue;
 	}
 
-	public static float getBulletsPerShot() {
+	public static float GetBulletsPerShot() {
 		return -1;
 	}
 }

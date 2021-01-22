@@ -20,10 +20,10 @@ public class MineField : NetworkBehaviour {
 	// Use this for initialization
 	void Start () {		
 		mines = new GameObject[minesPerDrop];
-		placeMines ();
+		PlaceMines ();
 	}
 
-	void placeMines() {
+	void PlaceMines() {
 		if (!isServer) {
 			return;
 		}
@@ -37,7 +37,7 @@ public class MineField : NetworkBehaviour {
 				pos.y + Mathf.Sin((angle / Mathf.Rad2Deg)) * distance
 			);
 
-			mines [i] = (GameObject)Instantiate (Mine.getMine());
+			mines [i] = Instantiate (Mine.GetMine());
 			mines [i].GetComponent<Mine>().init(owner, loc);
 
 			mines [i].transform.parent = transform;
@@ -52,10 +52,10 @@ public class MineField : NetworkBehaviour {
 			return;
 		}
 
-		List<GameObject> ships = Damageable.damageableList.getObjectList();
+		List<GameObject> ships = Damageable.damageableList.GetObjectList();
 
 		if (owner == null) {
-			owner = Ship.shipList.getObjectByOwner (ownerNum);
+			owner = Ship.shipList.GetObjectByOwner (ownerNum);
 		}
 
 		//See if the mine field has any mines left.
@@ -81,7 +81,7 @@ public class MineField : NetworkBehaviour {
 
 			Owner shipOwner = ship.GetComponent<Owner>();
 			if (shipOwner) {
-				if (ownerNum == shipOwner.getOwnerNum()) {
+				if (ownerNum == shipOwner.GetOwnerNum()) {
 					continue;
 				}
 			}
@@ -93,24 +93,24 @@ public class MineField : NetworkBehaviour {
 						continue;
 					}
 					Mine mine = mines [m].GetComponent<Mine> ();
-					float detectionRadius = mine.getDetectionRadius ();
+					float detectionRadius = mine.GetDetectionRadius ();
 
-					if (Vector2.Distance (ship.transform.position, mine.getPos()) < detectionRadius) {
+					if (Vector2.Distance (ship.transform.position, mine.GetPos()) < detectionRadius) {
 						//BOOM!
 
-						GameObject explosion = (GameObject)Instantiate (mine.getExplosion (), mine.getPos(), Quaternion.identity);
+						GameObject explosion = Instantiate (mine.GetExplosion (), mine.GetPos(), Quaternion.identity);
 						Exploder exp = explosion.GetComponent<Exploder> ();
 
-						exp.init (0, 2);
+						exp.Init (0, 2);
 
 						NetworkServer.Spawn (explosion);
 
 						Damageable dm = ship.GetComponent<Damageable> ();
 						if (dm) {
-							dm.damage (mine.damage);
+							dm.Damage (mine.damage);
 							HitInfo info = ship.GetComponent<HitInfo> ();
 							if (info) {
-								info.setLastHitBy (owner);
+								info.SetLastHitBy (owner);
 							}
 						}
 
@@ -121,24 +121,24 @@ public class MineField : NetworkBehaviour {
 		}
 	}
 
-	public void init (GameObject newOwner, Vector2 newPos) {
+	public void Init (GameObject newOwner, Vector2 newPos) {
 		owner = newOwner;
 		Owner thisOwner = newOwner.GetComponent<Owner> ();
 		if (thisOwner) {
-			ownerNum = thisOwner.getOwnerNum ();
+			ownerNum = thisOwner.GetOwnerNum ();
 		} else {
 			ownerNum = -1;
 		}
 		pos = newPos;
 	}
 
-	public static GameObject getMineField() {
+	public static GameObject GetMineField() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/MineField");
 	}
 
-	public static float getRefireRate() {
+	public static float GetRefireRate() {
 		if (mineRefireRate < 0) {
-			mineRefireRate = MineField.getMineField().GetComponent<MineField>().refireRate;
+			mineRefireRate = MineField.GetMineField().GetComponent<MineField>().refireRate;
 		}
 		return mineRefireRate;
 	}

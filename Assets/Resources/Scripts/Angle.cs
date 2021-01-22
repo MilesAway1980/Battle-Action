@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class Angle {
 
-	public static float getAngle (Vector2 start, Vector2 end) {
+	public static float GetAngle (Vector2 start, Vector2 end) {
 
 		return (Mathf.Atan2 ((start.x - end.x), (start.y - end.y))) * Mathf.Rad2Deg + 180;
 
@@ -15,7 +15,7 @@ public static class Angle {
 	 * Otherwise, the caller may have already calculated it for other purposes
 	 * and it should be reused to avoid calculating it twice.
 	*/
-	public static int getDirection (float currentAngle, float targetAngle, float angleDist = -1) {
+	public static int GetDirection (float currentAngle, float targetAngle, float angleDist = -1) {
 
 		if (targetAngle != currentAngle) {
 
@@ -52,7 +52,7 @@ public static class Angle {
 		}
 	}
 
-	public static float fixAngle(float angle) {
+	public static float FixAngle(float angle) {
 		while (angle < 0) {
 			angle += 360;
 		}

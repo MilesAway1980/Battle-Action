@@ -29,10 +29,10 @@ public class DeactivatorBeam : NetworkBehaviour {
 		if (target != null) {
 			Ship ship = target.GetComponent<Ship> ();
 			if (ship) {
-				ship.setStop (false);
+				ship.SetStop(false);
 				BulletShooter bs = ship.GetComponent<BulletShooter> ();
 				if (bs) {
-					bs.setActive (true);
+					bs.SetActive (true);
 				}
 			}
 		}
@@ -56,7 +56,7 @@ public class DeactivatorBeam : NetworkBehaviour {
 		}
 
 		if (target == null) {
-			target = Damageable.damageableList.getClosest (owner);
+			target = Damageable.damageableList.GetClosest (owner);
 		}
 
 		if (target != null) {
@@ -69,10 +69,10 @@ public class DeactivatorBeam : NetworkBehaviour {
 			} else {				
 				Ship ship = target.GetComponent<Ship> ();
 				if (ship) {
-					ship.setStop (true);
+					ship.SetStop (true);
 					BulletShooter bs = ship.GetComponent<BulletShooter> ();
 					if (bs) {
-						bs.setActive (false);
+						bs.SetActive (false);
 					}
 				}
 			}
@@ -81,7 +81,7 @@ public class DeactivatorBeam : NetworkBehaviour {
 		}
 	}
 
-	public void init(GameObject newOwner) {
+	public void Init(GameObject newOwner) {
 		owner = newOwner;
 	}
 

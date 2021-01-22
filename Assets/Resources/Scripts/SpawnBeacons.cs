@@ -14,7 +14,6 @@ public class SpawnBeacons : NetworkBehaviour {
 
 	void Start () {
 
-
 	}
 
 	void Update() {
@@ -22,7 +21,7 @@ public class SpawnBeacons : NetworkBehaviour {
 			GameObject[] players = GameObject.FindGameObjectsWithTag ("Player Ship");
 			if (players.Length > 0) {
 				done = true;
-				populateBeacons();
+				PopulateBeacons();
 			}
 		}
 
@@ -34,18 +33,15 @@ public class SpawnBeacons : NetworkBehaviour {
 	}
 
 	[Server]
-	void populateBeacons() {
+	void PopulateBeacons() {
 
 		allBeacons = new GameObject ();
 		allBeacons.name = "Beacons";
 
-		for (int i = 0; i < ArenaInfo.getNumBeacons(); i++) {
-			GameObject newBeacon = (GameObject)Instantiate (
-				beacons, 
-				new Vector2 (
-					Random.Range (-ArenaInfo.getArenaSize () / 2, ArenaInfo.getArenaSize () / 2), 
-					Random.Range (-ArenaInfo.getArenaSize () / 2, ArenaInfo.getArenaSize () / 2)
-				),
+		for (int i = 0; i < ArenaInfo.GetNumBeacons(); i++) {
+			GameObject newBeacon = Instantiate (
+				beacons,
+				ArenaInfo.GetRandomArenaLocation(),				
 				Quaternion.identity
 			);
 		

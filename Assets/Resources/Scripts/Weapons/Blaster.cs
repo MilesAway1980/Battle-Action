@@ -29,11 +29,11 @@ public class Blaster : NetworkBehaviour {
 	}
 
 	void FixedUpdate() {
-		setShape ();
-		checkDamage ();
+		SetShape();
+		CheckDamage();
 	}
 
-	void setShape() {
+	void SetShape() {
 
 		Mesh beamMesh = GetComponent<MeshFilter>().mesh;
 		beamMesh.Clear();
@@ -69,14 +69,14 @@ public class Blaster : NetworkBehaviour {
 		beamMesh.triangles = new int[] { 0, 1, 2 };
 	}
 
-	void checkDamage() {
+	void CheckDamage() {
 
 		if (!isServer) {
 			return;
 		}
 
 		//Get a list of all damageable objects
-		List<GameObject> allObjects = Damageable.damageableList.getObjectList();
+		List<GameObject> allObjects = Damageable.damageableList.GetObjectList();
 		if (allObjects.Count == 0) {
 			return;
 		}
@@ -90,7 +90,7 @@ public class Blaster : NetworkBehaviour {
 
 				bool damaged = false;
 
-				float angleToTarget = Angle.getAngle (startPos, targetPos);
+				float angleToTarget = Angle.GetAngle (startPos, targetPos);
 				float pointAngle = (360 - angle);
 
 
@@ -115,17 +115,17 @@ public class Blaster : NetworkBehaviour {
 				}
 
 				if (damaged) {
-					target.damage (damage);
+					target.Damage (damage);
 					HitInfo info = targetOwner.GetComponent<HitInfo> ();
 					if (info) {						
-						info.setLastHitBy (owner);
+						info.SetLastHitBy (owner);
 					}
 				}
 			}
 		}
 	}
 
-	public void init(Vector2 newStartPos, float newAngle, GameObject newOwner) {
+	public void Init(Vector2 newStartPos, float newAngle, GameObject newOwner) {
 		startPos = newStartPos;
 		angle = newAngle;
 		owner = newOwner;
