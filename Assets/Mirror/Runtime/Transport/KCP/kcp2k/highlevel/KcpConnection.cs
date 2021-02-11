@@ -2,12 +2,13 @@ using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine;
 
 namespace kcp2k
 {
     enum KcpState { Connected, Authenticated, Disconnected }
 
-    public abstract class KcpConnection
+    public abstract class KcpConnection 
     {
         protected Socket socket;
         protected EndPoint remoteEndpoint;
@@ -72,7 +73,7 @@ namespace kcp2k
         // => 10k seems safe.
         //
         // note: we have a ChokeConnectionAutoDisconnects test for this too!
-        internal const int QueueDisconnectThreshold = 10000;
+        internal const int QueueDisconnectThreshold = 100000;
 
         // getters for queue and buffer counts, used for debug info
         public int SendQueueCount => kcp.snd_queue.Count;
@@ -150,6 +151,9 @@ namespace kcp2k
 
                 Disconnect();
             }
+
+            //UnityEngine.Debug.Log(kcp.rcv_queue.Count.ToString("0000") + " " + kcp.snd_queue.Count.ToString("0000") + " " + kcp.rcv_buf.Count.ToString("0000") + " " + kcp.snd_buf.Count.ToString("0000") + " - " + total.ToString("0000"));
+            
         }
 
         // reads the next message from connection.

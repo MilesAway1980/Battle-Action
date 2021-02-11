@@ -31,7 +31,7 @@ public class DetonatorBurstEmitter : DetonatorComponent
 	public bool useExplicitSizeCurve = false;
 	public AnimationCurve SizeOverLifetimeCurve = new AnimationCurve();
 	private ParticleSystem.MinMaxCurve _psSoLMMCurve;
-	ParticleSystemRenderMode _psRenderMode = ParticleSystemRenderMode.Billboard;
+	//ParticleSystemRenderMode _psRenderMode = ParticleSystemRenderMode.Billboard;
 
 	private float _baseDamping = 0.1300004f;
 	private float _baseSize = 1f;
@@ -135,7 +135,7 @@ public class DetonatorBurstEmitter : DetonatorComponent
 	private float _emitTime;
 	private float speed = 3.0f;
 	private float initFraction = 0.1f;
-	static float epsilon = 0.01f;
+	//static float epsilon = 0.01f;
 	
 	void Update () 
 	{		
