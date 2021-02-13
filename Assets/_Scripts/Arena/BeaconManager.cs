@@ -2,7 +2,7 @@
 using Mirror;
 using System.Collections;
 
-public class SpawnBeacons : NetworkBehaviour
+public class BeaconManager : NetworkBehaviour
 {
 
 	public GameObject beaconPrefab;
@@ -39,6 +39,10 @@ public class SpawnBeacons : NetworkBehaviour
 		}
 
 		int missing = ArenaInfo.GetNumBeacons() - Beacon.beaconList.Count;
+		int turrets = Turret.turretList.Count;
+
+		missing -= turrets;
+
 		if (missing > 0)
 		{
 			for (int i = 0; i < missing; i++)

@@ -8,7 +8,8 @@ public class InitGameWorld : NetworkBehaviour
 {
 
     public bool test = true;
-    GameObject testShip;
+    public int testShips = 1;
+    GameObject[] testShip;
     // Start is called before the first frame update
     void Awake()
     {
@@ -21,7 +22,10 @@ public class InitGameWorld : NetworkBehaviour
 
     private void Start()
     {
-        
+        if (test)
+        {
+            testShip = new GameObject[testShips];
+        }
     }
 
     // Update is called once per frame
@@ -29,10 +33,14 @@ public class InitGameWorld : NetworkBehaviour
     {
         if (isServer && test)
         {
-            if (testShip == null)
+            for (int i = 0; i < testShips; i++)
             {
-                testShip = PlayerShipSpawner.SpawnShip(Guid.NewGuid(), 20).gameObject;
-            }
+                if (testShip[i] == null)
+                {
+                    testShip[i] = PlayerShipSpawner.SpawnShip(Guid.NewGuid(), UnityEngine.Random.Range(0, 25)).gameObject;
+                    testShip[i].transform.position = ArenaInfo.GetRandomArenaLocation();
+                }
+            }            
         }
     }
 }

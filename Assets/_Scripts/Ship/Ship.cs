@@ -7,7 +7,6 @@ public enum ShipController
 {
 	none,
 	player,
-	decoy,
 	computer
 }
 
@@ -26,10 +25,12 @@ public class Ship : NetworkBehaviour
 	public float deceleration;
 	[Tooltip("The maximum speed that the ship can turn")]
 	public float maxTurnRate;
-	[Tooltip("How quickly the ship's turn rate changes from user input")]
+	[Tooltip("How quickly the ship's turn rate increases from user input")]
 	public float turnRateAcceleration;
 	[Tooltip("How quickly the ship's turn rate decreases when no user input")]
 	public float turnRateDeceleration;
+	[Tooltip("How slowly the ship can turn when using microturn")]
+	public float microTurnRate;
 	[Tooltip("How much the maximum amount of ammo is multiplied by")]
 	public float ammoBoost;
 	[Tooltip("The object that the ship is replaced with when destroyed")]
@@ -38,6 +39,7 @@ public class Ship : NetworkBehaviour
 	public GameObject shipModel;
 
 	int turnDir;                                //The direction the ship is turning (-1 - 0 - 1)
+	bool microTurn;								//Turn the ship very slowly for precision aiming
 
 	[SyncVar] private float currentSpeed;       //The ship's current speed
 	[SyncVar] private float thrust;             //How much thrust the ship currently has
@@ -82,8 +84,9 @@ public class Ship : NetworkBehaviour
 
 		for (int i = 0; i < ships.Length; i++)
 		{
-			Owner owner = ships[i].GetComponent<Owner>();
-			if (owner && owner.GetOwnerGuid() == playerGuid)
+			//Owner owner = ships[i].GetComponent<Owner>();
+			Ship ship = ships[i].GetComponent<Ship>();
+			if (ship.GetOwnerGuid() == playerGuid)
 			{
 				return ships[i].GetComponent<Ship>();
 			}
@@ -91,6 +94,18 @@ public class Ship : NetworkBehaviour
 
 		return null;
 	}
+
+	public static Ship[] GetAllShips()
+    {
+		GameObject[] shipObjects = shipList.GetObjectList().ToArray();
+		Ship[] ships = new Ship[shipObjects.Length];
+
+		for (int i = 0; i < shipObjects.Length; i++) {
+			ships[i] = shipObjects[i].GetComponent<Ship>();
+		}
+
+		return ships;
+    }
 
 	// Use this for initialization
 	void Start()
@@ -180,8 +195,10 @@ public class Ship : NetworkBehaviour
 		}
 	}
 
+	[Server]
 	void Explode()
 	{
+		
 		GameObject boom = Instantiate(explosion, transform.position, Quaternion.identity);
 		Exploder exp = boom.GetComponent<Exploder>();
 		exp.Init(0.0f, 10);
@@ -240,11 +257,46 @@ public class Ship : NetworkBehaviour
 		}
 		else
 		{
-			turnRate += turnRateAcceleration * turnDir;
-
-			if (Mathf.Abs(turnRate) > maxTurnRate)
+			if (!microTurn)
 			{
-				turnRate = maxTurnRate * turnDir;
+				turnRate += turnRateAcceleration * turnDir;
+
+				if (Mathf.Abs(turnRate) > maxTurnRate)
+				{
+					turnRate = maxTurnRate * turnDir;
+				}
+			}
+			else
+            {
+				if (Math.Abs(turnRate) > microTurnRate)
+				{
+					if (turnRate > microTurnRate)
+					{
+						turnRate -= turnRateDeceleration;
+						if (turnRate <= microTurnRate)
+						{
+							turnRate = microTurnRate;
+						}
+					}
+
+					if (turnRate < -microTurnRate)
+					{
+						turnRate += turnRateDeceleration;
+						if (turnRate >= -microTurnRate)
+						{
+							turnRate = -microTurnRate;
+						}
+					}
+				}
+				else
+				{
+					turnRate += microTurnRate * turnDir;
+
+					if (Mathf.Abs(turnRate) > microTurnRate)
+					{
+						turnRate = microTurnRate * turnDir;
+					}
+				}
 			}
 		}
 
@@ -350,6 +402,11 @@ public class Ship : NetworkBehaviour
 		}
 	}
 
+	public void SetMicroTurn(bool micro)
+    {
+		microTurn = micro;
+    }
+
 	public void DecreaseThrust()
 	{
 		thrust -= deceleration;
@@ -377,23 +434,50 @@ public class Ship : NetworkBehaviour
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D col)
+	void OnCollisionEnter2D(Collision2D collision)
 	{
 		if (!isServer)
 		{
 			return;
 		}
 
-		GameObject objectHit = col.gameObject;
-
-		Damageable dm = objectHit.GetComponent<Damageable>();
+		Damageable dm = collision.gameObject.GetComponent<Damageable>();
 
 		if (dm)
 		{
-			float damage = (currentSpeed * rigidBody.mass);
-			dm.Damage(damage);
+			Owner hitOwner = collision.gameObject.GetComponent<Owner>();
+			Guid shipGuid = GetOwnerGuid();
+
+			if (hitOwner.GetOwnerGuid() != shipGuid)
+			{
+				float damage = (currentSpeed * rigidBody.mass);
+				dm.Damage(damage);				
+
+				HitInfo hitInfo = collision.gameObject.GetComponent<HitInfo>();
+				if (hitInfo)
+                {
+					hitInfo.SetLastHitBy(shipGuid);
+                }
+			}
 		}
 	}
+
+	[Server]
+	public bool HasDecoy()
+    {
+		return Decoy.GetPlayerDecoysByGuid(GetOwnerGuid()).Length > 0;
+    }
+
+	public Guid GetOwnerGuid()
+    {
+		Owner owner = GetComponent<Owner>();
+		if (owner)
+        {
+			return owner.GetOwnerGuid();
+        }
+
+		return Guid.Empty;
+    }
 
 	public float GetThrust()
 	{

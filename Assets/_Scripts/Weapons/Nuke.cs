@@ -129,13 +129,13 @@ public class Nuke : NetworkBehaviour {
 		tether.Clear();
 	}
 
-	public static GameObject GetBomb() {
+	public static GameObject GetNukePrefab() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Nuke");
 	}
 	
 	public static float GetRefireRate() {
 		if (nukeRefireRate == -1) {
-			Nuke nuke = GetBomb().GetComponent<Nuke>();
+			Nuke nuke = GetNukePrefab().GetComponent<Nuke>();
 			nukeRefireRate = nuke.refireRate;
 		}
 

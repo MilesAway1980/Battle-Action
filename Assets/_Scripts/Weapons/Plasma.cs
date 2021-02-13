@@ -188,7 +188,7 @@ public class Plasma : Bullet {
 		}
 	}
 
-	public static GameObject GetBullet() {
+	public static GameObject GetBulletPrefab() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Projectiles/Plasma");
 	}
 
@@ -219,7 +219,7 @@ public class Plasma : Bullet {
     }
 
 	static void CreatePlasmaInfo() {
-		basePlasma = GetBullet().GetComponent<Plasma>();
+		basePlasma = GetBulletPrefab().GetComponent<Plasma>();
 		plasmaInfo = new ShootingInfo();
 		plasmaInfo.bulletsPerShot = basePlasma.bulletsPerShot;
 		plasmaInfo.refireRate = basePlasma.refireRate;

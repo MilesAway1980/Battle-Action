@@ -85,7 +85,7 @@ public class DeactivatorBeam : NetworkBehaviour {
 		owner = newOwner;
 	}
 
-	public static GameObject getDeactivatorBeam() {
+	public static GameObject GetDeactivatorBeamPrefab() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Deactivator Beam");
 	}
 }

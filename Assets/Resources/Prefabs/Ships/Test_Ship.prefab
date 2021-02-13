@@ -13,9 +13,6 @@ GameObject:
   - component: {fileID: 7488131010227305304}
   - component: {fileID: 7488131010227305300}
   - component: {fileID: 7488131010227305299}
-  - component: {fileID: 7488131010227305298}
-  - component: {fileID: 7488131010227305297}
-  - component: {fileID: 7488131010227305296}
   - component: {fileID: 7488131010227305311}
   - component: {fileID: 7488131010227305310}
   - component: {fileID: 7488131010227305309}
@@ -153,54 +150,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
---- !u!114 &7488131010227305298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488131009191758636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
---- !u!114 &7488131010227305297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488131009191758636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
---- !u!114 &7488131010227305296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7488131009191758636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
 --- !u!114 &7488131010227305311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,6 +242,7 @@ MonoBehaviour:
   maxTurnRate: 3
   turnRateAcceleration: 0.5
   turnRateDeceleration: 1
+  microTurnRate: 0.2
   ammoBoost: 1000
   explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 3}
   shipModel: {fileID: 7488131009191758638}

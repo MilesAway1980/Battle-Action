@@ -96,9 +96,9 @@ public class Blaster : NetworkBehaviour
 		Damageable dm = collision.gameObject.GetComponent<Damageable>();
 		if (dm)
         {
-			Owner damageOwner = collision.gameObject.GetComponent<Owner>();			
+			Owner damageOwner = collision.gameObject.GetComponent<Owner>();
 
-			if (damageOwner.GetOwnerGuid() == ownerGuid)
+			if (damageOwner && damageOwner.GetOwnerGuid() == ownerGuid)
             {
 				return;
             }
@@ -122,7 +122,7 @@ public class Blaster : NetworkBehaviour
 		this.ownerGuid = ownerGuid;
 	}
 
-	public static GameObject getBlaster()
+	public static GameObject GetBlasterPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Blaster");
 	}

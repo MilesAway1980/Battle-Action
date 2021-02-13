@@ -34,69 +34,62 @@ public class ObjectList
 		objectList.Clear();
 	}
 
-	public GameObject GetClosest(GameObject looking)
+	public GameObject GetClosest(GameObject looking, GameObject[] objectsToIgnore = null)
 	{
 		GameObject closest = null;
 
 		float distance = float.MaxValue;
 
 		Vector2 lookingPos = looking.transform.position;
-		Vector2 targetPos;
+		//Vector2 targetPos;
 
-		Owner lookingOwner = looking.GetComponent<Owner>();
-
+		//Owner lookingOwner = looking.GetComponent<Owner>();
+		bool hasNullEntry = false;
 		if (objectList != null)
 		{
-			for (int i = 0; i < objectList.Count; i++)
+			GameObject[] objectArray = objectList.ToArray();		//faster
+			for (int i = 0; i < objectArray.Length; i++)
 			{
-
-				if (objectList[i] == null)
+				if (objectArray[i] == null)
 				{
+					hasNullEntry = true;
 					continue;
 				}
 
-				Owner owner = objectList[i].GetComponent<Owner>();
-				if (owner)
+				if (objectArray[i] == looking)
 				{
-					if (owner.GetNumDecoy() > 0)
-					{   //Ship has a decoy, it can't be detected
-						continue;
-					}
+					//Don't look at itself
+					continue;
 				}
 
-				if (owner && lookingOwner)
-				{       //The one looking should see themselves
-					if (owner.GetOwnerGuid() == lookingOwner.GetOwnerGuid())
-					{
-						continue;
-					}
-				}
-				else
+				if (objectsToIgnore != null)
+                {
+					for (int o = 0; 0 < objectsToIgnore.Length; o++)
+                    {
+						if (objectArray[i] == objectsToIgnore[o])
+                        {
+							continue;
+                        }
+                    }
+                }
+
+				float objectDist = Vector2.Distance(
+					lookingPos,
+					objectArray[i].transform.position
+				);
+
+				if (objectDist < distance)
 				{
-					if (looking == objectList[i])
-					{
-						continue;
-					}
-				}
-
-				if (objectList[i] != looking && objectList[i] != null)
-				{
-
-					targetPos = objectList[i].transform.position;
-
-					float objectDist = Vector2.Distance(
-						lookingPos,
-						targetPos
-					);
-
-					if (objectDist < distance)
-					{
-						distance = objectDist;
-						closest = objectList[i];
-					}
+					distance = objectDist;
+					closest = objectArray[i];
 				}
 			}
 		}
+
+		if (hasNullEntry)
+        {
+			objectList.RemoveAll(o => o == null);
+        }
 
 		return closest;
 	}

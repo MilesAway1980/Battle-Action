@@ -100,9 +100,6 @@ GameObject:
   - component: {fileID: 6894892955836179393}
   - component: {fileID: 6515972320528571670}
   - component: {fileID: 5245127391958726177}
-  - component: {fileID: 437013600937288436}
-  - component: {fileID: 7407563927512672547}
-  - component: {fileID: 2656469157689384178}
   - component: {fileID: 6176677615779460852}
   - component: {fileID: 2726022112944206383}
   m_Layer: 0
@@ -201,6 +198,7 @@ MonoBehaviour:
   maxTurnRate: 2.2
   turnRateAcceleration: 0.5
   turnRateDeceleration: 0.2
+  microTurnRate: 0.2
   ammoBoost: 1
   explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 3}
   shipModel: {fileID: 6368512138504151245}
@@ -276,54 +274,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8b3f881667ead4bbff1d734f43e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &437013600937288436
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6368512138504151247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
---- !u!114 &7407563927512672547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6368512138504151247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
---- !u!114 &2656469157689384178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6368512138504151247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
 --- !u!114 &6176677615779460852
 MonoBehaviour:
   m_ObjectHideFlags: 0

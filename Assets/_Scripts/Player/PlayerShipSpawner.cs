@@ -79,12 +79,12 @@ public class PlayerShipSpawner : NetworkBehaviour
 			playerContainer.name = "Player Ships";
 		}
 
-		GetAvailablePlayerShipList();
+		LoadAvailablePlayerShipPrefabs();
 
 		initialized = true;
 	}
 
-	static void GetAvailablePlayerShipList()
+	static void LoadAvailablePlayerShipPrefabs()
 	{
 		if (shipList == null || shipList.Length == 0)
 		{

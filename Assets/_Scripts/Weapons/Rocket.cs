@@ -99,7 +99,7 @@ public class Rocket : Bullet
 		}
 	}*/
 
-	public static GameObject GetBullet()
+	public static GameObject GetBulletPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Projectiles/RocketBullet");
 	}
@@ -124,7 +124,7 @@ public class Rocket : Bullet
 
 	static void CreateRocketInfo()
 	{
-		Rocket temp = GetBullet().GetComponent<Rocket>();
+		Rocket temp = GetBulletPrefab().GetComponent<Rocket>();
 		rocketInfo = new ShootingInfo();
 		rocketInfo.bulletsPerShot = temp.bulletsPerShot;
 		rocketInfo.refireRate = temp.refireRate;

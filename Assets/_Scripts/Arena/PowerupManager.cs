@@ -101,7 +101,7 @@ public class PowerupManager : NetworkBehaviour
 
     public static string GetPowerupName(int whichPowerup)
     {
-        return whichPowerup switch
+        /*return whichPowerup switch
         {
             0 => "machinegun",
             1 => "rocket",
@@ -119,12 +119,32 @@ public class PowerupManager : NetworkBehaviour
             13 => "mediumhealth",
             14 => "largehealth",
             _ => "",
-        };
+        };*/
+
+        switch (whichPowerup)
+        {
+            case 0: return "machinegun";
+            case 1: return "rocket";
+            case 2: return "missile";
+            case 3: return "blaster";
+            case 4: return "crush";
+            case 5: return "nuke";
+            case 6: return "warp";
+            case 7: return "plasma";
+            case 8: return "mines";
+            case 9: return "decoy";
+            case 10: return "turret";
+            case 11: return "deactivator";
+            case 12: return "smallhealth";
+            case 13: return "mediumhealth";
+            case 14: return "largehealth";
+            default: return "";
+        }
     }
 
     public static int GetPowerupNumber(string whichPowerup)
     {
-        return whichPowerup switch
+        /*return whichPowerup switch
         {
             "machinegun" => 0,
             "rocket" => 1,
@@ -142,6 +162,26 @@ public class PowerupManager : NetworkBehaviour
             "mediumhealth" => 13,
             "largehealth" => 14,
             _ => -1,
-        };
+        };*/
+
+        switch (whichPowerup)
+        {
+            case "machinegun": return 0;
+            case "rocket": return 1;
+            case "missile": return 2;
+            case "blaster": return 3;
+            case "crush": return 4;
+            case "nuke": return 5;
+            case "warp": return 6;
+            case "plasma": return 7;
+            case "mines": return 8;
+            case "decoy": return 9;
+            case "turret": return 10;
+            case "deactivator": return 11;
+            case "smallhealth": return 12;
+            case "mediumhealth": return 13;
+            case "largehealth": return 14;
+            default: return -1;
+        }
     }
 }

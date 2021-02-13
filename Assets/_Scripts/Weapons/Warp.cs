@@ -125,7 +125,7 @@ public class Warp : NetworkBehaviour
 		}
 	}
 
-	public static GameObject GetWarp()
+	public static GameObject GetWarpPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Warp");
 	}
@@ -134,7 +134,7 @@ public class Warp : NetworkBehaviour
 	{
 		if (warpRefireRate == -1)
 		{
-			warpRefireRate = GetWarp().GetComponent<Warp>().refireRate;
+			warpRefireRate = GetWarpPrefab().GetComponent<Warp>().refireRate;
 		}
 		return warpRefireRate;
 	}

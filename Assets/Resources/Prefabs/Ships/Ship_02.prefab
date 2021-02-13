@@ -725,13 +725,10 @@ GameObject:
   - component: {fileID: 11450920}
   - component: {fileID: 11431312}
   - component: {fileID: 11495188}
-  - component: {fileID: 11470304}
-  - component: {fileID: 11451292}
-  - component: {fileID: 1213977231374123325}
   - component: {fileID: 11454424}
   - component: {fileID: -7367387759040891252}
   m_Layer: 0
-  m_Name: Ship_3
+  m_Name: Ship_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -826,6 +823,7 @@ MonoBehaviour:
   maxTurnRate: 1.8
   turnRateAcceleration: 0.2
   turnRateDeceleration: 0.05
+  microTurnRate: 0.2
   ammoBoost: 1.2
   explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 3}
   shipModel: {fileID: 171624}
@@ -901,55 +899,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8b3f881667ead4bbff1d734f43e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11470304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 142238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0.1
-  pointerDistance: 2.5
-  pointerObject: {fileID: 133356, guid: 053226de10b24a54e8480665aadffba0, type: 3}
-  pointerType: 0
---- !u!114 &11451292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 142238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0.15
-  pointerDistance: 1.8
-  pointerObject: {fileID: 178640, guid: febed4d5c556d514fb21667b87ce489e, type: 3}
-  pointerType: 1
---- !u!114 &1213977231374123325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 142238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0.05
-  pointerDistance: 2
-  pointerObject: {fileID: 4685809505763084825, guid: 2eda15f2ab158d646a793b27aca83b33,
-    type: 3}
-  pointerType: 2
 --- !u!114 &11454424
 MonoBehaviour:
   m_ObjectHideFlags: 0

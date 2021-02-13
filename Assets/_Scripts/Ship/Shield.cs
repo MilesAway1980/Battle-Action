@@ -4,22 +4,17 @@ using System.Collections;
 
 public class Shield : NetworkBehaviour
 {
-
-	//public float shieldHealth;
-	//float currentHealth;
 	public float shieldContactDamage;
-
 	public float maxCharge;
 	public float rechargeRate;
+
 	[Range(1, 100)]
 	public int damageReduction;
-	float whenActivated;
 
 	float charge;
 	[SyncVar] bool active;
 
 	GameObject shieldObject;
-	//Ship owner;
 	GameObject owner;
 
 	// Use this for initialization
@@ -69,48 +64,42 @@ public class Shield : NetworkBehaviour
 		shieldObject.SetActive(active);
 	}
 
-	void OnCollisionEnter2D(Collision2D col)
+	void OnCollisionStay2D(Collision2D collision)
 	{
 		if (!isServer)
         {
 			return;
         }
 
-		GameObject objectHit = col.gameObject;
+		if (!active)
+        {
+			return;
+        }
 
-		Damageable dm = objectHit.GetComponent<Damageable>();
+		Damageable dm = collision.gameObject.GetComponent<Damageable>();
 		if (dm)
 		{
-			dm.Damage(shieldContactDamage);
+			Owner shieldOwner = owner.GetComponent<Owner>();
+			Owner hitOwner = collision.gameObject.GetComponent<Owner>();
 
-			HitInfo info = objectHit.GetComponent<HitInfo>();
-			if (info)
-			{
+			float damage = Random.Range(0, shieldContactDamage);
 
-				info.SetLastHitBy(owner);
-			}
-
-			/*Ship shipHit = objectHit.GetComponent<Ship> ();
-			if (shipHit) {
-				Owner thisOwner = owner.GetComponent<Owner> ();
-				if (thisOwner) {
-					shipHit.setLastHitBy (thisOwner.getOwnerNum ());
-				} else {
-					shipHit.setLastHitBy (-1);
+			if (shieldOwner && hitOwner)
+            {
+				if (shieldOwner.GetOwnerGuid() != hitOwner.GetOwnerGuid())
+				{
+					HitInfo info = collision.gameObject.GetComponent<HitInfo>();
+					if (info)
+					{
+						info.SetLastHitBy(owner);
+					}
 				}
-			}*/
-		}
-
-
-
-		/*if (objectHit.tag == "Player Ship") {
-			Ship shipHit = objectHit.GetComponent<Ship>();
-
-			if (shipHit) {
-				shipHit.damage (shieldContactDamage);
-				shipHit.setLastHitBy (owner.getOwnerNum ()); 
 			}
-		}*/
+            else
+            {
+				dm.Damage(damage);
+            }
+		}
 	}
 
 	public void DamageShield(float amount)

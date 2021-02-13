@@ -18,9 +18,6 @@ GameObject:
   - component: {fileID: 7888545441390506142}
   - component: {fileID: 4196164727829639843}
   - component: {fileID: 6153124065184451790}
-  - component: {fileID: 8091135279372407338}
-  - component: {fileID: 810944441620180086}
-  - component: {fileID: 8380817496063637370}
   - component: {fileID: 8606141614346440756}
   - component: {fileID: 8085233912881137587}
   m_Layer: 0
@@ -119,6 +116,7 @@ MonoBehaviour:
   maxTurnRate: 2.2
   turnRateAcceleration: 0.5
   turnRateDeceleration: 0.2
+  microTurnRate: 0.2
   ammoBoost: 1
   explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 3}
   shipModel: {fileID: 377899154119705586}
@@ -194,54 +192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8b3f881667ead4bbff1d734f43e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8091135279372407338
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377899154119705584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
---- !u!114 &810944441620180086
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377899154119705584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
---- !u!114 &8380817496063637370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377899154119705584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0
-  pointerDistance: 0
-  pointerObject: {fileID: 0}
-  pointerType: 0
 --- !u!114 &8606141614346440756
 MonoBehaviour:
   m_ObjectHideFlags: 0

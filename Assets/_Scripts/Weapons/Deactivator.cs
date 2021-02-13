@@ -9,7 +9,7 @@ public class Deactivator : Turret {
 		bs.SetCurrentWeapon (13);
 	}
 
-	public new static GameObject GetTurret() {
+	public new static GameObject GetTurretPrefab() {
 		return (GameObject)Resources.Load ("Prefabs/Weapons/Deactivator");
 	}
 }

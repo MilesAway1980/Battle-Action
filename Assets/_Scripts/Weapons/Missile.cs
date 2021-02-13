@@ -120,7 +120,7 @@ public class Missile : Bullet
 	}*/
 
 	[Server]
-	public static GameObject GetBullet()
+	public static GameObject GetBulletPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Projectiles/Missile");
 	}
@@ -148,7 +148,7 @@ public class Missile : Bullet
 	[Server]
 	static void CreateMissileInfo()
 	{
-		Missile temp = GetBullet().GetComponent<Missile>();
+		Missile temp = GetBulletPrefab().GetComponent<Missile>();
 		missileInfo = new ShootingInfo();
 		missileInfo.bulletsPerShot = temp.bulletsPerShot;
 		missileInfo.refireRate = temp.refireRate;

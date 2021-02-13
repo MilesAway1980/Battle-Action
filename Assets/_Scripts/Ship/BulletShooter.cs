@@ -183,7 +183,7 @@ public class BulletShooter : NetworkBehaviour
 				ammo[currentWeapon].UseAmmo(1);
 
 				newBullet = Instantiate(
-					MachineGun.GetBullet(),
+					MachineGun.GetBulletPrefab(),
 					transform.position,
 					Quaternion.Euler(0, 0, angle + MachineGun.GetRandomShotSpread())
 				);
@@ -216,7 +216,7 @@ public class BulletShooter : NetworkBehaviour
 
 					newAngle += angleChange;
 					newBullet = Instantiate(
-						Rocket.GetBullet(),
+						Rocket.GetBulletPrefab(),
 						//ownerObject.transform.position,
 						transform.position,
 						Quaternion.Euler(0, 0, newAngle)
@@ -249,7 +249,7 @@ public class BulletShooter : NetworkBehaviour
 					newAngle += (360.0f / (float)Missile.GetBulletsPerShot());
 
 					newBullet = Instantiate(
-						Missile.GetBullet(),
+						Missile.GetBulletPrefab(),
 						//ownerObject.transform.position,
 						transform.position,
 						Quaternion.Euler(0, 0, newAngle)
@@ -277,7 +277,7 @@ public class BulletShooter : NetworkBehaviour
 				if (blasterObject == null)
 				{
 					blasterObject = Instantiate(
-						Blaster.getBlaster(),
+						Blaster.GetBlasterPrefab(),
 						//ownerObject.transform.position,
 						transform.position,
 						Quaternion.Euler(0, 0, angle)
@@ -304,7 +304,7 @@ public class BulletShooter : NetworkBehaviour
 
 				newAngle = angle;
 				newBullet = Instantiate(
-					Crush.GetBullet(),
+					Crush.GetBulletPrefab(),
 					//ownerObject.transform.position,
 					transform.position,
 					Quaternion.Euler(0, 0, newAngle)
@@ -334,7 +334,7 @@ public class BulletShooter : NetworkBehaviour
 
 				ammo[currentWeapon].UseAmmo(1);
 
-				GameObject newBomb = Instantiate(Nuke.GetBomb());
+				GameObject newBomb = Instantiate(Nuke.GetNukePrefab());
 				Nuke nuke = newBomb.GetComponent<Nuke>();
 				nuke.Init(owner.GetOwnerGuid(), owner.gameObject);
 
@@ -358,7 +358,7 @@ public class BulletShooter : NetworkBehaviour
 
 				ammo[currentWeapon].UseAmmo(1);
 
-				GameObject newWarp = Instantiate(Warp.GetWarp());
+				GameObject newWarp = Instantiate(Warp.GetWarpPrefab());
 				Warp warp = newWarp.GetComponent<Warp>();
 
 				//warp.SetOwner(owner.gameObject);
@@ -417,7 +417,7 @@ public class BulletShooter : NetworkBehaviour
 						ammo[currentWeapon].UseAmmo(1);
 
 						newBullet = Instantiate(
-							Plasma.GetBullet(),
+							Plasma.GetBulletPrefab(),
 							transform.position,
 							Quaternion.Euler(0, 0, newAngle)
 						);
@@ -484,7 +484,7 @@ public class BulletShooter : NetworkBehaviour
 				ammo[currentWeapon].UseAmmo(1);
 
 				GameObject newMineField = Instantiate(
-					MineField.GetMineField(),
+					MineField.GetMineFieldPrefab(),
 					transform.position,
 					Quaternion.identity
 				);
@@ -520,7 +520,7 @@ public class BulletShooter : NetworkBehaviour
 				);
 
 				GameObject newDecoy = Instantiate(
-					Decoy.GetDecoy(),
+					Decoy.GetDecoyPrefab(),
 					initPos,
 					Quaternion.Euler(0, 0, Random.Range(0, Angle.DoublePi))
 				);
@@ -548,10 +548,14 @@ public class BulletShooter : NetworkBehaviour
 
 				ammo[currentWeapon].UseAmmo(1);
 
-				GameObject newTurret = Instantiate(Turret.GetTurret());
+				GameObject newTurret = Instantiate(
+					Turret.GetTurretPrefab(),
+					transform.position,
+					Quaternion.identity
+				);
 				Turret t = newTurret.GetComponent<Turret>();
 
-				t.Init(owner.gameObject);
+				t.Init(owner.GetOwnerGuid());
 
 				NetworkServer.Spawn(newTurret);
 
@@ -574,10 +578,10 @@ public class BulletShooter : NetworkBehaviour
 
 				ammo[currentWeapon].UseAmmo(1);
 
-				GameObject newDeactivator = Instantiate(Deactivator.GetTurret());
+				GameObject newDeactivator = Instantiate(Deactivator.GetTurretPrefab());
 				Turret turret = newDeactivator.GetComponent<Turret>();
 
-				turret.Init(owner.gameObject);
+				turret.Init(owner.GetOwnerGuid());
 
 				NetworkServer.Spawn(newDeactivator);
 
@@ -590,7 +594,7 @@ public class BulletShooter : NetworkBehaviour
 
 				if (deactivatorBeam == null)
 				{
-					GameObject newBeam = Instantiate(DeactivatorBeam.getDeactivatorBeam());
+					GameObject newBeam = Instantiate(DeactivatorBeam.GetDeactivatorBeamPrefab());
 					DeactivatorBeam db = newBeam.GetComponent<DeactivatorBeam>();
 					db.Init(owner.gameObject);
 

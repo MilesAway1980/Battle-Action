@@ -57,12 +57,12 @@ public class Mine : NetworkBehaviour
 		this.ownerGuid = ownerGuid;
 	}
 
-	public static GameObject GetMine()
+	public static GameObject GetMinePrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Mine");
 	}	
 
-	public GameObject GetExplosion()
+	public GameObject GetExplosionPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Exploder");
 	}
@@ -87,12 +87,17 @@ public class Mine : NetworkBehaviour
 					hitInfo.SetLastHitBy(ownerGuid);
 
 					GameObject explosion = Instantiate(
-						GetExplosion(),
+						GetExplosionPrefab(),
 						transform.position,
 						Quaternion.identity
 					);
 
-					explosion.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+					//explosion.transform.localScale = new Vector3(1, 1, 1);
+					Exploder exp = explosion.GetComponent<Exploder>();
+					if (exp)
+                    {
+						exp.Init(0, 1f);
+                    }
 
 					NetworkServer.Spawn(explosion);
 					Destroy(gameObject);

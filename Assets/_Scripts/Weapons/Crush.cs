@@ -165,7 +165,7 @@ public class Crush : Bullet
 		}
 	}
 
-	public static GameObject GetBullet()
+	public static GameObject GetBulletPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Projectiles/Crush");
 	}
@@ -190,7 +190,7 @@ public class Crush : Bullet
 
 	static void CreateCrushInfo()
 	{
-		Crush temp = GetBullet().GetComponent<Crush>();
+		Crush temp = GetBulletPrefab().GetComponent<Crush>();
 		crushInfo = new ShootingInfo();
 		crushInfo.bulletsPerShot = temp.bulletsPerShot;
 		crushInfo.refireRate = temp.refireRate;

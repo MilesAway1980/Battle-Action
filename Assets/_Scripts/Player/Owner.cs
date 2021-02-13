@@ -7,7 +7,7 @@ public class Owner : NetworkBehaviour
 {
 
 	[SyncVar] Guid ownerGuid;
-	[SyncVar] int numDecoy;
+	//[SyncVar] int numDecoy;
 	bool isDecoy;
 
 	public void SetOwnerGuid(Guid newOwnerGuid)
@@ -20,32 +20,17 @@ public class Owner : NetworkBehaviour
 		return ownerGuid;
 	}
 
-	public void AddDecoy()
-	{
-		numDecoy++;
-	}
+	public static Owner[] GetAllOwners()
+    {
+		return FindObjectsOfType<Owner>();
+    }
 
-	public void RemoveDecoy()
-	{
-		numDecoy--;
-	}
-
-	public int GetNumDecoy()
-	{
-		return numDecoy;
-	}
-
-	public void EmptyDecoy()
-	{
-		numDecoy = 0;
-	}
-
-	public static Owner FindOwnerByGuid(Guid guid)
+	public static Owner FindOwnerByGuid(Guid guid, bool includeDecoy = false)
     {
 		Owner[] owners = FindObjectsOfType<Owner>();
 		for (int i = 0; i < owners.Length; i++)
         {
-			if (owners[i].GetOwnerGuid() == guid && !owners[i].IsDecoy())
+			if (owners[i].GetOwnerGuid() == guid && (includeDecoy || !owners[i].IsDecoy()))
             {
 				return owners[i];
             }
@@ -63,4 +48,10 @@ public class Owner : NetworkBehaviour
     {
 		this.isDecoy = isDecoy;
     }
+
+	/*public bool HasDecoy()
+    {
+		print($"Has Decoy: {numDecoy}");
+		return numDecoy > 0;
+    }*/
 }

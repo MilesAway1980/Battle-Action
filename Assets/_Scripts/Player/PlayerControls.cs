@@ -11,6 +11,7 @@ struct CurrentShipAction
 	public bool shield;
 	public bool speeding;
 	public bool slowing;
+	public bool microTurning;
 }
 
 public class PlayerControls : NetworkBehaviour
@@ -304,7 +305,6 @@ public class PlayerControls : NetworkBehaviour
 				if (currentAction.turningLeft)
 				{
 					currentAction.turningLeft = false;
-
 					CmdTurnShip(ship, 0);
 				}
 			}
@@ -329,6 +329,23 @@ public class PlayerControls : NetworkBehaviour
 					CmdTurnShip(ship, 0);
 				}
 			}
+
+			//Microturn
+			if (
+					buttons[0].IsHeld()
+				)
+            {
+				currentAction.microTurning = true;
+				CmdSetMicroTurn(ship, true);
+            }
+			else
+            {
+				if (currentAction.microTurning)
+                {
+					currentAction.microTurning = false;
+					CmdSetMicroTurn(ship, false);
+                }
+            }
 
 			//Dump Ammo
 			if (
@@ -446,6 +463,15 @@ public class PlayerControls : NetworkBehaviour
 			ship.SetTurnDir(dir);
 		}
 	}
+
+	[Command]
+	void CmdSetMicroTurn(Ship ship, bool micro)
+    {
+		if (ship != null)
+        {
+			ship.SetMicroTurn(micro);
+        }
+    }
 
 	[Command]
 	void CmdActivateShield(Ship ship, bool setting)

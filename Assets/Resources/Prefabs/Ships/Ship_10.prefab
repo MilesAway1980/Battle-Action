@@ -18,13 +18,10 @@ GameObject:
   - component: {fileID: 2948798501296511214}
   - component: {fileID: 3929755056430408007}
   - component: {fileID: 7504809783557369341}
-  - component: {fileID: 5841296250829429674}
-  - component: {fileID: 4327673502898142457}
-  - component: {fileID: 7327606545690288053}
   - component: {fileID: 3929755056430408002}
   - component: {fileID: 3929755056430408000}
   m_Layer: 0
-  m_Name: Ship_11
+  m_Name: Ship_10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,6 +116,7 @@ MonoBehaviour:
   maxTurnRate: 2
   turnRateAcceleration: 0.5
   turnRateDeceleration: 0.2
+  microTurnRate: 0.2
   ammoBoost: 1
   explosion: {fileID: 164052, guid: a169a19af31f9cc47b0df4097393441f, type: 3}
   shipModel: {fileID: 6041684863023467931}
@@ -194,55 +192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8b3f881667ead4bbff1d734f43e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5841296250829429674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3929755056430408011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0.1
-  pointerDistance: 2.5
-  pointerObject: {fileID: 133356, guid: 053226de10b24a54e8480665aadffba0, type: 3}
-  pointerType: 0
---- !u!114 &4327673502898142457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3929755056430408011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0.15
-  pointerDistance: 1.8
-  pointerObject: {fileID: 178640, guid: febed4d5c556d514fb21667b87ce489e, type: 3}
-  pointerType: 1
---- !u!114 &7327606545690288053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3929755056430408011}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8882f27650b52dd45aaad8fa47775b5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointerSize: 0.05
-  pointerDistance: 2
-  pointerObject: {fileID: 4685809505763084825, guid: 2eda15f2ab158d646a793b27aca83b33,
-    type: 3}
-  pointerType: 2
 --- !u!114 &3929755056430408002
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -163,7 +163,7 @@ public class MachineGun : Bullet
 		}
 	}
 
-	public static GameObject GetBullet()
+	public static GameObject GetBulletPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Projectiles/MachineGunBullet");
 	}
@@ -198,7 +198,7 @@ public class MachineGun : Bullet
 
 	static void CreateMachineGunInfo()
 	{
-		machineGun = GetBullet().GetComponent<MachineGun>();
+		machineGun = GetBulletPrefab().GetComponent<MachineGun>();
 		machinegunInfo = new ShootingInfo();
 		machinegunInfo.bulletsPerShot = machineGun.bulletsPerShot;
 		machinegunInfo.refireRate = machineGun.refireRate;

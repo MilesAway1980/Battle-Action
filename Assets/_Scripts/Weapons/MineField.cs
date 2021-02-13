@@ -41,7 +41,7 @@ public class MineField : NetworkBehaviour
 			);
 
 			GameObject mineObject = Instantiate(
-				Mine.GetMine(),
+				Mine.GetMinePrefab(),
 				minePos,
 				Quaternion.identity
 			);
@@ -88,7 +88,7 @@ public class MineField : NetworkBehaviour
 		this.ownerGuid = ownerGuid;
 	}
 
-	public static GameObject GetMineField()
+	public static GameObject GetMineFieldPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/MineField");
 	}
@@ -97,7 +97,7 @@ public class MineField : NetworkBehaviour
 	{
 		if (mineRefireRate < 0)
 		{
-			mineRefireRate = GetMineField().GetComponent<MineField>().refireRate;
+			mineRefireRate = GetMineFieldPrefab().GetComponent<MineField>().refireRate;
 		}
 
 		return mineRefireRate;

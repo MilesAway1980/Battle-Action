@@ -1,142 +1,171 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using Mirror;
 
-public class Turret : MonoBehaviour
+public class Turret : NetworkBehaviour
 {
 
 	public float refireRate;
 	static float turretRefireRate = -1;
 
-	public float turnRate;                  //How fast it turns
-	public float detectDistance;            //The range that the turret will detect enemies
-	public float ownerDeactivateRange;      //Will not shoot if owner is within this range.  Protects against camping
+	[Tooltip("How fast the turret will turn to track enemies")]
+	public float turnRate;
+	[Tooltip("How far away the turret will detect enemies")]
+	public float detectDistance;
+	[Tooltip("If the owner is inside this range, the turret will not shoot. Keeps players from camping.")]
+	public float ownerDeactivateRange;
 
-	GameObject owner;
+	public bool infiniteAmmo;
+	[Tooltip("If the turret does not have infinite ammo, this is how many times it can shoot before it self destructs.")]
+	public int ammoBeforeExploding;
+	int currentAmmo;
 
+	public GameObject turretHead;
 
+	Guid ownerGuid;
+	//Owner owner;
+
+	Ship ownerShip;
+	float angle;
+
+	public static ObjectList turretList = new ObjectList();
 
 	// Use this for initialization
 	void Start()
 	{
+		turretList.AddObject(gameObject);
+		currentAmmo = ammoBeforeExploding;
+		if (isServer)
+        {
+			angle = UnityEngine.Random.Range(0, 360);
+			turretHead.transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+	}
+
+	private void OnDestroy()
+	{
+		turretList.RemoveObject(gameObject);
+	}
+
+	public void Init(Guid ownerGuid)
+	{
+		this.ownerGuid = ownerGuid;
+
+		Owner turretOwner = GetComponent<Owner>();
+		if (turretOwner)
+		{
+			turretOwner.SetOwnerGuid(ownerGuid);
+		}
 
 
+
+		//Ship ownerShip = owner.GetComponent<Ship>();
+
+		//Vector3 pos = ownerShip.transform.position;
+		//float angleRad = ownerShip.transform.eulerAngles.z * Mathf.Deg2Rad;
+
+		/*transform.position = new Vector3(
+			pos.x - Mathf.Sin(angleRad) * -2,
+			pos.y + Mathf.Cos(angleRad) * -2,
+			0
+		);*/
 	}
 
 	// Update is called once per frame
-	void Update()
+	void FixedUpdate()
 	{
+		if (!isServer)
+		{
+			return;
+		}
+
 		FireAtClosestTarget();
 	}
 
 	protected void FireAtClosestTarget()
 	{
+		
+		//BulletShooter bs = GetComponent<BulletShooter>();
+
+		
+
+		if (ownerShip == null)
+        {
+			ownerShip = Ship.GetShipByGuid(ownerGuid);
+        }
+
+		GameObject[] shipsToIgnore = null;
+		if (ownerShip)
+		{
+			float ownerDist = Vector2.Distance(ownerShip.transform.position, transform.position);
+			if (ownerDist <= ownerDeactivateRange)
+			{
+				//The owner is too close, do nothing
+				return;
+			}
+
+			shipsToIgnore = new GameObject[1];
+			shipsToIgnore[0] = ownerShip.gameObject;
+		}
+
 		ObjectList shipList = Ship.shipList;
-		GameObject closest = shipList.GetClosest(gameObject);
-		BulletShooter bs = GetComponent<BulletShooter>();
+		GameObject closest = shipList.GetClosest(gameObject, shipsToIgnore);
 
 		if (closest == null)
 		{
 			return;
 		}
 
-		//Owner's ship has been destroyed
-		if (owner == null)
-		{
-			Guid turretOwner = GetComponent<Owner>().GetOwnerGuid();
-			owner = Ship.shipList.GetObjectByOwner(turretOwner);
-		}
+		float angleToTarget = Angle.GetAngle(transform.position, closest.transform.position);		
+		float angleDist = Mathf.Abs(angleToTarget - angle);
+		float turnDir = Angle.GetDirection(angle, angleToTarget);
 
-		if (owner != null)
-		{
-			float ownerDist = Vector2.Distance(owner.transform.position, transform.position);
-			//Do not shoot if owner is close.  
-			if (ownerDist <= ownerDeactivateRange)
-			{
-				return;
-			}
-		}
+		if (angleDist <= angleToTarget)
+        {
+			angle = angleToTarget;
+        }
+		else
+        {
+			angle += turnDir * turnRate;
+        }
 
-		float angleToTarget = Angle.GetAngle(transform.position, closest.transform.position);
-		float fixedAngle = 360 - transform.eulerAngles.z;
-		float angleDist = Mathf.Abs(angleToTarget - fixedAngle);
-		float turnDir = Angle.GetDirection(fixedAngle, angleToTarget, angleDist);
 
-		bool pointingAt = true;
-
+		bool pointingAt = false;
 		if (angleDist < 5)
 		{
 			pointingAt = true;
 		}
 
-		if (angleDist < turnRate)
-		{
-			//transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angleToTarget));
-		}
-
-		if (turnDir < 0)
-		{
-			transform.Rotate(new Vector3(0, 0, turnRate));
-		}
-		else if (turnDir > 0)
-		{
-			transform.Rotate(new Vector3(0, 0, -turnRate));
-		}
+		turretHead.transform.rotation = Quaternion.Euler(0, 0, angle);
 
 		if (pointingAt)
 		{
 			float closestDist = Vector2.Distance(transform.position, closest.transform.position);
 			if ((closestDist > 0) && (closestDist <= detectDistance))
 			{  //Found the SOB!  SHOOT HIM!			
-				if (bs)
+				/*if (bs)
 				{
 					bs.SetIsFiring(true);
-				}
+				}*/
+				print("SHOOT");
 			}
 			else
 			{
-				if (bs)
+				/*if (bs)
 				{
 					bs.SetIsFiring(false);
 				}
+				*/
+
+				print("STOP SHOOT");
 			}
 		}
 	}
 
-	public void Init(GameObject newOwner)
-	{
-		owner = newOwner;
+	
 
-		Owner turretOwner = GetComponent<Owner>();
-		if (turretOwner)
-		{
-			Owner info = owner.GetComponent<Owner>();
-			if (info)
-			{
-				turretOwner.SetOwnerGuid(info.GetOwnerGuid());
-			}
-		}
-
-		BulletShooter bs = GetComponent<BulletShooter>();
-		if (bs)
-		{
-			//bs.SetOwner(gameObject);
-			bs.SetCurrentWeapon(1);
-		}
-
-		Ship ownerShip = owner.GetComponent<Ship>();
-
-		Vector3 pos = ownerShip.transform.position;
-		float angleRad = ownerShip.transform.eulerAngles.z * Mathf.Deg2Rad;
-
-		transform.position = new Vector3(
-			pos.x - Mathf.Sin(angleRad) * -2,
-			pos.y + Mathf.Cos(angleRad) * -2,
-			0
-		);
-	}
-
-	public static GameObject GetTurret()
+	public static GameObject GetTurretPrefab()
 	{
 		return (GameObject)Resources.Load("Prefabs/Weapons/Turret");
 	}
@@ -145,7 +174,7 @@ public class Turret : MonoBehaviour
 	{
 		if (turretRefireRate == -1)
 		{
-			turretRefireRate = GetTurret().GetComponent<Turret>().refireRate;
+			turretRefireRate = GetTurretPrefab().GetComponent<Turret>().refireRate;
 		}
 
 		return turretRefireRate;

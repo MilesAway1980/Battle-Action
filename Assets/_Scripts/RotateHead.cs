@@ -13,6 +13,11 @@ public class RotateHead : MonoBehaviour
 
 	void Start()
 	{
+		if (head == null)
+        {
+			return;
+        }
+
 		headRB = head.GetComponent<Rigidbody2D>();
 		if (headRB == null)
 		{
@@ -31,6 +36,11 @@ public class RotateHead : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate()
 	{
+		if (head == null)
+        {
+			return;
+        }
+
 		headTransform.Rotate(new Vector3(turnRateX * Time.deltaTime, turnRateY * Time.deltaTime, turnRateZ * Time.deltaTime));
 	}
 }

@@ -3282,7 +3282,8 @@ MonoBehaviour:
   SendWindowSize: 128
   ReceiveWindowSize: 128
   debugLog: 0
-  debugGUI: 0
+  statisticsGUI: 0
+  statisticsLog: 0
 --- !u!114 &1654038093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3300,6 +3301,8 @@ MonoBehaviour:
   autoStartServerBuild: 1
   showDebugMessages: 0
   serverTickRate: 20
+  serverBatching: 0
+  serverBatchInterval: 0
   offlineScene: 
   onlineScene: 
   transport: {fileID: 1654038092}
@@ -3633,7 +3636,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  test: 0
+  test: 1
+  testShips: 2
 --- !u!1 &1985627157
 GameObject:
   m_ObjectHideFlags: 0
